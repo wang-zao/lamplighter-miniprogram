@@ -42,6 +42,7 @@
 
             }
         },
+        "offset": "none",
         "usingComponents":true
     },
     "quickapp": { /* 快应用特有相关 */
