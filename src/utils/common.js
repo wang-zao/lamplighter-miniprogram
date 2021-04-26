@@ -5,8 +5,8 @@ export const directionMapNWSE = {
     chn: '东',
   },
   south: {
-    leaveCss: 'fadeOutTop',
-    enterCss: 'fadeInBottom',
+    leaveCss: 'fadeOutUp',
+    enterCss: 'fadeInUp',
     chn: '南',
   },
   west: {
@@ -15,8 +15,8 @@ export const directionMapNWSE = {
     chn: '西',
   },
   north: {
-    leaveCss: 'fadeOutBottom',
-    enterCss: 'fadeInTop',
+    leaveCss: 'fadeOutDown',
+    enterCss: 'fadeInDown',
     chn: '北',
   },
 };

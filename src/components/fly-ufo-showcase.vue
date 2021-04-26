@@ -10,13 +10,14 @@
 			fadeOutRight: anmtCtrl.fadeOutRight,
 			fadeInLeft: anmtCtrl.fadeInLeft,
 			fadeOutLeft: anmtCtrl.fadeOutLeft,
-			fadeInBottom: anmtCtrl.fadeInBottom,
-			fadeOutBottom: anmtCtrl.fadeOutBottom,
-			fadeInTop: anmtCtrl.fadeInTop,
-			fadeOutTop: anmtCtrl.fadeOutTop,
+			fadeInDown: anmtCtrl.fadeInDown,
+			fadeOutDown: anmtCtrl.fadeOutDown,
+			fadeInUp: anmtCtrl.fadeInUp,
+			fadeOutUp: anmtCtrl.fadeOutUp,
+			hided: anmtCtrl.hideCity,
 		}">
 			<view class="animated_city_icon">c</view>
-			<view class="animated_city_text">shanghai</view>
+			<view class="animated_city_text">{{currentCity.name}}</view>
 		</view>
 	</view>
 </view>
@@ -41,29 +42,30 @@
 					fadeOutRight: false,
 					fadeInLeft: false,
 					fadeOutLeft: false,
-					fadeInBottom: false,
-					fadeOutBottom: false,
-					fadeInTop: false,
-					fadeOutTop: false,
+					fadeInDown: false,
+					fadeOutDown: false,
+					fadeInUp: false,
+					fadeOutUp: false,
+					hideCity: false,
 				},
 				currentCity: {
 					name: 'Beijing',
-					next: 'south'
+					from: 'west'
 				},
 				leaveCss: '',
 				enterCss: '',
 				sampleCityList: [
 					{
 						name: 'Manila',
-						next: 'west'
+						from: 'north'
 					},
 					{
 						name: 'Dodoma',
-						next: 'north'
+						from: 'east'
 					},
 					{
 						name: 'Athens',
-						next: 'east'
+						from: 'south'
 					},
 				]
 			}
@@ -95,41 +97,38 @@
 				console.log('--------------swappiing')
 				console.log('--------------swappiing')
 				console.log('--------------swappiing')
-				this.currentCity = { ...this.sampleCityList.slice(0, 1) };
+				this.currentCity = { ...this.sampleCityList.slice(0, 1)[0] };
 				this.sampleCityList = [ ...this.sampleCityList.slice(1, 4), temp ]
 				this.sampleCityList = [ ...this.sampleCityList ]
-				console.log(this.currentCity)
-				console.log(this.sampleCityList)
+				console.log(`this.currentCity: ${this.currentCity}`)
+				console.log(`this.sampleCityList: ${this.sampleCityList.length}`)
 				// this.sampleCityList.push(temp)
 			},
 			updateCssType(city) {
-				console.log('directionMapNWSE', directionMapNWSE)
-				console.log('---------------ccity', city.name)
-				console.log('city.next', city.next)
-				console.log('directionMapNWSE[city.next]', directionMapNWSE[city.next])
-				this.leaveCss = directionMapNWSE[city.next].leaveCss;
-				this.enterCss = directionMapNWSE[city.next].enterCss;
+				this.leaveCss = directionMapNWSE[city.from].leaveCss;
+				this.enterCss = directionMapNWSE[city.from].enterCss;
+			},
+			flyToNext(direction) {
+				this.executeAnimation(directionMapNWSE[direction].leaveCss);
+				// 离开当前城市1010ms后再交换数据，同时隐藏
+				setTimeout(() => {
+					this.anmtCtrl.hideCity = true;
+					this.swapCity();
+				}, 1010);
+				// 离开当前城市1100ms后再飞入新的城市
+				setTimeout(() => {
+					this.executeAnimation(directionMapNWSE[direction].enterCss);
+					this.anmtCtrl.hideCity = false;
+				}, 1100);
 			},
 			startCityFlyLoop() {
-				// console.log('directionMapNWSE',directionMapNWSE)
-				console.log('undefiend1')
-				this.updateCssType(this.currentCity);
-				this.executeAnimation(this.leaveCss);
-				setTimeout(() => {
-					this.swapCity();
-				}, 1000);
+				let direction = this.currentCity.from;
+				this.flyToNext(direction);
+				// 飞行执行用时2500，停留1000，周期3500
 				const id = setInterval(() => {
-					this.executeAnimation(this.enterCss);
-					console.log('undefiend2')
-					this.updateCssType(this.currentCity);
-					setTimeout(() => {
-						this.executeAnimation(this.leaveCss);
-						setTimeout(() => {
-							this.swapCity();
-						}, 1000);
-					}, 2000);
+					direction = this.currentCity.from;
+					this.flyToNext(direction);
 				}, 3000);
-				console.log('iddddddd', id)
 				this.timeoutID = id;
 			}
 		}
@@ -172,4 +171,7 @@
 	font-size: .8rem;
 }
 
+.hided {
+	opacity: 0;
+}
 </style>
