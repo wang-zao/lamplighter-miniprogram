@@ -1,7 +1,7 @@
 <template>
 	<view class="content" >
 		<view class="top_ufo">
-			<view class="animate__animated animate__bounce">🛸</view>
+			<fly-ufo-showcase />
 		</view>
 		<view class="mid_buttons">
 			<view class="info_line_1 info_line">
@@ -34,6 +34,7 @@
 
 <script lang="ts">
 	import Vue from 'vue';
+	import FlyUfoShowcase from '../../components/fly-ufo-showcase.vue'
 	export default Vue.extend({
 		data() {
 			return {
@@ -50,7 +51,10 @@
 				})
 			},
 			moveHandle() {}
-		}
+		},
+		components: {
+			FlyUfoShowcase,
+		},
 	});
 </script>
 
@@ -63,6 +67,7 @@
 	background: #464646;
 	color: #6a6a6a;
 	height: 100vh;
+	font-size: 1rem;
 }
 
 /* 
@@ -74,11 +79,16 @@ mid_buttons: 30%;
 btm_infos: 10%;
  */
 .top_ufo {
-	height: 50%;
+	position: fixed;
+	top: 1rem;
+	width: 100vw;
+	height: 80%;
 	background: #333333;
 }
 
 .mid_buttons {
+	position: fixed;
+	bottom: 3rem;
 	height: 30%;
 	margin: 5% 0;
 	display: flex;
@@ -121,9 +131,10 @@ btm_infos: 10%;
 	bottom: 0;
 	display: flex;
 	justify-content: left;
+	align-items: center;
 	flex-direction: row-reverse;
 	width: 70%;
-	font-size: 14px;
+	font-size: .8rem;
 }
 
 .btm_itm {
