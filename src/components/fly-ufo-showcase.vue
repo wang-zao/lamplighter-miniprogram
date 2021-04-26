@@ -93,16 +93,9 @@
 			},
 			swapCity() {
 				const temp = this.currentCity;
-				console.log('--------------swappiing')
-				console.log('--------------swappiing')
-				console.log('--------------swappiing')
-				console.log('--------------swappiing')
 				this.currentCity = { ...this.sampleCityList.slice(0, 1)[0] };
 				this.sampleCityList = [ ...this.sampleCityList.slice(1, 4), temp ]
 				this.sampleCityList = [ ...this.sampleCityList ]
-				console.log(`this.currentCity: ${this.currentCity}`)
-				console.log(`this.sampleCityList: ${this.sampleCityList.length}`)
-				// this.sampleCityList.push(temp)
 			},
 			updateCssType(city) {
 				this.leaveCss = directionMapNWSE[city.from].leaveCss;
@@ -117,6 +110,7 @@
 				}, 1010);
 				// 离开当前城市1100ms后再飞入新的城市
 				setTimeout(() => {
+					this.anmtCtrl.hideCity = true;
 					this.executeAnimation(directionMapNWSE[direction].enterCss);
 					this.anmtCtrl.hideCity = false;
 				}, 1100);
