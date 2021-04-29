@@ -19,6 +19,22 @@
   animation-name: fadeInDown;
 }
 
+@keyframes fadeInUpSmall {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -1rem, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 1rem, 0);
+  }
+}
+
+.fadeInUpSmall {
+  animation-name: fadeInUpSmall;
+}
+
 @keyframes fadeInDownBig {
   from {
     opacity: 0;
@@ -160,6 +176,21 @@
   animation-name: fadeOutDown;
 }
 
+@keyframes fadeOutDownSmall {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0);
+  }
+}
+
+.fadeOutDownSmall {
+  animation-name: fadeOutDownSmall;
+}
+
 @keyframes fadeOutDownBig {
   from {
     opacity: 1;
@@ -290,4 +321,31 @@
     transform: perspective(400px);
     animation-timing-function: ease-in;
   }
+}
+
+
+@keyframes shake {
+  0%, 100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: 5px;
+  }
+}
+
+.shake {
+  animation-name: shake;
+}
+
+@keyframes shakeOnce {
+  0%, 35%, 65%, 100% {
+    margin-top: 0;
+  }
+  20%, 50%,  80% {
+    margin-top: 5px;
+  }
+}
+
+.shakeOnce {
+  animation-name: shakeOnce;
 }
