@@ -34,7 +34,21 @@
     <view class="ufo_item_icon shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
 			dialog_pausing: anmtCtrl.isDialogPausing,
-		}">u</view>
+		}">
+			<image
+				class="ufo_item_light"
+				src="../static/ufo_light.png"
+				mode="widthFix"
+				:class="{
+					headEastTail: anmtCtrl.headEastTail
+				}"
+			/>
+			<image
+				class="ufo_item_body"
+				src="../static/ufo_blue.png"
+				mode="widthFix"
+			/>
+		</view>
   </view>
 	<view class="city_item">
 		<view class="animated_city" :class="{
@@ -83,6 +97,7 @@
 					isDialogPausing: true,
 					isDialogTitleSwitching: false,
 					isDialogTitleSwitchingRight: false,
+					headEastTail: false,
 				},
 				currentCity: {
 					name: '北京',
@@ -128,12 +143,12 @@
 			}
 		},
 		methods: {
-			executeAnimation(cssString) {
+			executeAnimation(cssString, time) {
 				const animation = cssString;
 				this.anmtCtrl[animation] = true;
 				setTimeout(() => {
 					this.anmtCtrl[animation] = false;
-				}, this.timeCtrl.fly)
+				}, time)
 			},
 			swapCity() {
 				const temp = this.currentCity;
@@ -169,16 +184,17 @@
 			},
 			flyToNext(direction) {
 				this.changeDialogShakingStatus();
-				this.executeAnimation(directionMapNWSE[direction].leaveCss);
+				this.executeAnimation(directionMapNWSE[direction].leaveCss, this.timeCtrl.fly);
+				this.executeAnimation(directionMapNWSE[direction].ufoLightCss, this.timeCtrl.fly * 2);
 				// 离开当前城市1000ms后再交换数据
 				setTimeout(() => {
 					this.swapCity();
 				}, this.timeCtrl.fly);
 				// 离开当前城市1000ms后就马上飞入新的城市
 				setTimeout(() => {
-					this.executeAnimation(directionMapNWSE[direction].enterCss);
+					this.executeAnimation(directionMapNWSE[direction].enterCss, this.timeCtrl.fly);
 				}, this.timeCtrl.fly);
-				// 离开当前城市2000ms后就马上飞入新的城市
+				// 离开当前城市2000ms后到达，更新城市信息
 				setTimeout(() => {
 					this.changeDialogShakingStatus();
 					this.updateDialogContext();
@@ -266,9 +282,22 @@
 	left: 50%;
 	right: 50%;
 	font-size: 2rem;
-	margin-left: -0.5rem;
+	margin-left: -1.5rem;
+}
+.ufo_item_light {
+	position: absolute;
+	width: 3rem;
+	top: 1.5rem;
+	left: 0;
+	right: 0;
+	margin: auto;
+  animation-duration: 2s;
+}
+.ufo_item_body {
+	width: 3rem;
 }
 .ufo_item_icon {
+	position: relative;
 	animation-iteration-count: infinite;
   animation-duration: .5s;
 }
