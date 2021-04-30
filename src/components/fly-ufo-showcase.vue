@@ -37,10 +37,13 @@
 		}">
 			<image
 				class="ufo_item_light"
-				src="../static/ufo_light.png"
-				mode="widthFix"
+				src="../static/ufo_light_circle.png"
+				mode="heightFix"
 				:class="{
-					headEastTail: anmtCtrl.headEastTail
+					headEastTail: anmtCtrl.headEastTail,
+					headWestTail: anmtCtrl.headWestTail,
+					headSouthTail: anmtCtrl.headSouthTail,
+					headNorthTail: anmtCtrl.headNorthTail,
 				}"
 			/>
 			<image
@@ -98,6 +101,9 @@
 					isDialogTitleSwitching: false,
 					isDialogTitleSwitchingRight: false,
 					headEastTail: false,
+					headWestTail: false,
+					headNorthTail: false,
+					headSouthTail: false,
 				},
 				currentCity: {
 					name: '北京',
@@ -121,7 +127,7 @@
 						next: 'west'
 					},
 					{
-						name: '阿尔及利亚的阿尔及尔',
+						name: '阿尔及尔',
 						next: 'north'
 					},
 					{
@@ -286,12 +292,12 @@
 }
 .ufo_item_light {
 	position: absolute;
-	width: 3rem;
-	top: 1.5rem;
-	left: 0;
+	height: 16rem;
+	top: -6rem;
+	left: -1.5rem;
 	right: 0;
 	margin: auto;
-  animation-duration: 2s;
+  animation-duration: 1.2s;
 }
 .ufo_item_body {
 	width: 3rem;

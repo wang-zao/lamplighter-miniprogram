@@ -8,19 +8,19 @@ export const directionMapNWSE = {
   south: {
     leaveCss: 'fadeOutUp',
     enterCss: 'fadeInUp',
-    ufoLightCss: 'headEastTail',
+    ufoLightCss: 'headSouthTail',
     chn: '南',
   },
   west: {
     leaveCss: 'fadeOutRight',
     enterCss: 'fadeInLeft',
-    ufoLightCss: 'headEastTail',
+    ufoLightCss: 'headWestTail',
     chn: '西',
   },
   north: {
     leaveCss: 'fadeOutDown',
     enterCss: 'fadeInDown',
-    ufoLightCss: 'headEastTail',
+    ufoLightCss: 'headNorthTail',
     chn: '北',
   },
 };

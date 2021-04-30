@@ -350,18 +350,54 @@
   animation-name: shakeOnce;
 }
 
-
 @keyframes headEastTail {
   0%, 100% {
-    margin-top: 0;
     transform: skewX(0);
   }
-  50% {
-    margin-top: 1rem;
-    transform: skewX(1rem)
+  30%, 70% {
+    transform: skewX(-15deg)
   }
 }
 
 .headEastTail {
   animation-name: headEastTail;
+}
+
+@keyframes headWestTail {
+  0%, 100% {
+    transform: skewX(0);
+  }
+  30%, 70% {
+    transform: skewX(15deg)
+  }
+}
+
+.headWestTail {
+  animation-name: headWestTail;
+}
+
+@keyframes headNorthTail {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  30%, 70% {
+    transform: scaleY(1.3);
+  }
+}
+
+.headNorthTail {
+  animation-name: headNorthTail;
+}
+
+@keyframes headSouthTail {
+  0%, 100% {
+    transform: rotateX(0)
+  }
+  30%, 70% {
+    transform: rotateX(-45deg)
+  }
+}
+
+.headSouthTail {
+  animation-name: headSouthTail;
 }
