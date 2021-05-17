@@ -1,0 +1,66 @@
+<template>
+	<view class="fly-control-cross-t">
+		<view class="btn_item btn_north">北</view>
+		<view class="btn_item btn_west">西</view>
+		<view class="btn_item btn_east">东</view>
+		<view class="btn_item btn_south">南</view>
+	</view>
+</template>
+
+<script>
+	/**
+	 * fly-control-cross-t
+	 * @description 用于操纵飞机飞行方向的控制面板
+	 * @event {Function} click 点击触发事件
+	 */
+	export default {
+		name: 'FlyControlCrossT',
+		props: {
+		},
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			_onClick() {
+				this.$emit('click')
+			}
+		}
+	}
+</script>
+
+<style scoped lang="scss">
+
+.fly-control-cross-t {
+	margin-bottom: 10rem;
+	position: relative;
+	width: 100%;
+	.btn_item {
+		position: absolute;
+		width: 5rem;
+		height: 2rem;
+		border-radius: 1rem;
+		background: yellow;
+		margin: auto;
+		text-align: center;
+		line-height: 2rem;
+	}
+	.btn_north {
+		top: -3rem;
+		left: 0;
+		right: 0;
+	}
+	.btn_west {
+		left: 1rem;
+	}
+	.btn_east {
+		right: 1rem;
+	}
+	.btn_south {
+		top: 3rem;
+		left: 0;
+		right: 0;
+	}
+}
+</style>

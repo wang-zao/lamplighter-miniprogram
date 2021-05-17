@@ -38,7 +38,7 @@
     </scroll-view>
     <view class="select_confirm">
       <view class="select_confirm_btn select_confirm_cancel" @click="backToHome">返回</view>
-      <view class="select_confirm_btn select_confirm_confirm">开始</view>
+      <view class="select_confirm_btn select_confirm_confirm" @click="startPlayingGeneral">开始</view>
     </view>
   </view>
 </template>
@@ -61,7 +61,12 @@
 				uni.navigateTo({
 					url: '/pages/index/index'
 				});
-      }
+      },
+			startPlayingGeneral() {
+				uni.navigateTo({
+					url: '/pages/play-minute/play-minute'
+				})
+			},
 		},
 		components:{
 			WorldItem

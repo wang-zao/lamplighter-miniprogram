@@ -12,6 +12,12 @@
 			"style": {
 				"navigationBarTitleText": "选择世界"
 			}
+		},
+		{
+			"path": "pages/play-minute/play-minute",
+			"style": {
+				"navigationBarTitleText": "一分钟模式"
+			}
 		}
 	],
 	"globalStyle": {
