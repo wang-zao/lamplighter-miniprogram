@@ -41,7 +41,7 @@
 		width: 5rem;
 		height: 2rem;
 		border-radius: 1rem;
-		background: yellow;
+		background: $dark-mode-btn;
 		margin: auto;
 		text-align: center;
 		line-height: 2rem;

@@ -58,13 +58,14 @@
 	});
 </script>
 
-<style>
+<style scoped lang="scss">
+
 .content {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background: #464646;
+	background: $dark-mode-bg;
 	color: #6a6a6a;
 	height: 100vh;
 	font-size: 1rem;

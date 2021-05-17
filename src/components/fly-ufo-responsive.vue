@@ -1,34 +1,46 @@
 <template>
-<view class="ufo_wrapper">
-	<view >place holder</view>
-	<view class="dialog_wrap dialog_right shake" :class="{
-		dialog_shaking: anmtCtrl.isDialogShaking,
-		dialog_pausing: anmtCtrl.isDialogPausing,
-	}">
-		<view class="dialog_subtitle">现在</view>
-		<view class="dialog_title">
-			<view class="dialog_title_current dialog_title_right" :class="{
-				fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
-			}">向{{dataCtrl.dialoggedCity}}飞！</view>
-			<view class="dialog_title_next dialog_title_right" :class="{
-				fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
-			}">向{{dataCtrl.dialoggedCityNext}}飞！</view>
+<view class="ufo_wrapper" @click="hadleBackgroundClicked">
+	<view class="ufo_wrapper_place_holder" >place holder</view>
+	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_right shake" @click.stop="{}">
+		<view class="dialog_wrap dialog_right shake" :class="{
+			dialog_shaking: anmtCtrl.isDialogShaking,
+			dialog_pausing: anmtCtrl.isDialogPausing,
+			dialog_expanding: anmtCtrl.rightAbstract,
+			dialog_expanding_right: anmtCtrl.rightAbstract,
+		}" @click="handleRightClicked">
+			<view v-show="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</view>
+			<view v-show="!this.anmtCtrl.rightAbstract" class="dialog_title">
+				<view class="dialog_title_current dialog_title_right" :class="{
+					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
+				}">{{dataCtrl.dialoggedCity}}</view>
+				<view class="dialog_title_next dialog_title_right" :class="{
+					fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
+				}">{{dataCtrl.dialoggedCityNext}}</view>
+			</view>
+			<view v-show="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
+		</view>
+
+	</view>
+	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_left shake" @click.stop="{}">
+		<view class="dialog_wrap dialog_left  shake" :class="{
+			dialog_shaking: anmtCtrl.isDialogShaking,
+			dialog_pausing: anmtCtrl.isDialogPausing,
+			dialog_expanding: anmtCtrl.leftAbstract,
+			dialog_expanding_left: anmtCtrl.leftAbstract,
+		}" @click="handleLeftClicked">
+			<view  v-show="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</view>
+			<view  v-show="!this.anmtCtrl.leftAbstract" class="dialog_title">
+				<view class="dialog_title_current dialog_title_left" :class="{
+					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
+				}">{{dataCtrl.dialoggedCityCurrent}}</view>
+				<view class="dialog_title_next dialog_title_left" :class="{
+					fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
+				}">{{dataCtrl.dialoggedCityCurrentNew}}</view>
+			</view>
+			<view v-show="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{sampleCityList[0].abstract}}</view>
 		</view>
 	</view>
-	<view class="dialog_wrap dialog_left shake" :class="{
-		dialog_shaking: anmtCtrl.isDialogShaking,
-		dialog_pausing: anmtCtrl.isDialogPausing,
-	}">
-		<view class="dialog_subtitle">到达了</view>
-		<view class="dialog_title">
-			<view class="dialog_title_current dialog_title_left" :class="{
-				fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
-			}">{{dataCtrl.dialoggedCityCurrent}}</view>
-			<view class="dialog_title_next dialog_title_left" :class="{
-				fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
-			}">{{dataCtrl.dialoggedCityCurrentNew}}</view>
-		</view>
-	</view>
+	
 
   <view class="ufo_item">
     <view class="ufo_item_icon shake" :class="{
@@ -105,10 +117,13 @@
 					headWestTail: false,
 					headNorthTail: false,
 					headSouthTail: false,
+					leftAbstract: false,
+					rightAbstract: false,
 				},
 				currentCity: {
 					name: '北京',
-					next: 'south'
+					next: 'south',
+					abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan， located in the eastern section of the country. It is also a municipality， forming part of the greater Kabul Province， and divided into 22 districts. According to estimates in 2020， the population of Kabul is 4.222 million， which includes all the major ethnic groups of Afghanistan. Afghanistans only city with a population of over 1 million， Kabul serves as its political， cultural and economical center. Rapid urbanization has made Kabul the worlds 75th largest city.Kabul is located high up in a narrow valley between the Hindu Kush mountains， with an elevation of 1，790 metres (5，873 ft)',
 				},
 				leaveCss: '',
 				enterCss: '',
@@ -127,22 +142,25 @@
 				sampleCityList: [
 					{
 						name: '马尼拉',
-						next: 'west'
+						next: 'west',
+						abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan',
 					},
 					{
 						name: '阿尔及尔',
-						next: 'north'
+						next: 'north',
+						abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan',
 					},
 					{
 						name: '雅典',
-						next: 'east'
+						next: 'east',
+						abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan',
 					},
 				]
 			}
 		},
 		created() {
       this.getNewCities();
-			this.startCityFlyLoop();
+			// this.startCityFlyLoop();
 		},
 		beforeDestroy() {
 			clearTimeout(this.timeoutID);
@@ -216,6 +234,35 @@
 					this.updateDialogContext();
 				}, this.timeCtrl.fly * 2);
 			},
+			handleLeftClicked() {
+				this.changeAbstractVisibility('left', !this.anmtCtrl.leftAbstract);
+				if (this.anmtCtrl.leftAbstract) {
+					this.changeAbstractVisibility('right', false);
+				}
+			},
+			handleRightClicked() {
+				this.changeAbstractVisibility('right', !this.anmtCtrl.rightAbstract);
+				if (this.anmtCtrl.rightAbstract) {
+					this.changeAbstractVisibility('left', false);
+				}
+			},
+			hadleBackgroundClicked() {
+				this.changeAbstractVisibility('left', false);
+				this.changeAbstractVisibility('right', false);
+
+			},
+			changeAbstractVisibility(side, target) {
+				switch (side) {
+					case 'left':
+						this.anmtCtrl.leftAbstract = target;
+						break;
+					case 'right':
+						this.anmtCtrl.rightAbstract = target;
+						break;
+					default:
+						break;
+				}
+			},
 			startCityFlyLoop() {
 				let direction = this.currentCity.next;
 				this.flyToNext(direction);
@@ -230,67 +277,96 @@
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @import '../utils/customAnimate.wxss';
 
 .ufo_wrapper {
 	position: relative;
+	.ufo_wrapper_place_holder {
+		color: transparent;
+		user-select: none;
+	}
 }
-.dialog_wrap {
+.dialog_shake_outer_wrap {
 	position: absolute;
-	background: #b8b8b8;
-	padding: 0.8rem;
-	min-width: 4rem;
-	max-width: 4rem;
-	height: 2.2rem;
-	transition: .3s ease;
-	animation-iteration-count: infinite;
-}
-.dialog_left {
-	right: 60%;
-	top: 15vh;
-	transform: skewY(15deg) scaleX(0.9);
-	border-radius: 2rem 2rem 0 2rem;
-	text-align: right;
-  animation-duration: .45s;
-}
-.dialog_right {
-	left: 60%;
-	top: 20vh;
-	transform: skewY(-15deg) scaleX(0.9);
-	border-radius: 2rem 2rem 2rem 0;
-  animation-duration: .55s;
-}
-.dialog_subtitle {
-	font-size: .6rem;
-}
-.dialog_title {
-	position: relative;
-	white-space: wrap;
-}
-.dialog_title_next {
-	position: absolute;
-	top: -1rem;
-	left: 0;
-	opacity: 0;
-  animation-duration: .3s;
-}
-.dialog_title_current {
-	position: absolute;
-	top: 0;
-  animation-duration: .3s;
-}
-.dialog_title_right {
-	left: 0;
-}
-.dialog_title_left {
-	right: 0;
-}
-.dialog_shaking {
 	animation-play-state: running;
+	animation-iteration-count: infinite;
+	.dialog_wrap {
+		background: #b8b8b8;
+		padding: 0.8rem;
+		width: 4rem;
+		height: 2.2rem;
+		transition: .3s ease;
+		animation-iteration-count: infinite;
+	}
+	.dialog_left {
+		transform: skewY(15deg) scaleX(0.9);
+		border-radius: 2rem 2rem 0 2rem;
+		text-align: right;
+		animation-duration: .20s;
+	}
+	.dialog_right {
+		transform: skewY(-15deg) scaleX(0.9);
+		border-radius: 2rem 2rem 2rem 0;
+		animation-duration: .15s;
+	}
+	.dialog_subtitle {
+		font-size: .6rem;
+	}
+	.dialog_title {
+		position: relative;
+		white-space: wrap;
+	}
+	.dialog_title_next {
+		position: absolute;
+		top: -1rem;
+		left: 0;
+		opacity: 0;
+		animation-duration: .3s;
+	}
+	.dialog_title_current {
+		position: absolute;
+		top: 0;
+		animation-duration: .3s;
+	}
+	.dialog_title_right {
+		left: 0;
+	}
+	.dialog_title_left {
+		right: 0;
+	}
+	.dialog_shaking {
+		animation-play-state: running;
+		/* animation-duration: .55s; */
+	}
+	.dialog_pausing {
+		animation-play-state: paused;
+		/* animation-duration: 2s; */
+	}
+	.dialog_expanding {
+		width: 7rem;
+		height: 6rem;
+		overflow: scroll;
+	}
+	.dialog_expanding_left {
+		transform: skewY(15deg) scaleX(0.9) translateY(-5rem);
+	}
+	.dialog_expanding_right {
+		transform: skewY(-15deg) scaleX(0.9) translateY(-5rem);
+	}
+	.dialog_abstract {
+		font-size: 0.5rem;
+	}
 }
-.dialog_pausing {
-	animation-play-state: paused;
+.dialog_shake_outer_wrap_right {
+  animation-duration: 1.85s;
+	top: 20vh;
+	left: 60%;
+}
+.dialog_shake_outer_wrap_left {
+  animation-duration: 2s;
+	top: 15vh;
+	right: 60%;
 }
 .ufo_item {
 	position: absolute;

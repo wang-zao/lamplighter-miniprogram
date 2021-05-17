@@ -39,6 +39,12 @@
 
 $general-paddng: 1rem;
 
+.play_minute_wrapper {
+	background: $dark-mode-bg;
+  width: 100vw;
+  height: 100vh;
+}
+
 .play_minute_content {
   .content_panel {
     width: 100%;
@@ -54,7 +60,7 @@ $general-paddng: 1rem;
     justify-content: center;
   }
   .ufo_pnnel {
-    top: 2rem;
+    top: 4rem;
     justify-content: center;
     align-items: center;
   }
