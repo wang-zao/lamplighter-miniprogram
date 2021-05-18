@@ -1,9 +1,21 @@
 <template>
 	<view class="fly-control-cross-t">
-		<view class="btn_item btn_north">北</view>
-		<view class="btn_item btn_west">西</view>
-		<view class="btn_item btn_east">东</view>
-		<view class="btn_item btn_south">南</view>
+		<view
+			class="btn_item btn_north"
+			@click="onClick('north')"
+		>北</view>
+		<view
+			class="btn_item btn_west" 
+			@click="onClick('west')"
+		>西</view>
+		<view
+			class="btn_item btn_east"
+			@click="onClick('east')"
+		>东</view>
+		<view
+			class="btn_item btn_south" 
+			@click="onClick('south')"
+		>南</view>
 	</view>
 </template>
 
@@ -23,8 +35,8 @@
 			}
 		},
 		methods: {
-			_onClick() {
-				this.$emit('click')
+			onClick(direction) {
+				this.$emit('clickedOneDirection', direction)
 			}
 		}
 	}

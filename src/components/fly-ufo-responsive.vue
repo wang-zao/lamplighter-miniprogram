@@ -12,12 +12,12 @@
 			<view v-show="!this.anmtCtrl.rightAbstract" class="dialog_title">
 				<view class="dialog_title_current dialog_title_right" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{dataCtrl.dialoggedCity}}</view>
+				}">{{nextCity.city_ascii}}</view>
 				<view class="dialog_title_next dialog_title_right" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{dataCtrl.dialoggedCityNext}}</view>
+				}">{{nextCity.city_ascii}}</view>
 			</view>
-			<view v-show="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
+			<view v-show="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</view>
 		</view>
 
 	</view>
@@ -32,12 +32,12 @@
 			<view  v-show="!this.anmtCtrl.leftAbstract" class="dialog_title">
 				<view class="dialog_title_current dialog_title_left" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{dataCtrl.dialoggedCityCurrent}}</view>
+				}">{{currentCity.city_ascii}}</view>
 				<view class="dialog_title_next dialog_title_left" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{dataCtrl.dialoggedCityCurrentNew}}</view>
+				}">{{currentCity.city_ascii}}</view>
 			</view>
-			<view v-show="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{sampleCityList[0].abstract}}</view>
+			<view v-show="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
 		</view>
 	</view>
 	
@@ -78,7 +78,7 @@
 			hided: anmtCtrl.hideCity,
 		}">
 			<view class="animated_city_icon">c</view>
-			<view class="animated_city_text">{{currentCity.name}}</view>
+			<view class="animated_city_text">{{currentCity.city_ascii}}</view>
 		</view>
 	</view>
 </view>
@@ -90,10 +90,22 @@
 	 * @description 首页展示ufo飞来飞去的动画画布组件
 	 */
 	import { directionMapNWSE } from '@/utils/common';
-	import { falseCityData } from '@/utils/data';
 	export default {
 		name: 'FlyUfoResponsive',
-		props: {},
+		props: {
+			currentCity: {
+				type: Object,
+				default: {},
+			},
+			nextCity: {
+				type: Object,
+				default: {},
+			},
+			judgeCtrl: {
+				type: Object,
+				default: {},
+			},
+		},
 		data() {
 			return {
 				cityEntering: false,
@@ -120,11 +132,25 @@
 					leftAbstract: false,
 					rightAbstract: false,
 				},
-				currentCity: {
-					name: '北京',
-					next: 'south',
-					abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan， located in the eastern section of the country. It is also a municipality， forming part of the greater Kabul Province， and divided into 22 districts. According to estimates in 2020， the population of Kabul is 4.222 million， which includes all the major ethnic groups of Afghanistan. Afghanistans only city with a population of over 1 million， Kabul serves as its political， cultural and economical center. Rapid urbanization has made Kabul the worlds 75th largest city.Kabul is located high up in a narrow valley between the Hindu Kush mountains， with an elevation of 1，790 metres (5，873 ft)',
-				},
+				// currentCity: {
+				// 	name: '北京',
+				// 	next: 'south',
+				// 	lat: 41.33,
+				// 	lng: 19.82,
+				// 	abstract: "喀布尔（普什图语：کابل，罗马化：Kābəl；达里语：کابل，罗马化：Kābol）是阿富汗的首都和最大城市，位于该国东部。它也是一个自治市，是大喀布尔省的一部分，分为22个区。",
+				// },
+				// nextCity: {
+				// 	name: '马尼拉',
+				// 	next: 'west',
+				// 	lat: 141.33,
+				// 	lng: 19.82,
+				// 	abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan',
+				// },
+				// judgeCtrl: {
+				// 	correctDirection: '',
+				// 	userSelect: '',
+				// 	isCorrect: false,
+				// },
 				leaveCss: '',
 				enterCss: '',
 				timeCtrl: {
@@ -139,23 +165,6 @@
 					dialoggedCityNext: '马尼拉',
 					dialoggedDirectionNext: '南',
 				},
-				sampleCityList: [
-					{
-						name: '马尼拉',
-						next: 'west',
-						abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan',
-					},
-					{
-						name: '阿尔及尔',
-						next: 'north',
-						abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan',
-					},
-					{
-						name: '雅典',
-						next: 'east',
-						abstract: 'Kabul (Pashto: کابل‎， romanized: Kābəl; Dari: کابل‎， romanized: Kābol) is the capital and largest city of Afghanistan',
-					},
-				]
 			}
 		},
 		created() {
@@ -181,37 +190,37 @@
       getNewCities() {
 
       },
-			swapCity() {
-				const temp = this.currentCity;
-				this.currentCity = { ...this.sampleCityList.slice(0, 1)[0] };
-				this.sampleCityList = [ ...this.sampleCityList.slice(1, 4), temp ]
-				this.sampleCityList = [ ...this.sampleCityList ]
-			},
+			// swapCity() {
+			// 	const temp = this.currentCity;
+			// 	this.currentCity = { ...this.cityList.slice(0, 1)[0] };
+			// 	this.cityList = [ ...this.cityList.slice(1, 4), temp ]
+			// 	this.cityList = [ ...this.cityList ]
+			// },
 			updateCssType(city) {
 				this.leaveCss = directionMapNWSE[city.next].leaveCss;
 				this.enterCss = directionMapNWSE[city.next].enterCss;
 			},
-			updateDialogContext() {
-				const nextDrct = directionMapNWSE[this.currentCity.next].chn;
-				const currentCity = this.currentCity.name;
-				const nextCity = this.sampleCityList[0].name;
-				this.dataCtrl.dialoggedCityNext = nextCity;
-				this.dataCtrl.dialoggedCityCurrentNew = currentCity;
-				this.anmtCtrl.isDialogTitleSwitching = true;
-				setTimeout(() => {
-					this.anmtCtrl.isDialogTitleSwitching = false;
-					this.dataCtrl.dialoggedCityCurrent = currentCity;
-				}, 300)
-				setTimeout(() => {
-					this.dataCtrl.dialoggedDirectionNext = nextDrct;
-					this.anmtCtrl.isDialogTitleSwitchingRight = true;
-				}, 300)
-				setTimeout(() => {
-					this.anmtCtrl.isDialogTitleSwitchingRight = false;
-					this.dataCtrl.dialoggedDirection = nextDrct;
-					this.dataCtrl.dialoggedCity = nextCity;
-				}, 600)
-			},
+			// updateDialogContext() {
+			// 	const nextDrct = directionMapNWSE[this.currentCity.next].chn;
+			// 	const currentCity = this.currentCity.name;
+			// 	const nextCity = this.cityList[0].name;
+			// 	this.dataCtrl.dialoggedCityNext = nextCity;
+			// 	this.dataCtrl.dialoggedCityCurrentNew = currentCity;
+			// 	this.anmtCtrl.isDialogTitleSwitching = true;
+			// 	setTimeout(() => {
+			// 		this.anmtCtrl.isDialogTitleSwitching = false;
+			// 		this.dataCtrl.dialoggedCityCurrent = currentCity;
+			// 	}, 300)
+			// 	setTimeout(() => {
+			// 		this.dataCtrl.dialoggedDirectionNext = nextDrct;
+			// 		this.anmtCtrl.isDialogTitleSwitchingRight = true;
+			// 	}, 300)
+			// 	setTimeout(() => {
+			// 		this.anmtCtrl.isDialogTitleSwitchingRight = false;
+			// 		this.dataCtrl.dialoggedDirection = nextDrct;
+			// 		this.dataCtrl.dialoggedCity = nextCity;
+			// 	}, 600)
+			// },
 			changeDialogShakingStatus() {
 				this.anmtCtrl.isDialogPausing = !this.anmtCtrl.isDialogPausing;
 				this.anmtCtrl.isDialogShaking = !this.anmtCtrl.isDialogShaking;
@@ -222,7 +231,7 @@
 				this.executeAnimation(directionMapNWSE[direction].ufoLightCss, this.timeCtrl.fly * 2);
 				// 离开当前城市1000ms后再交换数据
 				setTimeout(() => {
-					this.swapCity();
+					// this.swapCity();
 				}, this.timeCtrl.fly);
 				// 离开当前城市1000ms后就马上飞入新的城市
 				setTimeout(() => {
@@ -231,7 +240,7 @@
 				// 离开当前城市2000ms后到达，更新城市信息
 				setTimeout(() => {
 					this.changeDialogShakingStatus();
-					this.updateDialogContext();
+					// this.updateDialogContext();
 				}, this.timeCtrl.fly * 2);
 			},
 			handleLeftClicked() {
@@ -249,7 +258,6 @@
 			hadleBackgroundClicked() {
 				this.changeAbstractVisibility('left', false);
 				this.changeAbstractVisibility('right', false);
-
 			},
 			changeAbstractVisibility(side, target) {
 				switch (side) {
@@ -356,6 +364,7 @@
 	}
 	.dialog_abstract {
 		font-size: 0.5rem;
+		text-align: justify;
 	}
 }
 .dialog_shake_outer_wrap_right {

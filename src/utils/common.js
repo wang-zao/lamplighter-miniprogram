@@ -25,10 +25,10 @@ export const directionMapNWSE = {
   },
 };
 
-// 地球半径
-const R = 6371.393;
 
 export const calc_shortest_dis = (x1, y1, x2, y2) => {
+  // 地球半径
+  const R = 6371.393;
   const latitude1 = (Math.PI / 180) * y1;
   const latitude2 = (Math.PI / 180) * y2;
   const longitude1 = (Math.PI / 180) * x1;
