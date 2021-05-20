@@ -27,6 +27,7 @@
         <view>{{judgeCtrl.totalMiles.toFixed(0)}} km</view>
       </view>
     </view>
+    <start-page v-if="anmtCtrl.gameStartPageVisible" class="content_panel start_panel" />
   </view>
 </view>
 </template>
@@ -36,6 +37,7 @@
   import FlyUfoResponsive from '@/components/fly-ufo-responsive.vue';
   import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
   import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
+  import StartPage from '@/components/start-page.vue';
 	import { falseCityData } from '@/utils/data';
 	import { calc_shortest_dis, calc_next_direction } from '@/utils/common';
 	export default Vue.extend({
@@ -47,6 +49,7 @@
           crossTVisible: false,
           crossXVisible: false,
           gameEndPageVisible: false,
+          gameStartPageVisible: true,
         },
 				judgeCtrl: {
 					correctDirection: '',
@@ -66,15 +69,21 @@
 		methods: {
       async init() {
         console.log('initing')
+        this.showStartPage();
         await this.getCityData();
         this.cityQueuePopOne();
         this.cityQueuePopOne();
         this.calcAnswer();
-        this.startTimeLoop();
         console.log('init fiinised')
       },
       getCityData() {
         this.cityList = falseCityData;
+      },
+      showStartPage() {
+        setTimeout(() => {
+          this.anmtCtrl.gameStartPageVisible = false;
+          this.startTimeLoop();
+        }, 4000);
       },
       gameEnd() {
         this.anmtCtrl.gameEndPageVisible = true;
@@ -84,11 +93,10 @@
           if (this.judgeCtrl.restTime > 0) {
             this.judgeCtrl.restTime -= 1;
           } else if (this.judgeCtrl.restTime <= 0) {
-            clearInterval(clock)
-            console.log('stop!!!')
+            clearInterval(clock);
             this.gameEnd();
           }
-        }, 1000)
+        }, 1000);
       },
       calcAnswer() {
         const c = this.currentCity;
@@ -131,6 +139,7 @@
 			FlyUfoResponsive,
 			FlyControlCrossT,
 			FlyControlCrossX,
+			StartPage,
 		},
 	});
 </script>
