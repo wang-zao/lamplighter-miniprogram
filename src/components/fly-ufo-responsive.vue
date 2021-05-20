@@ -8,8 +8,8 @@
 			dialog_expanding: anmtCtrl.rightAbstract,
 			dialog_expanding_right: anmtCtrl.rightAbstract,
 		}" @click="handleRightClicked">
-			<view v-show="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</view>
-			<view v-show="!this.anmtCtrl.rightAbstract" class="dialog_title">
+			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</view>
+			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_title">
 				<view class="dialog_title_current dialog_title_right" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
 				}">{{nextCity.city_ascii}}</view>
@@ -17,7 +17,7 @@
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
 				}">{{nextCity.city_ascii}}</view>
 			</view>
-			<view v-show="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</view>
+			<view v-if="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</view>
 		</view>
 
 	</view>
@@ -28,8 +28,8 @@
 			dialog_expanding: anmtCtrl.leftAbstract,
 			dialog_expanding_left: anmtCtrl.leftAbstract,
 		}" @click="handleLeftClicked">
-			<view  v-show="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</view>
-			<view  v-show="!this.anmtCtrl.leftAbstract" class="dialog_title">
+			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</view>
+			<view  v-if="!this.anmtCtrl.leftAbstract" class="dialog_title">
 				<view class="dialog_title_current dialog_title_left" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
 				}">{{currentCity.city_ascii}}</view>
@@ -37,7 +37,7 @@
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
 				}">{{currentCity.city_ascii}}</view>
 			</view>
-			<view v-show="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
+			<view v-if="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
 		</view>
 	</view>
 	

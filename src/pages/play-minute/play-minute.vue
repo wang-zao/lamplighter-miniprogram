@@ -25,9 +25,11 @@
       <view class="end_panel_content">
         <view>Game Over</view>
         <view>{{judgeCtrl.totalMiles.toFixed(0)}} km</view>
+        <view @click="backToHome">回到首页</view>
       </view>
     </view>
     <start-page v-if="anmtCtrl.gameStartPageVisible" class="content_panel start_panel" />
+    <earth class="content_panel"/>
   </view>
 </view>
 </template>
@@ -38,6 +40,7 @@
   import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
   import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
   import StartPage from '@/components/start-page.vue';
+  import Earth from '@/components/earth.vue';
 	import { falseCityData } from '@/utils/data';
 	import { calc_shortest_dis, calc_next_direction } from '@/utils/common';
 	export default Vue.extend({
@@ -70,6 +73,7 @@
       async init() {
         console.log('initing')
         this.showStartPage();
+        // this.startTimeLoop();
         await this.getCityData();
         this.cityQueuePopOne();
         this.cityQueuePopOne();
@@ -83,7 +87,7 @@
         setTimeout(() => {
           this.anmtCtrl.gameStartPageVisible = false;
           this.startTimeLoop();
-        }, 4000);
+        }, 1000);
       },
       gameEnd() {
         this.anmtCtrl.gameEndPageVisible = true;
@@ -123,6 +127,11 @@
       cityQueueBrokeOne() {
         this.nextCity = { ...this.cityList.pop(0) };
       },
+      backToHome() {
+				uni.navigateTo({
+					url: '/pages/index/index'
+				});
+      },
       handleUserSelected(direction) {
         console.log('clicked button', direction)
         if (direction === this.judgeCtrl.correctDirection) {
@@ -140,6 +149,7 @@
 			FlyControlCrossT,
 			FlyControlCrossX,
 			StartPage,
+			Earth,
 		},
 	});
 </script>
@@ -161,11 +171,11 @@ $general-paddng: 1rem;
     display: flex;
   }
   .mile_panel {
-    top: 0;
+    top: 5rem;
     justify-content: left;
   }
   .info_panel {
-    top: 0;
+    top: 5rem;
     justify-content: center;
   }
   .ufo_pnnel {
