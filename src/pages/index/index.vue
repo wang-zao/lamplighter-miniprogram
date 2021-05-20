@@ -28,6 +28,8 @@
 		<view class="btm_infos">
 			<view class="btm_report btm_itm">反馈</view>
 			<view class="btm_support btm_itm">帮助</view>
+			<view class="btm_support btm_itm" @click="login">登录</view>
+			<view class="btm_support btm_itm" @click="getUserProfile">授权</view>
 		</view>
 	</view>
 </template>
@@ -42,7 +44,8 @@
 			}
 		},
 		onLoad() {
-
+			this.login();
+			this.getUserProfile();
 		},
 		methods: {
 			startGeneral() {
@@ -50,7 +53,23 @@
 					url: '/pages/select-world/select-world'
 				})
 			},
-			moveHandle() {}
+			login() {
+				uni.login({
+					provider: 'weixin',
+					success: function (loginRes) {
+						console.log('loginRes.authResult:', loginRes.authResult);
+					}
+				});
+			},
+			async getUserProfile() {
+				const res = await uni.getUserProfile({
+					desc: '使用微信名称和头像吗？'
+				});
+				console.log('getUserProfile:', res);
+			},
+			moveHandle() {
+				
+			},
 		},
 		components: {
 			FlyUfoShowcase,
