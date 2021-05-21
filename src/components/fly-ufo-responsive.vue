@@ -1,6 +1,6 @@
 <template>
 <view class="ufo_wrapper" @click="hadleBackgroundClicked">
-	<view class="ufo_wrapper_place_holder" >place holder</view>
+	<view class="ufo_wrapper_place_holder" >place holder</view >
 	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_right shake" @click.stop="{}">
 		<view class="dialog_wrap dialog_right shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
@@ -8,19 +8,19 @@
 			dialog_expanding: anmtCtrl.rightAbstract,
 			dialog_expanding_right: anmtCtrl.rightAbstract,
 		}" @click="handleRightClicked">
-			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</view>
+			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</view >
 			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_title">
 				<view class="dialog_title_current dialog_title_right" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{nextCity.city_ascii}}</view>
+				}">{{nextCity.city_ascii}}</view >
 				<view class="dialog_title_next dialog_title_right" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{nextCity.city_ascii}}</view>
-			</view>
-			<view v-if="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</view>
-		</view>
+				}">{{nextCity.city_ascii}}</view >
+			</view >
+			<view v-if="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</view >
+		</view >
 
-	</view>
+	</view >
 	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_left shake" @click.stop="{}">
 		<view class="dialog_wrap dialog_left  shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
@@ -28,18 +28,18 @@
 			dialog_expanding: anmtCtrl.leftAbstract,
 			dialog_expanding_left: anmtCtrl.leftAbstract,
 		}" @click="handleLeftClicked">
-			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</view>
-			<view  v-if="!this.anmtCtrl.leftAbstract" class="dialog_title">
+			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</view >
+			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_title">
 				<view class="dialog_title_current dialog_title_left" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{currentCity.city_ascii}}</view>
+				}">{{currentCity.city_ascii}}</view >
 				<view class="dialog_title_next dialog_title_left" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{currentCity.city_ascii}}</view>
-			</view>
+				}">{{currentCity.city_ascii}}</view >
+			</view >
 			<view v-if="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
-		</view>
-	</view>
+		</view >
+	</view >
 	
 
   <view class="ufo_item">
@@ -81,7 +81,7 @@
 			<view class="animated_city_text">{{currentCity.city_ascii}}</view>
 		</view>
 	</view>
-</view>
+</view >
 </template>
 
 <script>

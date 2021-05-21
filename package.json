@@ -64,6 +64,8 @@
     "node-sass": "^6.0.0",
     "regenerator-runtime": "^0.12.1",
     "sass-loader": "7.0.1",
+    "three": "^0.128.0",
+    "threejs-miniprogram": "^0.0.8",
     "vue": "^2.6.11",
     "vue-class-component": "^6.3.2",
     "vue-property-decorator": "^8.0.0",

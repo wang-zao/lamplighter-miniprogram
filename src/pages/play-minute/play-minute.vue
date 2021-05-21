@@ -1,8 +1,13 @@
 <template>
 <view class="play_minute_wrapper">
   <view class="play_minute_content">
-    <view class="content_panel mile_panel">{{judgeCtrl.totalMiles.toFixed(0)}}</view>
-    <view class="content_panel info_panel">{{judgeCtrl.restTime}}</view>
+    <cover-view
+      v-if="anmtCtrl.showCoverViews"
+      class="content_panel mile_panel"
+    >{{judgeCtrl.totalMiles.toFixed(0)}}</cover-view>
+    <cover-view
+      class="content_panel info_panel"
+    >{{judgeCtrl.restTime}}</cover-view>
     <view class="content_panel ufo_pnnel">
 			<!-- <fly-ufo-showcase /> -->
 			<fly-ufo-responsive
@@ -29,7 +34,10 @@
       </view>
     </view>
     <start-page v-if="anmtCtrl.gameStartPageVisible" class="content_panel start_panel" />
-    <earth class="content_panel"/>
+    <earth
+      class="content_panel earth_panel"
+      @renderCompleted="showAllCoverViews"
+    />
   </view>
 </view>
 </template>
@@ -53,6 +61,7 @@
           crossXVisible: false,
           gameEndPageVisible: false,
           gameStartPageVisible: true,
+          showCoverViews: false,
         },
 				judgeCtrl: {
 					correctDirection: '',
@@ -127,6 +136,12 @@
       cityQueueBrokeOne() {
         this.nextCity = { ...this.cityList.pop(0) };
       },
+      showAllCoverViews() {
+        setTimeout(() => {
+          console.log('showing all cover views !')
+          this.anmtCtrl.showCoverViews = true;
+        }, 1000);
+      },
       backToHome() {
 				uni.navigateTo({
 					url: '/pages/index/index'
@@ -171,6 +186,7 @@ $general-paddng: 1rem;
     display: flex;
   }
   .mile_panel {
+    color: #fff;
     top: 5rem;
     justify-content: left;
   }
@@ -201,6 +217,10 @@ $general-paddng: 1rem;
       text-align: center;
       color: #fff;
     }
+  }
+  .earth_panel {
+    top: 0;
+    left: 0;
   }
 }
 
