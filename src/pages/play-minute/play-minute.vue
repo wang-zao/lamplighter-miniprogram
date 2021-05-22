@@ -222,6 +222,10 @@ $general-paddng: 1rem;
     top: 0;
     left: 0;
   }
+  .test_nothing {
+    color: #bbe6ff;
+    color: #072d43;
+  }
 }
 
 </style>

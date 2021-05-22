@@ -326,10 +326,10 @@
 
 @keyframes shake {
   0%, 100% {
-    margin-top: 0;
+    transform: translateY(0);
   }
   50% {
-    margin-top: 5px;
+    transform: translateY(5px);
   }
 }
 

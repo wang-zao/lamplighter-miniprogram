@@ -1,22 +1,22 @@
 <template>
-	<view class="fly-control-cross-t">
-		<view
+	<cover-view class="fly-control-cross-t">
+		<cover-view
 			class="btn_item btn_northwest"
 			@click="onClick('northwest')"
-		>西北</view>
-		<view
+		>西北</cover-view>
+		<cover-view
 			class="btn_item btn_northeast" 
 			@click="onClick('northeast')"
-		>东北</view>
-		<view
+		>东北</cover-view>
+		<cover-view
 			class="btn_item btn_southwest"
 			@click="onClick('southwest')"
-		>西南</view>
-		<view
+		>西南</cover-view>
+		<cover-view
 			class="btn_item btn_southeast" 
 			@click="onClick('southeast')"
-		>东南</view>
-	</view>
+		>东南</cover-view>
+	</cover-view>
 </template>
 
 <script>
@@ -46,10 +46,10 @@
 
 .fly-control-cross-t {
 	margin-bottom: 10rem;
-	position: relative;
+	position: fixed;
 	width: 100%;
 	.btn_item {
-		position: absolute;
+		position: fixed;
 		width: 5rem;
 		height: 2rem;
 		border-radius: 1rem;

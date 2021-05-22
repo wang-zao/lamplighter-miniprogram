@@ -1,55 +1,60 @@
 <template>
-<view class="ufo_wrapper" @click="hadleBackgroundClicked">
-	<view class="ufo_wrapper_place_holder" >place holder</view >
-	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_right shake" @click.stop="{}">
-		<view class="dialog_wrap dialog_right shake" :class="{
+<cover-view class="ufo_wrapper" @click="hadleBackgroundClicked">
+	<cover-view class="ufo_wrapper_place_holder" >place holder</cover-view>
+	<cover-view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_right shake" @click.stop="{}">
+		<cover-view class="dialog_wrap dialog_right shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
 			dialog_pausing: anmtCtrl.isDialogPausing,
 			dialog_expanding: anmtCtrl.rightAbstract,
 			dialog_expanding_right: anmtCtrl.rightAbstract,
 		}" @click="handleRightClicked">
-			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</view >
-			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_title">
-				<view class="dialog_title_current dialog_title_right" :class="{
+			<cover-view v-if="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</cover-view>
+			<cover-view v-if="!this.anmtCtrl.rightAbstract" class="dialog_title">
+				<cover-view class="dialog_title_current dialog_title_right" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{nextCity.city_ascii}}</view >
-				<view class="dialog_title_next dialog_title_right" :class="{
+				}">{{nextCity.city_ascii}}</cover-view>
+				<cover-view class="dialog_title_next dialog_title_right" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{nextCity.city_ascii}}</view >
-			</view >
-			<view v-if="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</view >
-		</view >
+				}">{{nextCity.city_ascii}}</cover-view>
+			</cover-view>
+			<cover-view v-if="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</cover-view>
+		</cover-view>
 
-	</view >
-	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_left shake" @click.stop="{}">
-		<view class="dialog_wrap dialog_left  shake" :class="{
+	</cover-view>
+	<cover-view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_left shake" @click.stop="{}">
+		<cover-view class="dialog_wrap dialog_left  shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
 			dialog_pausing: anmtCtrl.isDialogPausing,
 			dialog_expanding: anmtCtrl.leftAbstract,
 			dialog_expanding_left: anmtCtrl.leftAbstract,
 		}" @click="handleLeftClicked">
-			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</view >
-			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_title">
-				<view class="dialog_title_current dialog_title_left" :class="{
+			<cover-view v-if="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</cover-view>
+			<cover-view v-if="!this.anmtCtrl.leftAbstract" class="dialog_title">
+				<cover-view class="dialog_title_current dialog_title_left" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{currentCity.city_ascii}}</view >
-				<view class="dialog_title_next dialog_title_left" :class="{
+				}">{{currentCity.city_ascii}}</cover-view>
+				<cover-view class="dialog_title_next dialog_title_left" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{currentCity.city_ascii}}</view >
-			</view >
-			<view v-if="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
-		</view >
-	</view >
+				}">{{currentCity.city_ascii}}</cover-view>
+			</cover-view>
+			<cover-view v-if="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</cover-view>
+		</cover-view>
+	</cover-view>
 	
 
-  <view class="ufo_item">
-    <view class="ufo_item_icon shake" :class="{
+  <cover-view class="ufo_item">
+    <cover-view class="ufo_item_icon shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
 			dialog_pausing: anmtCtrl.isDialogPausing,
 		}">
-			<image
+			<cover-image
+				class="ufo_item_body"
+				src="../static/ufo_blue.png"
+				mode="widthFix"
+			/>
+			<cover-image
 				class="ufo_item_light"
-				src="../static/ufo_light_circle.png"
+				src="../static/ufo_light.png"
 				mode="heightFix"
 				:class="{
 					headEastTail: anmtCtrl.headEastTail,
@@ -58,15 +63,10 @@
 					headNorthTail: anmtCtrl.headNorthTail,
 				}"
 			/>
-			<image
-				class="ufo_item_body"
-				src="../static/ufo_blue.png"
-				mode="widthFix"
-			/>
-		</view>
-  </view>
-	<view class="city_item">
-		<view class="animated_city" :class="{
+		</cover-view>
+  </cover-view>
+	<cover-view class="city_item">
+		<cover-view class="animated_city" :class="{
 			fadeInRight: anmtCtrl.fadeInRight,
 			fadeOutRight: anmtCtrl.fadeOutRight,
 			fadeInLeft: anmtCtrl.fadeInLeft,
@@ -77,11 +77,11 @@
 			fadeOutUp: anmtCtrl.fadeOutUp,
 			hided: anmtCtrl.hideCity,
 		}">
-			<view class="animated_city_icon">c</view>
-			<view class="animated_city_text">{{currentCity.city_ascii}}</view>
-		</view>
-	</view>
-</view >
+			<cover-view class="animated_city_icon">c</cover-view>
+			<cover-view class="animated_city_text">{{currentCity.city_ascii}}</cover-view>
+		</cover-view>
+	</cover-view>
+</cover-view>
 </template>
 
 <script>
@@ -289,14 +289,14 @@
 @import '../utils/customAnimate.wxss';
 
 .ufo_wrapper {
-	position: relative;
+	position: fixed;
 	.ufo_wrapper_place_holder {
 		color: transparent;
 		user-select: none;
 	}
 }
 .dialog_shake_outer_wrap {
-	position: absolute;
+	position: fixed;
 	animation-play-state: running;
 	animation-iteration-count: infinite;
 	.dialog_wrap {
@@ -308,13 +308,13 @@
 		animation-iteration-count: infinite;
 	}
 	.dialog_left {
-		transform: skewY(15deg) scaleX(0.9);
+		// transform: skewY(15deg) scaleX(0.9);
 		border-radius: 2rem 2rem 0 2rem;
 		text-align: right;
 		animation-duration: .20s;
 	}
 	.dialog_right {
-		transform: skewY(-15deg) scaleX(0.9);
+		// transform: skewY(-15deg) scaleX(0.9);
 		border-radius: 2rem 2rem 2rem 0;
 		animation-duration: .15s;
 	}
@@ -322,18 +322,18 @@
 		font-size: .6rem;
 	}
 	.dialog_title {
-		position: relative;
+		position: fixed;
 		white-space: wrap;
 	}
 	.dialog_title_next {
-		position: absolute;
+		position: fixed;
 		top: -1rem;
 		left: 0;
 		opacity: 0;
 		animation-duration: .3s;
 	}
 	.dialog_title_current {
-		position: absolute;
+		position: fixed;
 		top: 0;
 		animation-duration: .3s;
 	}
@@ -356,12 +356,12 @@
 		height: 6rem;
 		overflow: scroll;
 	}
-	.dialog_expanding_left {
-		transform: skewY(15deg) scaleX(0.9) translateY(-5rem);
-	}
-	.dialog_expanding_right {
-		transform: skewY(-15deg) scaleX(0.9) translateY(-5rem);
-	}
+	// .dialog_expanding_left {
+	// 	// transform: skewY(15deg) scaleX(0.9) translateY(-5rem);
+	// }
+	// .dialog_expanding_right {
+	// 	// transform: skewY(-15deg) scaleX(0.9) translateY(-5rem);
+	// }
 	.dialog_abstract {
 		font-size: 0.5rem;
 		text-align: justify;
@@ -378,7 +378,7 @@
 	right: 60%;
 }
 .ufo_item {
-	position: absolute;
+	position: fixed;
 	top: 30vh;
 	left: 50%;
 	right: 50%;
@@ -386,24 +386,27 @@
 	margin-left: -1.5rem;
 }
 .ufo_item_light {
-	position: absolute;
-	height: 16rem;
-	top: -6rem;
-	left: -1.5rem;
-	right: 0;
-	margin: auto;
+	// position: fixed;
+	height: 4rem;
+  width: 3rem;
+	// top: 32vh;
+	// left: 0rem;
+	// right: 0;
+	// margin: auto;
   animation-duration: 1.2s;
+  z-index: 10;
 }
 .ufo_item_body {
 	width: 3rem;
+  z-index: 15;
 }
 .ufo_item_icon {
-	position: relative;
+	position: fixed;
 	animation-iteration-count: infinite;
   animation-duration: .5s;
 }
 .city_item {
-	position: absolute;
+	position: fixed;
 	top: 45vh;
 	left: 50%;
 	right: 50%;

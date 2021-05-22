@@ -100,7 +100,8 @@ export const drawThreeGeo = (json, radius, shape, materalOptions, container, THR
       var conversionFunctionName;
 
       if (shape == 'sphere') {
-          conversionFunctionName = convertToSphereCoords;
+          conversionFunctionName = convertLatLngToXyz;
+        //   conversionFunctionName = convertToSphereCoords;
       } else if (shape == 'plane') {
           conversionFunctionName = convertToPlaneCoords;
       } else {
@@ -190,12 +191,30 @@ export const drawThreeGeo = (json, radius, shape, materalOptions, container, THR
   }
 
   function convertToSphereCoords(coordinates_array, sphere_radius) {
+    // 组件自带的方法，感觉有问题
       var lon = coordinates_array[0];
       var lat = coordinates_array[1];
 
       x_values.push(Math.cos(lat * Math.PI / 180) * Math.cos(lon * Math.PI / 180) * sphere_radius);
       y_values.push(Math.cos(lat * Math.PI / 180) * Math.sin(lon * Math.PI / 180) * sphere_radius);
       z_values.push(Math.sin(lat * Math.PI / 180) * sphere_radius);
+  }
+
+  function convertLatLngToXyz(coordinates_array, sphere_radius) {
+    // 重写的方法
+    var lng = coordinates_array[0];
+    var lat = coordinates_array[1];
+
+    const phi = (90 - lat) * Math.PI / 180,
+      theta = (180 - lng) * Math.PI / 180;
+
+    const x = sphere_radius * Math.sin(phi) * Math.cos(theta);
+    const y = sphere_radius * Math.cos(phi);
+    const z = sphere_radius * Math.sin(phi) * Math.sin(theta);
+
+    x_values.push(x);
+    y_values.push(y);
+    z_values.push(z);
   }
 
   function convertToPlaneCoords(coordinates_array, radius) {
