@@ -7,33 +7,13 @@
         class="globe"
         style="width: 1366px; height: 600px;"
       >
+        <cover-view
+          class="canvas_cover_view"
+        >
+          <cover-view class="">666</cover-view>
+          <plane ></plane>
+        </cover-view>
         <cover-view class="canvas_gradient">5555</cover-view>
-        <cover-view class="canvas_cover_abstract">
-            <cover-view>{{currentCity.country}}</cover-view>
-            <cover-view>=></cover-view>
-            <cover-view
-            >{{nextCity.country}}</cover-view>
-        </cover-view>
-        <cover-view class="canvas_cover_cityname">
-          <cover-view>{{currentCity.city_ascii}}</cover-view>
-          <cover-view>=></cover-view>
-          <cover-view
-            @click="e => changeAbstractVisibility()"
-          >{{nextCity.city_ascii}}</cover-view>
-        </cover-view>
-        <cover-view class="canvas_cover_plane">
-          <plane class="cover_plane"></plane>
-        </cover-view>
-        <cover-view class="canvas_cover_operation">
-          <fly-control-cross-t
-            v-show="crossTVisible"
-            @clickedOneDirection="e => clickedOneDirection(e)"
-          />
-          <fly-control-cross-x
-            v-show="crossXVisible"
-            @clickedOneDirection="e => clickedOneDirection(e)"
-          />
-        </cover-view>
       </canvas>
 	</view>
 </template>
@@ -48,29 +28,11 @@ import { drawThreeGeo } from '@/utils/threeGeoJSON';
 // import * as THREE from 'three';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import Plane from './plane.vue';
-import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
-import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
 // import * as THREE from '@/utils/three';
 
 export default {
   name: 'Earth',
   props: {
-    currentCity: {
-      type: Object,
-      default: {},
-    },
-    nextCity: {
-      type: Object,
-      default: {},
-    },
-    crossTVisible: {
-      type: Boolean,
-      default: true,
-    },
-    crossXVisible: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -81,14 +43,10 @@ export default {
       camera: null,
       earthRadius: 1000,
       cameraHeight: 400,
-      globalTHREE: null,
-      showingNextAbstract: true,
     }
   },
   components: {
     Plane,
-    FlyControlCrossT,
-    FlyControlCrossX,
   },
   mounted() {
     this.drawEarth();
@@ -118,11 +76,9 @@ export default {
             this.canvas.height = this.canvasHeight * dpr;
             // ctx.scale(dpr, dpr);
             const threeObj = createScopedThreejs(canvas);
-            this.globalTHREE = threeObj;
             this.renderEarth(threeObj);
         });
     },
-    // convertLatLngToXyz(lat, lng, radius) {
     convertLatLngToXyz(lat, lng, radius, THREE) {
       const phi = (90 - lat) * Math.PI / 180,
         theta = (180 - lng) * Math.PI / 180,
@@ -154,7 +110,7 @@ export default {
 
       return { lng: lngTarget, lat: latTarget };
     },
-    flyFromOneToAnother(lat1, lng1, lat2, lng2) {
+    flyFromOneToAnother(lat1, lng1, lat2, lng2, THREE) {
       const t = 1000;
       const f = 10;
       const delta_lat = (lat2 - lat1) / (t / f);
@@ -176,13 +132,13 @@ export default {
           currentCameraLatLng.lat,
           currentCameraLatLng.lng,
           this.earthRadius + this.cameraHeight,
-          this.globalTHREE,
+          THREE,
         );
         let currentLookAtXYZ = this.convertLatLngToXyz(
           currentLookAtLatLng.lat,
           currentLookAtLatLng.lng,
           this.earthRadius * 0.3 ,
-          this.globalTHREE,
+          THREE,
         );
         
         this.camera.up.set( 0, 1, 0 );
@@ -204,9 +160,9 @@ export default {
             clearInterval(clockk);
           }
           if (east) {
-            this.flyFromOneToAnother(20, 90, 40, 116)
+            this.flyFromOneToAnother(20, 90, 40, 116, THREE)
           } else {
-            this.flyFromOneToAnother(40, 116, 20, 90)
+            this.flyFromOneToAnother(40, 116, 20, 90, THREE)
           }
           east = !east
         }, 5000)
@@ -233,7 +189,7 @@ export default {
       this.camera.position = { ...currentCameraXYZ };
       this.camera.lookAt( new THREE.Vector3(0, 0, 0) );
 
-      // this.testFlyFunction(THREE);
+      this.testFlyFunction(THREE);
 
       //New Renderer
       const renderer = new THREE.WebGLRenderer();
@@ -300,13 +256,6 @@ export default {
       }
       render();
     },
-    clickedOneDirection(direction) {
-      console.log('emitted button again', direction)
-      this.$emit('clickedOneDirection', direction);
-    },
-    changeAbstractVisibility() {
-      this.showingNextAbstract = !this.showingNextAbstract;
-    },
   }
 }
 </script>
@@ -318,42 +267,13 @@ export default {
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
+
 }
-.canvas_cover_abstract {
+.canvas_cover_view {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 75vh;
-  width: 60vw;
   color: #fff;
-  display: flex;
-  justify-content: space-between;
-}
-.canvas_cover_cityname {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 70vh;
-  color: #fff;
-  width: 60vw;
-  display: flex;
-  justify-content: space-between;
-}
-.canvas_cover_plane {
-  position: fixed;
-  left: 50%;
-  bottom: 45vh;
-  transform: translateX(-50%);
-  color: #fff;
-}
-.canvas_cover_operation {
-  position: fixed;
-  left: 50%;
-  bottom: 10vh;
-  transform: translateX(-50%);
-  color: #fff;
-	width: 70vw;
-	height: 20vh;
 }
 .canvas_gradient {
   position: fixed;
@@ -362,7 +282,7 @@ export default {
   height: 50vh;
   left: 50%;
   transform: translateX(-50%);
-  // background: #3b6279;
+  background: #3b6279;
   // background: linear-gradient(0deg, #3b6279fa 0%, #3b6279fa 30%, #3b627900 100%);
 }
 </style>

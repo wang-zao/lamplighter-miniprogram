@@ -10,21 +10,21 @@
     >{{judgeCtrl.restTime}}</cover-view>
     <view class="content_panel ufo_pnnel">
 			<!-- <fly-ufo-showcase /> -->
-			<fly-ufo-responsive
+			<!-- <fly-ufo-responsive
         :currentCity="currentCity"
         :nextCity="nextCity"
         :judgeCtrl="judgeCtrl"
-      />
+      /> -->
     </view>
     <view class="content_panel operation_panel">
-      <fly-control-cross-t
+      <!-- <fly-control-cross-t
         v-show="anmtCtrl.crossTVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
       />
       <fly-control-cross-x
         v-show="anmtCtrl.crossXVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
-      />
+      /> -->
     </view>
     <view v-if="anmtCtrl.gameEndPageVisible" class="content_panel end_panel">
       <view class="end_panel_content">
@@ -36,7 +36,13 @@
     <start-page v-if="anmtCtrl.gameStartPageVisible" class="content_panel start_panel" />
     <earth
       class="content_panel earth_panel"
+      ref="flyingEarth"
       @renderCompleted="showAllCoverViews"
+      @clickedOneDirection="e => handleUserSelected(e)"
+      :currentCity="currentCity"
+      :nextCity="nextCity"
+      :crossTVisible="anmtCtrl.crossTVisible"
+      :crossXVisible="anmtCtrl.crossXVisible"
     />
   </view>
 </view>
@@ -151,6 +157,15 @@
         console.log('clicked button', direction)
         if (direction === this.judgeCtrl.correctDirection) {
           this.judgeCtrl.totalMiles += this.judgeCtrl.distance;
+          console.log('correct!, flyingEarth = ', this.$refs.flyingEarth)
+          console.log('correct!, current city = ', this.currentCity);
+          console.log('correct!, next city = ', this.nextCity);
+          this.$refs.flyingEarth.flyFromOneToAnother(
+            this.currentCity.lat,
+            this.currentCity.lng,
+            this.nextCity.lat,
+            this.nextCity.lng,
+          )
           this.cityQueuePopOne();
           this.calcAnswer();
         } else {
