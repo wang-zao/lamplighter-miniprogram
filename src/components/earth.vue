@@ -19,8 +19,13 @@
         </cover-view> -->
         <cover-view class="canvas_cover_cityname">
           <ticket
-            :currentCity="currentCity"
-            :nextCity="nextCity"
+            class="cover_ticke_left"
+            :cityInfo="currentCity"
+            @changeAbstractVisibility="e => changeAbstractVisibility()"
+          />
+          <ticket
+            class="cover_ticke_right"
+            :cityInfo="nextCity"
             @changeAbstractVisibility="e => changeAbstractVisibility()"
           />
           <!-- <cover-view>{{currentCity.city_ascii}}</cover-view>

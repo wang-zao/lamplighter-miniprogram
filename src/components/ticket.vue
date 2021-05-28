@@ -1,12 +1,7 @@
 <template>
 	<cover-view class="ticket_wrapper" >
-    <cover-view class="ticket">
-      <cover-view>{{currentCity.city_ascii}}</cover-view>
-      <cover-view>=></cover-view>
-      <cover-view
-      >{{nextCity.city_ascii}}</cover-view>
-	  </cover-view>
-	</cover-view>
+    <cover-view>{{cityInfo.city_ascii}}</cover-view>
+  </cover-view>
 </template>
 
 <script>
@@ -17,11 +12,7 @@
 	export default {
 		name: 'Ticket',
 		props: {
-      currentCity: {
-        type: Object,
-        default: {},
-      },
-      nextCity: {
+      cityInfo: {
         type: Object,
         default: {},
       },
@@ -42,5 +33,12 @@
 
 <style scoped lang="scss">
 
+.ticket_wrapper {
+  display: flex;
+  background: $general-bright-button-background;
+  border-radius: 1rem;
+  justify-content: space-between;
+  padding: 1rem;
+}
 
 </style>
