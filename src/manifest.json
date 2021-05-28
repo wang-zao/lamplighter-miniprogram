@@ -1,6 +1,6 @@
 {
     "name": "fly-north",
-    "appid": "",
+    "appid": "wx3863a10505055d58",
     "description": "",
     "versionName": "1.0.0",
     "versionCode": "100",
@@ -42,6 +42,7 @@
 
             }
         },
+        "offset": "none",
         "usingComponents":true
     },
     "quickapp": { /* 快应用特有相关 */
@@ -49,7 +50,7 @@
     },
     "mp-weixin": { /* 小程序特有相关 */
         "usingComponents":true,
-        "appid": "",
+        "appid": "wx3863a10505055d58",
         "setting" : {
         	"urlCheck" : true
         }

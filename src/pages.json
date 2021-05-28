@@ -1,16 +1,31 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"bounce": "none",
+				"navigationBarTitleText": "东南西北"
+			}
+		},
+		{
+			"path": "pages/select-world/select-world",
+			"style": {
+				"navigationBarTitleText": "选择世界"
+			}
+		},
+		{
+			"path": "pages/play-minute/play-minute",
+			"style": {
+				"navigationBarTitleText": "一分钟模式"
 			}
 		}
 	],
 	"globalStyle": {
+		"navigationStyle": "custom",
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"bounce": "none"
 	}
 }
