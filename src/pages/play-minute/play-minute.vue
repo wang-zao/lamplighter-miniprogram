@@ -1,13 +1,12 @@
 <template>
 <view class="play_minute_wrapper">
   <view class="play_minute_content">
-    <cover-view
-      v-if="anmtCtrl.showCoverViews"
-      class="content_panel mile_panel"
-    >{{judgeCtrl.totalMiles.toFixed(0)}}</cover-view>
-    <cover-view
+    <view
       class="content_panel info_panel"
-    >{{judgeCtrl.restTime}}</cover-view>
+    >
+      <view class="info_grade">{{judgeCtrl.totalMiles.toFixed(0)}}</view>
+      <view class="info_resttime">{{judgeCtrl.restTime}}</view>
+    </view>
     <view class="content_panel ufo_pnnel">
 			<!-- <fly-ufo-showcase /> -->
 			<!-- <fly-ufo-responsive
@@ -73,7 +72,7 @@
 					correctDirection: '',
 					distance: '',
           totalMiles: 0,
-          restTime: 60,
+          restTime: 20,
 					userSelect: '',
 					isCorrect: false,
           isUserSelected: false,
@@ -113,7 +112,7 @@
             this.judgeCtrl.restTime -= 1;
           } else if (this.judgeCtrl.restTime <= 0) {
             clearInterval(clock);
-            this.gameEnd();
+            // this.gameEnd();
           }
         }, 1000);
       },
@@ -154,9 +153,10 @@
 				});
       },
       handleUserSelected(direction) {
-        console.log('clicked button', direction)
+        // console.log('clicked button', direction)
         if (direction === this.judgeCtrl.correctDirection) {
-          this.judgeCtrl.totalMiles += this.judgeCtrl.distance;
+          this.judgeCtrl.totalMiles += this.judgeCtrl.restTime;
+          this.judgeCtrl.restTime = 20
           console.log('correct!, flyingEarth = ', this.$refs.flyingEarth)
           console.log('correct!, current city = ', this.currentCity);
           console.log('correct!, next city = ', this.nextCity);
@@ -196,18 +196,16 @@ $general-paddng: 1rem;
 
 .play_minute_content {
   .content_panel {
-    width: 100%;
     position: fixed;
     display: flex;
   }
-  .mile_panel {
-    color: #fff;
-    top: 5rem;
-    justify-content: left;
-  }
   .info_panel {
     top: 5rem;
-    justify-content: center;
+    left: 0;
+    right: 0;
+    padding: $general-paddng;
+    font-size: 2rem;
+    justify-content: space-between;
   }
   .ufo_pnnel {
     top: 4rem;
@@ -230,7 +228,7 @@ $general-paddng: 1rem;
     flex-direction: column;
     .end_panel_content {
       text-align: center;
-      color: #fff;
+      color: #000;
     }
   }
   .earth_panel {

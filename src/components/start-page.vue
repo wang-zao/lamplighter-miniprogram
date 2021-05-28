@@ -56,12 +56,12 @@
   justify-content: center;
   flex-direction: column;
   .start_count_down {
-    color: #fff;
+    color: #000;
     text-align: center;
     font-size: 2rem;
   }
   .start_reminder {
-    color: #fff;
+    color: #000;
     font-size: 0.5rem;
     margin-bottom: 5rem;
   }

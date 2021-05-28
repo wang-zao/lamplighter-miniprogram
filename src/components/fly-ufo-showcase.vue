@@ -220,7 +220,7 @@
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @import '../utils/customAnimate.wxss';
 
 .ufo_wrapper {
@@ -228,7 +228,7 @@
 }
 .dialog_wrap {
 	position: absolute;
-	background: #222222;
+	background: $general-bright-button-background;
 	padding: 0.8rem;
 	min-width: 4rem;
 	max-width: 4rem;

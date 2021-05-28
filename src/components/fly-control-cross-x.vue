@@ -69,7 +69,7 @@
 		width: 5rem;
 		height: 2rem;
 		border-radius: 1rem;
-		background: $dark-mode-btn;
+		background: $general-bright-button-background;
 		// margin: auto;
 		text-align: center;
 		line-height: 2rem;

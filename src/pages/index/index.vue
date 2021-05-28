@@ -103,7 +103,7 @@ btm_infos: 10%;
 	top: 1rem;
 	width: 100vw;
 	height: 80%;
-	background: #333333;
+	background: $dark-mode-bg;
 }
 
 .mid_buttons {
@@ -128,7 +128,7 @@ btm_infos: 10%;
 
 
 .button_general {
-	background: #111111;
+	background: $general-bright-button-background;
 	text-align: center;
 }
 

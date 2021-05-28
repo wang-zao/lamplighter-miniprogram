@@ -74,10 +74,10 @@
 	});
 </script>
 
-<style>
+<style scoped lang="scss">
 .page_wrapper {
   height: 100vh;
-	background: #464646;
+	background: $dark-mode-bg;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -112,7 +112,7 @@
   width: 20%;
 }
 .select_confirm_btn {
-	background: #333333;
+	background: $general-bright-button-background;
   text-align: center;
 	line-height: 40px;
 	line-height: 40px;

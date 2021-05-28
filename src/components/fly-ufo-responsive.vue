@@ -1,49 +1,49 @@
 <template>
-<cover-view class="ufo_wrapper" @click="hadleBackgroundClicked">
-	<cover-view class="ufo_wrapper_place_holder" >place holder</cover-view>
-	<cover-view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_right shake" @click.stop="{}">
-		<cover-view class="dialog_wrap dialog_right shake" :class="{
+<view class="ufo_wrapper" @click="hadleBackgroundClicked">
+	<view class="ufo_wrapper_place_holder" >place holder</view>
+	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_right shake" @click.stop="{}">
+		<view class="dialog_wrap dialog_right shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
 			dialog_pausing: anmtCtrl.isDialogPausing,
 			dialog_expanding: anmtCtrl.rightAbstract,
 			dialog_expanding_right: anmtCtrl.rightAbstract,
 		}" @click="handleRightClicked">
-			<cover-view v-if="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</cover-view>
-			<cover-view v-if="!this.anmtCtrl.rightAbstract" class="dialog_title">
-				<cover-view class="dialog_title_current dialog_title_right" :class="{
+			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_subtitle">飞往</view>
+			<view v-if="!this.anmtCtrl.rightAbstract" class="dialog_title">
+				<view class="dialog_title_current dialog_title_right" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{nextCity.city_ascii}}</cover-view>
-				<cover-view class="dialog_title_next dialog_title_right" :class="{
+				}">{{nextCity.city_ascii}}</view>
+				<view class="dialog_title_next dialog_title_right" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
-				}">{{nextCity.city_ascii}}</cover-view>
-			</cover-view>
-			<cover-view v-if="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</cover-view>
-		</cover-view>
+				}">{{nextCity.city_ascii}}</view>
+			</view>
+			<view v-if="this.anmtCtrl.rightAbstract" class="dialog_abstract">{{nextCity.abstract}}</view>
+		</view>
 
-	</cover-view>
-	<cover-view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_left shake" @click.stop="{}">
-		<cover-view class="dialog_wrap dialog_left  shake" :class="{
+	</view>
+	<view class="dialog_shake_outer_wrap dialog_shake_outer_wrap_left shake" @click.stop="{}">
+		<view class="dialog_wrap dialog_left  shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
 			dialog_pausing: anmtCtrl.isDialogPausing,
 			dialog_expanding: anmtCtrl.leftAbstract,
 			dialog_expanding_left: anmtCtrl.leftAbstract,
 		}" @click="handleLeftClicked">
-			<cover-view v-if="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</cover-view>
-			<cover-view v-if="!this.anmtCtrl.leftAbstract" class="dialog_title">
-				<cover-view class="dialog_title_current dialog_title_left" :class="{
+			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_subtitle">到达了</view>
+			<view v-if="!this.anmtCtrl.leftAbstract" class="dialog_title">
+				<view class="dialog_title_current dialog_title_left" :class="{
 					fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{currentCity.city_ascii}}</cover-view>
-				<cover-view class="dialog_title_next dialog_title_left" :class="{
+				}">{{currentCity.city_ascii}}</view>
+				<view class="dialog_title_next dialog_title_left" :class="{
 					fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
-				}">{{currentCity.city_ascii}}</cover-view>
-			</cover-view>
-			<cover-view v-if="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</cover-view>
-		</cover-view>
-	</cover-view>
+				}">{{currentCity.city_ascii}}</view>
+			</view>
+			<view v-if="this.anmtCtrl.leftAbstract" class="dialog_abstract">{{currentCity.abstract}}</view>
+		</view>
+	</view>
 	
 
-  <cover-view class="ufo_item">
-    <cover-view class="ufo_item_icon shake" :class="{
+  <view class="ufo_item">
+    <view class="ufo_item_icon shake" :class="{
 			dialog_shaking: anmtCtrl.isDialogShaking,
 			dialog_pausing: anmtCtrl.isDialogPausing,
 		}">
@@ -63,10 +63,10 @@
 					headNorthTail: anmtCtrl.headNorthTail,
 				}"
 			/>
-		</cover-view>
-  </cover-view>
-	<cover-view class="city_item">
-		<cover-view class="animated_city" :class="{
+		</view>
+  </view>
+	<view class="city_item">
+		<view class="animated_city" :class="{
 			fadeInRight: anmtCtrl.fadeInRight,
 			fadeOutRight: anmtCtrl.fadeOutRight,
 			fadeInLeft: anmtCtrl.fadeInLeft,
@@ -77,11 +77,11 @@
 			fadeOutUp: anmtCtrl.fadeOutUp,
 			hided: anmtCtrl.hideCity,
 		}">
-			<cover-view class="animated_city_icon">c</cover-view>
-			<cover-view class="animated_city_text">{{currentCity.city_ascii}}</cover-view>
-		</cover-view>
-	</cover-view>
-</cover-view>
+			<view class="animated_city_icon">c</view>
+			<view class="animated_city_text">{{currentCity.city_ascii}}</view>
+		</view>
+	</view>
+</view>
 </template>
 
 <script>

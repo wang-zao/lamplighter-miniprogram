@@ -7,19 +7,27 @@
         class="globe"
         style="width: 1366px; height: 600px;"
       >
-        <cover-view class="canvas_gradient">5555</cover-view>
-        <cover-view class="canvas_cover_abstract">
+        <cover-image
+          class="earth_shadow"
+          src="../static/earth_shadow.png"
+        />
+        <!-- <cover-view class="canvas_cover_abstract">
             <cover-view>{{currentCity.country}}</cover-view>
-            <cover-view>=></cover-view>
+            <cover-view></cover-view>
             <cover-view
             >{{nextCity.country}}</cover-view>
-        </cover-view>
+        </cover-view> -->
         <cover-view class="canvas_cover_cityname">
-          <cover-view>{{currentCity.city_ascii}}</cover-view>
+          <ticket
+            :currentCity="currentCity"
+            :nextCity="nextCity"
+            @changeAbstractVisibility="e => changeAbstractVisibility()"
+          />
+          <!-- <cover-view>{{currentCity.city_ascii}}</cover-view>
           <cover-view>=></cover-view>
           <cover-view
             @click="e => changeAbstractVisibility()"
-          >{{nextCity.city_ascii}}</cover-view>
+          >{{nextCity.city_ascii}}</cover-view> -->
         </cover-view>
         <cover-view class="canvas_cover_plane">
           <plane class="cover_plane"></plane>
@@ -43,14 +51,17 @@
  * @description 
  * @event {Function} click 
  */
-import { contry_json } from '@/utils/data';
+import { contry_json, ocean } from '@/utils/data';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 // import * as THREE from 'three';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import Plane from './plane.vue';
+import Ticket from './ticket.vue';
 import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
 import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
 // import * as THREE from '@/utils/three';
+
+// const earth_surface = require('../static/earthmap_color.jpeg');
 
 export default {
   name: 'Earth',
@@ -79,14 +90,18 @@ export default {
       canvasHeight: 600,
       showCoverViews: false,
       camera: null,
-      earthRadius: 1000,
+      earthRadius: 400,
       cameraHeight: 400,
       globalTHREE: null,
       showingNextAbstract: true,
+      earthColorLighter: '#51adcf',
+      earthColorDarker: '#0278ae',
+      earthColorBackground: '#dbf6e9',
     }
   },
   components: {
     Plane,
+    Ticket,
     FlyControlCrossT,
     FlyControlCrossX,
   },
@@ -171,7 +186,7 @@ export default {
         }
 
         let currentCameraLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, -20);
-        let currentLookAtLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, 70);
+        let currentLookAtLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, -60);
         let currentCameraXYZ = this.convertLatLngToXyz(
           currentCameraLatLng.lat,
           currentCameraLatLng.lng,
@@ -238,55 +253,29 @@ export default {
       //New Renderer
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(this.canvasWidth, this.canvasHeight);
-
-      const light = new THREE.HemisphereLight(0xbbe6ff, 0x072d43, 1);
+      const light = new THREE.HemisphereLight(this.earthColorLighter, this.earthColorDarker, 1);
       scene.add(light);
 
-      //Create a sphere to make visualization easier.
-      const geometry = new THREE.SphereGeometry(this.earthRadius, 32, 32);
+      // Create a sphere to make visualization easier.
+      const geometry = new THREE.SphereGeometry(this.earthRadius, 100, 100);
       const material = new THREE.MeshPhongMaterial({
-          transparent: false,
+          transparent: true,
           opacity: 0.9,
       });
       const sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
 
-      const coords = [
-          //[lat,lng,magitude],
-          [40, 116, 10],
-      ];
-
-      for (let i = 0; i < coords.length; i++) {
-
-          const cube_geometry = new THREE.CubeGeometry(10, 10, coords[i][2]);
-          const cube_material = new THREE.MeshPhongMaterial({
-            color: 0xCBE86B
-          });
-          const cube_marker = new THREE.Mesh(cube_geometry, cube_material);
-
-          console.log('cube_marker', cube_marker);
-          cube_marker.castShadow = true;
-
-          const new_position = this.convertLatLngToXyz(coords[i][0], coords[i][1], this.earthRadius, THREE);
-          // console.log('new_position', new_position)
-          cube_marker.position.x = new_position.x;
-          cube_marker.position.y = new_position.y;
-          cube_marker.position.z = new_position.z;
-          cube_marker.rotation.z = 45;
-          cube_marker.lookAt(sphere.position);
-          cube_marker.translateZ(-(coords[i][2] / 2) + 1);
-
-          sphere.add(cube_marker);
-
-      }
+      // await this.drawEarthSurface(THREE, scene);
+      // this.drawSpecificPoints(THREE, sphere);
+      
 
       // Draw the GeoJSON
-      const test_json = contry_json;
+      const test_json = ocean;
       drawThreeGeo(
         test_json,
         this.earthRadius,
         'sphere',
-        { color: '#4b5aa3' },
+        { color: '#4b5aa3', fill: '#4b5aa3' },
         scene,
         THREE,
       );
@@ -295,10 +284,45 @@ export default {
       const render = () => {
           // controls.update();
           this.canvas.requestAnimationFrame(render);
-          renderer.setClearColor(0x333333, 1);
+          renderer.setClearColor(this.earthColorBackground, 1);
           renderer.render(scene, this.camera);
       }
       render();
+    },
+    drawSpecificPoints(THREE, sphere) {
+      const coords = [
+          //[lat,lng,magitude],
+          [40, 116, 10],
+      ];
+      for (let i = 0; i < coords.length; i++) {
+          const cube_geometry = new THREE.CubeGeometry(10, 10, coords[i][2]);
+          const cube_material = new THREE.MeshPhongMaterial({
+            color: 0xCBE86B
+          });
+          const cube_marker = new THREE.Mesh(cube_geometry, cube_material);
+          cube_marker.castShadow = true;
+          const new_position = this.convertLatLngToXyz(coords[i][0], coords[i][1], this.earthRadius, THREE);
+          cube_marker.position.x = new_position.x;
+          cube_marker.position.y = new_position.y;
+          cube_marker.position.z = new_position.z;
+          cube_marker.rotation.z = 45;
+          cube_marker.lookAt(sphere.position);
+          cube_marker.translateZ(-(coords[i][2] / 2) + 1);
+          sphere.add(cube_marker);
+      }
+    },
+    async drawEarthSurface(THREE, scene ) {
+      const geometry = new THREE.SphereGeometry(this.earthRadius, 32, 32);
+      // let texture = await new THREE.TextureLoader().load('../static/earth_colorful.jpeg');
+      // let texture = new THREE.TextureLoader().load('src/static/earthmap_color.jpeg');
+
+      texture.minFilter = THREE.LinearFilter;
+      const material  = new THREE.MeshBasicMaterial({
+        map: texture,
+      });
+      const earthMesh = new THREE.Mesh(geometry, material);
+      scene.add(earthMesh);
+
     },
     clickedOneDirection(direction) {
       console.log('emitted button again', direction)
@@ -325,7 +349,7 @@ export default {
   transform: translateX(-50%);
   bottom: 75vh;
   width: 60vw;
-  color: #fff;
+  color: #000;
   display: flex;
   justify-content: space-between;
 }
@@ -334,7 +358,7 @@ export default {
   left: 50%;
   transform: translateX(-50%);
   bottom: 70vh;
-  color: #fff;
+  color: #000;
   width: 60vw;
   display: flex;
   justify-content: space-between;
@@ -344,18 +368,18 @@ export default {
   left: 50%;
   bottom: 45vh;
   transform: translateX(-50%);
-  color: #fff;
+  color: #000;
 }
 .canvas_cover_operation {
   position: fixed;
   left: 50%;
   bottom: 10vh;
   transform: translateX(-50%);
-  color: #fff;
+  color: #000;
 	width: 70vw;
 	height: 20vh;
 }
-.canvas_gradient {
+.earth_shadow {
   position: fixed;
   bottom: 0;
   width: 100vw;
