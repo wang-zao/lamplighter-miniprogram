@@ -38,10 +38,10 @@
       ref="flyingEarth"
       @renderCompleted="showAllCoverViews"
       @clickedOneDirection="e => handleUserSelected(e)"
+      @changeAbstractVisibility="(t, a) => changeAbstractVisibility(t, a)"
       :currentCity="currentCity"
       :nextCity="nextCity"
-      :crossTVisible="anmtCtrl.crossTVisible"
-      :crossXVisible="anmtCtrl.crossXVisible"
+      :anmtCtrl="anmtCtrl"
     />
   </view>
 </view>
@@ -67,6 +67,13 @@
           gameEndPageVisible: false,
           gameStartPageVisible: true,
           showCoverViews: false,
+          answerCorrectAnimationStep1: false,
+          answerCorrectAnimationStep2: false,
+          answerWrongAnimation: false,
+          isPlanePausing: true,
+          isPlaneShaking: false,
+          showingAbstractModal: false,
+          abstractContent: '',
         },
 				judgeCtrl: {
 					correctDirection: '',
@@ -89,8 +96,14 @@
         this.showStartPage();
         // this.startTimeLoop();
         await this.getCityData();
-        this.cityQueuePopOne();
-        this.cityQueuePopOne();
+        this.cityQueuePopOne(true);
+        this.cityQueuePopOne(true);
+        this.$refs.flyingEarth.flyFromOneToAnother(
+          0,
+          0,
+          this.currentCity.lat,
+          this.currentCity.lng,
+        )
         this.calcAnswer();
         console.log('init fiinised')
       },
@@ -101,7 +114,7 @@
         setTimeout(() => {
           this.anmtCtrl.gameStartPageVisible = false;
           this.startTimeLoop();
-        }, 1000);
+        }, 3000);
       },
       gameEnd() {
         this.anmtCtrl.gameEndPageVisible = true;
@@ -134,9 +147,23 @@
           this.anmtCtrl.crossXVisible = true;
         }
       },
-      cityQueuePopOne() {
-        this.currentCity = this.nextCity;
-        this.nextCity = { ...this.cityList.pop(0) };
+      cityQueuePopOne(withoutAnimation = true) {
+        if (withoutAnimation) {
+          this.currentCity = this.nextCity;
+          this.nextCity = { ...this.cityList.pop(0) };
+          return;
+        }
+        this.anmtCtrl.answerCorrectAnimationStep1 = true;
+        setTimeout(() => {
+          this.anmtCtrl.answerCorrectAnimationStep1 = false;
+          this.anmtCtrl.answerCorrectAnimationStep2 = true;
+          this.currentCity = this.nextCity;
+          this.nextCity = { ...this.cityList.pop(0) };
+        }, 600);
+        setTimeout(() => {
+          this.anmtCtrl.answerCorrectAnimationStep2 = false;
+        }, 1200);
+        
       },
       cityQueueBrokeOne() {
         this.nextCity = { ...this.cityList.pop(0) };
@@ -154,25 +181,28 @@
       },
       handleUserSelected(direction) {
         // console.log('clicked button', direction)
+        this.anmtCtrl.showingAbstractModal = false;
         if (direction === this.judgeCtrl.correctDirection) {
           this.judgeCtrl.totalMiles += this.judgeCtrl.restTime;
           this.judgeCtrl.restTime = 20
-          console.log('correct!, flyingEarth = ', this.$refs.flyingEarth)
-          console.log('correct!, current city = ', this.currentCity);
-          console.log('correct!, next city = ', this.nextCity);
           this.$refs.flyingEarth.flyFromOneToAnother(
             this.currentCity.lat,
             this.currentCity.lng,
             this.nextCity.lat,
             this.nextCity.lng,
           )
-          this.cityQueuePopOne();
+          this.anmtCtrl.answerCorrectAnimation = true;
+          this.cityQueuePopOne(false);
           this.calcAnswer();
         } else {
           this.cityQueueBrokeOne();
           this.calcAnswer();
         }
-      }
+      },
+      changeAbstractVisibility(target, abstract) {
+        this.anmtCtrl.showingAbstractModal = target;
+        this.anmtCtrl.abstractContent = abstract;
+      },
 		},
 		components: {
 			FlyUfoResponsive,

@@ -7,26 +7,40 @@
         class="globe"
         style="width: 1366px; height: 600px;"
       >
-        <cover-image
+        <!-- <cover-image
           class="earth_shadow"
           src="../static/earth_shadow.png"
-        />
+        /> -->
         <!-- <cover-view class="canvas_cover_abstract">
             <cover-view>{{currentCity.country}}</cover-view>
             <cover-view></cover-view>
             <cover-view
             >{{nextCity.country}}</cover-view>
         </cover-view> -->
+        <start-page v-if="anmtCtrl.gameStartPageVisible" class="canvas_cover_start_panel" />
+          <!-- v-show="!anmtCtrl.gameStartPageVisible && showingAbstractModal"  -->
+        <!-- v-show="showingAbstractModalComputed" -->
         <cover-view class="canvas_cover_cityname">
           <ticket
-            class="cover_ticke_left"
+            v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
+            class="cover_ticket cover_ticke_left"
+            :class="{
+              fadeOutLeft: anmtCtrl.answerCorrectAnimationStep1,
+            }"
             :cityInfo="currentCity"
-            @changeAbstractVisibility="e => changeAbstractVisibility()"
+            reminder="当前在"
+            @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
           />
           <ticket
-            class="cover_ticke_right"
+            v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
+            class="cover_ticket cover_ticke_right"
+            :class="{
+              moveLeftTemperorally: anmtCtrl.answerCorrectAnimationStep1,
+              fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
+            }"
             :cityInfo="nextCity"
-            @changeAbstractVisibility="e => changeAbstractVisibility()"
+            reminder="下一站"
+            @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
           />
           <!-- <cover-view>{{currentCity.city_ascii}}</cover-view>
           <cover-view>=></cover-view>
@@ -34,19 +48,35 @@
             @click="e => changeAbstractVisibility()"
           >{{nextCity.city_ascii}}</cover-view> -->
         </cover-view>
-        <cover-view class="canvas_cover_plane">
-          <plane class="cover_plane"></plane>
+        <cover-view class="canvas_cover_plane"
+          v-if="!anmtCtrl.gameStartPageVisible"
+        >
+          <plane class="cover_plane shake" 
+            :class="{
+              plane_pausing: anmtCtrl.isPlanePausing,
+              plane_shaking: anmtCtrl.isPlaneShaking,
+            }"
+          />
         </cover-view>
-        <cover-view class="canvas_cover_operation">
+        <cover-view class="canvas_cover_operation"
+          v-if="!anmtCtrl.gameStartPageVisible"
+        >
           <fly-control-cross-t
-            v-show="crossTVisible"
+            v-show="anmtCtrl.crossTVisible"
             @clickedOneDirection="e => clickedOneDirection(e)"
           />
           <fly-control-cross-x
-            v-show="crossXVisible"
+            v-show="anmtCtrl.crossXVisible"
             @clickedOneDirection="e => clickedOneDirection(e)"
           />
         </cover-view>
+        <abstract-modal
+          :visibility="anmtCtrl.showingAbstractModal"
+          :abstract="anmtCtrl.abstractContent"
+          class="canvas_cover_abstract_panel"
+          @click="e => changeAbstractVisibility(currentCity, false)"
+          @changeAbstractVisibility="e => changeAbstractVisibility(currentCity, false)"
+        >2222222</abstract-modal>
       </canvas>
 	</view>
 </template>
@@ -64,6 +94,8 @@ import Plane from './plane.vue';
 import Ticket from './ticket.vue';
 import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
 import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
+import StartPage from '@/components/start-page.vue';
+import AbstractModal from '@/components/abstract-modal.vue';
 // import * as THREE from '@/utils/three';
 
 // const earth_surface = require('../static/earthmap_color.jpeg');
@@ -79,13 +111,9 @@ export default {
       type: Object,
       default: {},
     },
-    crossTVisible: {
-      type: Boolean,
-      default: true,
-    },
-    crossXVisible: {
-      type: Boolean,
-      default: false,
+    anmtCtrl: {
+      type: Object,
+      default: {},
     },
   },
   data() {
@@ -98,7 +126,7 @@ export default {
       earthRadius: 400,
       cameraHeight: 400,
       globalTHREE: null,
-      showingNextAbstract: true,
+      // showingAbstractModal: false,
       earthColorLighter: '#51adcf',
       earthColorDarker: '#0278ae',
       earthColorBackground: '#dbf6e9',
@@ -107,6 +135,8 @@ export default {
   components: {
     Plane,
     Ticket,
+    StartPage,
+    AbstractModal,
     FlyControlCrossT,
     FlyControlCrossX,
   },
@@ -117,6 +147,14 @@ export default {
     canvasStyle() {
       console.log('canvasStyle', `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`)
       return `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`;
+    },
+    showingAbstractModalComputed() {
+      // return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
+      console.log('this.anmtCtrl.showingAbstractModal', this.anmtCtrl.showingAbstractModal)
+      console.log('!this.anmtCtrl.gameStartPageVisible', !this.anmtCtrl.gameStartPageVisible)
+      console.log('this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible', this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible)
+      return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
+      // return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
     },
   },
   methods: {
@@ -185,8 +223,13 @@ export default {
       let currentGroundLng = lng1;
       let count = 0;
 
+
+      this.anmtCtrl.isPlanePausing = false;
+      this.anmtCtrl.isPlaneShaking = true;
       const clock = setInterval(() => {
         if (count === 100) {
+          this.anmtCtrl.isPlanePausing = true;
+          this.anmtCtrl.isPlaneShaking = false;
           clearInterval(clock);
         }
 
@@ -280,7 +323,7 @@ export default {
         test_json,
         this.earthRadius,
         'sphere',
-        { color: '#4b5aa3', fill: '#4b5aa3' },
+        { color: '#4b5aa3' },
         scene,
         THREE,
       );
@@ -333,14 +376,16 @@ export default {
       console.log('emitted button again', direction)
       this.$emit('clickedOneDirection', direction);
     },
-    changeAbstractVisibility() {
-      this.showingNextAbstract = !this.showingNextAbstract;
+    changeAbstractVisibility(city, target) {
+      // this.abstractContent = city.abstract;
+      this.$emit('changeAbstractVisibility', target, city.abstract)
     },
   }
 }
 </script>
 
 <style scoped lang="scss">
+@import '../utils/customAnimate.wxss';
 
 .globe {
   position: fixed;
@@ -364,9 +409,14 @@ export default {
   transform: translateX(-50%);
   bottom: 70vh;
   color: #000;
-  width: 60vw;
+  width: 90vw;
+  padding: 0 10vw;
   display: flex;
   justify-content: space-between;
+  .cover_ticket {
+  animation-duration: .8s;
+
+  }
 }
 .canvas_cover_plane {
   position: fixed;
@@ -374,6 +424,16 @@ export default {
   bottom: 45vh;
   transform: translateX(-50%);
   color: #000;
+  .cover_plane {
+    animation-iteration-count: infinite;
+    animation-duration: .5s;
+  }
+	.plane_shaking {
+		animation-play-state: running;
+	}
+	.plane_pausing {
+		animation-play-state: paused;
+	}
 }
 .canvas_cover_operation {
   position: fixed;
@@ -383,6 +443,23 @@ export default {
   color: #000;
 	width: 70vw;
 	height: 20vh;
+}
+.canvas_cover_start_panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+.canvas_cover_abstract_panel {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  bottom: 60vh;
+  width: 90vw;
+  border-radius: 2rem;
+  background: $dark-mode-mask;
+  // background: yellow;
 }
 .earth_shadow {
   position: fixed;

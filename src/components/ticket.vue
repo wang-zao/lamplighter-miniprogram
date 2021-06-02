@@ -1,6 +1,8 @@
-<template>
-	<cover-view class="ticket_wrapper" >
-    <cover-view>{{cityInfo.city_ascii}}</cover-view>
+;'
+?'<template>
+	<cover-view class="ticket_wrapper" @click="changeAbstractVisibility">
+    <cover-view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</cover-view>
+    <cover-view class="ticket_placename" @click="changeAbstractVisibility">{{cityInfo.city_ascii}}</cover-view>
   </cover-view>
 </template>
 
@@ -16,6 +18,10 @@
         type: Object,
         default: {},
       },
+      reminder: {
+        type: String,
+        default: '',
+      },
 		},
 		data() {
 			return {
@@ -24,8 +30,8 @@
 		created() {
 		},
 		methods: {
-			onClick(direction) {
-				// this.$emit('clickedOneDirection', direction)
+			changeAbstractVisibility() {
+				this.$emit('changeAbstractVisibility', this.cityInfo)
 			}
 		}
 	}
@@ -34,11 +40,16 @@
 <style scoped lang="scss">
 
 .ticket_wrapper {
-  display: flex;
   background: $general-bright-button-background;
+  background: $general-bright-button-blue;
   border-radius: 1rem;
-  justify-content: space-between;
   padding: 1rem;
+  .ticket_reminder {
+    font-size: 1rem;
+  }
+  .ticket_placename {
+    font-size: 1.4rem;
+  }
 }
 
 </style>

@@ -40,12 +40,13 @@
 	}
 </script>
 
-<style scoped>
+
+<style scoped lang="scss">
 .world_item_wrapper {
   width: 40vw;
   height: 40vw;
   margin: 2.5vw;
-  background: #666666;
+  background: $general-bright-button-blue;
   border-radius: 15px;
   display: inline-block;
   text-align: center;

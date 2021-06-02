@@ -1,9 +1,9 @@
 <template>
-	<view class="start_wrapper" >
-		<view class="start_reminder">连续飞跃正确，可以获得双倍里程哦</view>
-		<view v-if="showingNumbers" class="start_count_down">{{countDownTime}}</view>
-		<view v-else class="start_count_down">起飞！</view>
-	</view>
+	<cover-view class="start_wrapper" >
+		<cover-view class="start_reminder">连续飞跃正确，可以获得双倍里程哦</cover-view>
+		<cover-view v-if="showingNumbers" class="start_count_down">{{countDownTime}}</cover-view>
+		<cover-view v-else class="start_count_down">起飞！</cover-view>
+	</cover-view>
 </template>
 
 <script>
