@@ -5,9 +5,10 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
-      screenWidth: 414,
-      screenHeight: 896,
-      globalCloudEnv: '',
+        screenWidth: 414,
+        screenHeight: 896,
+        globalCloudEnv: '',
+        selectedGameId: '',
     },
     mutations: {
         add(state) {
@@ -16,6 +17,9 @@ const store = new Vuex.Store({
         },
         updateEnv(state, env) {
             state.globalCloudEnv = env;
+        },
+        updateSelectedGameId(state, id) {
+            state.selectedGameId = id;
         },
     }
 })

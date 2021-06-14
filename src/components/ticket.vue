@@ -2,7 +2,7 @@
 ?'<template>
 	<cover-view class="ticket_wrapper" @click="changeAbstractVisibility">
     <cover-view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</cover-view>
-    <cover-view class="ticket_placename" @click="changeAbstractVisibility">{{cityInfo.city_ascii}}</cover-view>
+    <cover-view class="ticket_placename" @click="changeAbstractVisibility">{{cityInfo.point_name}}</cover-view>
   </cover-view>
 </template>
 

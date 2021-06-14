@@ -8,7 +8,6 @@
       <view class="info_resttime">{{judgeCtrl.restTime}}</view>
     </view>
     <view class="content_panel ufo_pnnel">
-			<!-- <fly-ufo-showcase /> -->
 			<!-- <fly-ufo-responsive
         :currentCity="currentCity"
         :nextCity="nextCity"
@@ -49,6 +48,8 @@
 
 <script>
 	import Vue from 'vue';
+  import store from '@/store/index.js'    
+  import { GameModal } from '../../api/index';
   import FlyUfoResponsive from '@/components/fly-ufo-responsive.vue';
   import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
   import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
@@ -102,13 +103,29 @@
           0,
           0,
           this.currentCity.lat,
-          this.currentCity.lng,
+          this.currentCity.lon,
         )
         this.calcAnswer();
         console.log('init fiinised')
       },
-      getCityData() {
-        this.cityList = falseCityData;
+      async getCityData() {
+        try {
+          const gameId = store.state.selectedGameId;
+          const { list } = await GameModal.getGameQuestions(gameId);
+          console.log('getGameQuestionsgetGameQuestions', list)
+          list.forEach(i => {
+            this.cityList.push(i);
+          });
+          //  = list;
+        } catch (e) {
+          
+        }
+        // this.cityList = falseCityData;
+      },
+      checkRestCityDataCapacity() {
+        if (this.cityList && this.cityList.length <= 5) {
+          this.getCityData();
+        }
       },
       showStartPage() {
         setTimeout(() => {
@@ -132,8 +149,8 @@
       calcAnswer() {
         const c = this.currentCity;
         const n = this.nextCity;
-        this.judgeCtrl.distance = calc_shortest_dis(c.lng, c.lat, n.lng, n.lat);
-        this.judgeCtrl.correctDirection = calc_next_direction(c.lng, c.lat, n.lng, n.lat);
+        this.judgeCtrl.distance = calc_shortest_dis(c.lon, c.lat, n.lon, n.lat);
+        this.judgeCtrl.correctDirection = calc_next_direction(c.lon, c.lat, n.lon, n.lat);
         this.allowUserInput();
       },
       allowUserInput() {
@@ -187,13 +204,14 @@
           this.judgeCtrl.restTime = 20
           this.$refs.flyingEarth.flyFromOneToAnother(
             this.currentCity.lat,
-            this.currentCity.lng,
+            this.currentCity.lon,
             this.nextCity.lat,
-            this.nextCity.lng,
+            this.nextCity.lon,
           )
           this.anmtCtrl.answerCorrectAnimation = true;
           this.cityQueuePopOne(false);
           this.calcAnswer();
+          this.checkRestCityDataCapacity();
         } else {
           this.cityQueueBrokeOne();
           this.calcAnswer();

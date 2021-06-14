@@ -44,6 +44,7 @@
 <script lang="ts">
   /// <reference path="../../api/index.d.ts" />
 	import Vue from 'vue';
+  import store from '@/store/index.js'    
   import WorldItem from './components/world-item.vue';
   import { ThemeModal } from '../../api/index';
 	export default Vue.extend({
@@ -53,7 +54,7 @@
 				currentWorld: '世界城市',
 				myTotalScore: 23,
         themes_list: [],
-        selectedGameId: 'None',
+        selectedGameId: 'game_001',
 			}
 		},
 		onLoad() {
@@ -66,13 +67,13 @@
 				});
       },
 			startPlayingGeneral() {
+        store.commit('updateSelectedGameId', this.selectedGameId);
 				uni.navigateTo({
 					url: '/pages/play-minute/play-minute'
 				})
 			},
       async getAllThemes() {
         const { data } = await ThemeModal.getAllThemes();
-        console.log('getAllThemes', data);
         this.alignGameWithTheme(data as GameInfoItem[]);
       },
       alignGameWithTheme(data: GameInfoItem[]) {
