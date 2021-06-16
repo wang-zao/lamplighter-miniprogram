@@ -130,3 +130,45 @@ export const calc_next_direction = (x1, y1, x2, y2) => {
       return 'north';
   }
 };
+
+export const getPenaltyTimeWhenWrong = (userAnswerTime) => {
+  if (userAnswerTime && !isNaN(userAnswerTime)) {
+    switch (true) {
+      case 0 <= userAnswerTime && userAnswerTime < 1:
+        return 8;
+      case 1 <= userAnswerTime && userAnswerTime < 2:
+        return 4;
+      case 2 <= userAnswerTime && userAnswerTime < 3:
+        return 2;
+      case 3 <= userAnswerTime && userAnswerTime < 4:
+        return 1;
+      case 4 <= userAnswerTime:
+        return 0;
+      default:
+        return 0;
+    }
+  }
+  return 0;
+}
+
+export const getScoreWhenCorrect = (userAnswerTime) => {
+  if (userAnswerTime && !isNaN(userAnswerTime)) {
+    switch (true) {
+      case 0 <= userAnswerTime && userAnswerTime < 1:
+        return 15;
+      case 1 <= userAnswerTime && userAnswerTime < 2:
+        return 14;
+      case 2 <= userAnswerTime && userAnswerTime < 3:
+        return 13;
+      case 3 <= userAnswerTime && userAnswerTime < 4:
+        return 12;
+      case 4 <= userAnswerTime && userAnswerTime < 5:
+        return 11;
+      case 5 <= userAnswerTime:
+        return 10;
+      default:
+        return 0;
+    }
+  }
+  return 0;
+}

@@ -56,7 +56,12 @@
   import StartPage from '@/components/start-page.vue';
   import Earth from '@/components/earth.vue';
 	import { falseCityData } from '@/utils/data';
-	import { calc_shortest_dis, calc_next_direction } from '@/utils/common';
+	import {
+    calc_shortest_dis,
+    calc_next_direction,
+    getPenaltyTimeWhenWrong,
+    getScoreWhenCorrect,
+  } from '@/utils/common';
 	export default Vue.extend({
 		data() {
 			return {
@@ -80,7 +85,8 @@
 					correctDirection: '',
 					distance: '',
           totalMiles: 0,
-          restTime: 20,
+          restTime: 60,
+          startAnswerCurQuestionTime: 60,
 					userSelect: '',
 					isCorrect: false,
           isUserSelected: false,
@@ -142,7 +148,7 @@
             this.judgeCtrl.restTime -= 1;
           } else if (this.judgeCtrl.restTime <= 0) {
             clearInterval(clock);
-            // this.gameEnd();
+            this.gameEnd();
           }
         }, 1000);
       },
@@ -198,10 +204,10 @@
       },
       handleUserSelected(direction) {
         // console.log('clicked button', direction)
+        const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
         this.anmtCtrl.showingAbstractModal = false;
         if (direction === this.judgeCtrl.correctDirection) {
-          this.judgeCtrl.totalMiles += this.judgeCtrl.restTime;
-          this.judgeCtrl.restTime = 20
+          this.judgeCtrl.totalMiles += getScoreWhenCorrect(userAnswerTime);
           this.$refs.flyingEarth.flyFromOneToAnother(
             this.currentCity.lat,
             this.currentCity.lon,
@@ -213,9 +219,12 @@
           this.calcAnswer();
           this.checkRestCityDataCapacity();
         } else {
+          this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
           this.cityQueueBrokeOne();
           this.calcAnswer();
         }
+        // 重设开始答题时间，这个还需要调整，引入switch_time之后
+        this.judgeCtrl.startAnswerCurQuestionTime = this.judgeCtrl.restTime;
       },
       changeAbstractVisibility(target, abstract) {
         this.anmtCtrl.showingAbstractModal = target;
@@ -267,7 +276,7 @@ $general-paddng: 1rem;
   .end_panel {
     top: 0;
     left: 0;
-    background: $dark-mode-mask;
+    background: $uni-bg-color-mask;
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -276,7 +285,8 @@ $general-paddng: 1rem;
     flex-direction: column;
     .end_panel_content {
       text-align: center;
-      color: #000;
+      color: #fff;
+      margin-bottom: 60vh;
     }
   }
   .earth_panel {
