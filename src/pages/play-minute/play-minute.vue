@@ -4,17 +4,26 @@
     <view
       class="content_panel info_panel"
     >
-      <view class="info_grade">{{judgeCtrl.totalMiles.toFixed(0)}}</view>
-      <view class="info_resttime">{{judgeCtrl.restTime}}</view>
-    </view>
-    <view class="content_panel ufo_pnnel">
-			<!-- <fly-ufo-responsive
+      <info-panel
+        :anmtCtrl="anmtCtrl"
+        :judgeCtrl="judgeCtrl"
         :currentCity="currentCity"
         :nextCity="nextCity"
-        :judgeCtrl="judgeCtrl"
-      /> -->
+      />
     </view>
-    <view class="content_panel operation_panel">
+    <earth
+      class="content_panel earth_panel"
+      ref="flyingEarth"
+      @renderCompleted="showAllCoverViews"
+      @changeAbstractVisibility="(t, a) => changeAbstractVisibility(t, a)"
+      :currentCity="currentCity"
+      :nextCity="nextCity"
+      :anmtCtrl="anmtCtrl"
+    />
+    <view
+      class="content_panel operation_panel"
+    >
+      <!-- v-if="!anmtCtrl.gameStartPageVisible" -->
       <!-- <fly-control-cross-t
         v-show="anmtCtrl.crossTVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
@@ -23,25 +32,20 @@
         v-show="anmtCtrl.crossXVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
       /> -->
+      <operation-panel
+        :anmtCtrl="anmtCtrl"
+        @clickedOneDirection="e => handleUserSelected(e)"
+      />
     </view>
-    <view v-if="anmtCtrl.gameEndPageVisible" class="content_panel end_panel">
+    <!-- <view v-if="anmtCtrl.gameEndPageVisible" class="content_panel end_panel">
       <view class="end_panel_content">
         <view>Game Over</view>
         <view>{{judgeCtrl.totalMiles.toFixed(0)}} km</view>
         <view @click="backToHome">回到首页</view>
       </view>
-    </view>
-    <start-page v-if="anmtCtrl.gameStartPageVisible" class="content_panel start_panel" />
-    <earth
-      class="content_panel earth_panel"
-      ref="flyingEarth"
-      @renderCompleted="showAllCoverViews"
-      @clickedOneDirection="e => handleUserSelected(e)"
-      @changeAbstractVisibility="(t, a) => changeAbstractVisibility(t, a)"
-      :currentCity="currentCity"
-      :nextCity="nextCity"
-      :anmtCtrl="anmtCtrl"
-    />
+    </view> -->
+    <!-- <start-page v-if="anmtCtrl.gameStartPageVisible" class="content_panel start_panel" /> -->
+    
   </view>
 </view>
 </template>
@@ -50,9 +54,11 @@
 	import Vue from 'vue';
   import store from '@/store/index.js'    
   import { GameModal } from '../../api/index';
-  import FlyUfoResponsive from '@/components/fly-ufo-responsive.vue';
-  import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
-  import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
+  import InfoPanel from './components/info-panel.vue';
+  import OperationPanel from './components/operation-panel.vue';
+  // import FlyUfoResponsive from '@/components/fly-ufo-responsive.vue';
+  // import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
+  // import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
   import StartPage from '@/components/start-page.vue';
   import Earth from '@/components/earth.vue';
 	import { falseCityData } from '@/utils/data';
@@ -63,6 +69,15 @@
     getScoreWhenCorrect,
   } from '@/utils/common';
 	export default Vue.extend({
+		components: {
+			// FlyUfoResponsive,
+			// FlyControlCrossT,
+			// FlyControlCrossX,
+			StartPage,
+			InfoPanel,
+			OperationPanel,
+			Earth,
+		},
 		data() {
 			return {
 				currentCity: {},
@@ -231,19 +246,15 @@
         this.anmtCtrl.abstractContent = abstract;
       },
 		},
-		components: {
-			FlyUfoResponsive,
-			FlyControlCrossT,
-			FlyControlCrossX,
-			StartPage,
-			Earth,
-		},
 	});
 </script>
 
 <style scoped lang="scss">
 
 $general-paddng: 1rem;
+$section-1-info-height: 40vh;
+$section-2-earth-height: 30vh;
+$section-3-operation-height: 30vh;
 
 .play_minute_wrapper {
 	background: $dark-mode-bg;
@@ -252,47 +263,50 @@ $general-paddng: 1rem;
 }
 
 .play_minute_content {
-  .content_panel {
-    position: fixed;
-    display: flex;
-  }
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  // .content_panel {
+    // position: fixed;
+    // display: flex;
+  // }
   .info_panel {
-    top: 5rem;
-    left: 0;
-    right: 0;
+    // top: 5rem;
+    // left: 0;
+    // right: 0;
+    height: $section-1-info-height;
     padding: $general-paddng;
     font-size: 2rem;
     justify-content: space-between;
-  }
-  .ufo_pnnel {
-    top: 4rem;
-    justify-content: center;
-    align-items: center;
-  }
-  .operation_panel {
-    bottom: 0;
-    justify-content: center;
-  }
-  .end_panel {
-    top: 0;
-    left: 0;
-    background: $uni-bg-color-mask;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    .end_panel_content {
-      text-align: center;
-      color: #fff;
-      margin-bottom: 60vh;
-    }
+    // background: blue;
   }
   .earth_panel {
-    top: 0;
-    left: 0;
+    height: $section-2-earth-height;
+    // background: yellowgreen;
+    // top: 0;
+    // left: 0;
   }
+  .operation_panel {
+    height: $section-3-operation-height;
+    // background: green;
+  }
+  // .end_panel {
+  //   top: 0;
+  //   left: 0;
+  //   background: $uni-bg-color-mask;
+  //   width: 100vw;
+  //   height: 100vh;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   flex-direction: column;
+  //   .end_panel_content {
+  //     text-align: center;
+  //     color: #fff;
+  //     margin-bottom: 60vh;
+  //   }
+  // }
   .test_nothing {
     color: #bbe6ff;
     color: #072d43;

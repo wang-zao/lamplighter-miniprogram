@@ -9,6 +9,11 @@ const store = new Vuex.Store({
         screenHeight: 896,
         globalCloudEnv: '',
         selectedGameId: '',
+        systemInfo: {
+            windowHeight: 896,
+            windowWidth: 414,
+            pixelRatio: 2,
+        },
     },
     mutations: {
         add(state) {
@@ -20,6 +25,9 @@ const store = new Vuex.Store({
         },
         updateSelectedGameId(state, id) {
             state.selectedGameId = id;
+        },
+        updateSystemInfo(state, res) {
+            state.systemInfo = res;
         },
     }
 })

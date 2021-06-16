@@ -36,6 +36,7 @@
 
 <script lang="ts">
 	import Vue from 'vue';
+  import store from '@/store/index.js'    
 	import FlyUfoShowcase from '../../components/fly-ufo-showcase.vue'
 	import { TestModal, UserModel } from '../../api/index';
 	export default Vue.extend({
@@ -48,12 +49,21 @@
 			this.login();
 			this.getUserProfile();
 			this.getTestData();
+			this.getSystemInfo();
 		},
 		methods: {
 			startGeneral() {
 				uni.navigateTo({
 					url: '/pages/select-world/select-world'
 				})
+			},
+			getSystemInfo() {
+				wx.getSystemInfo({
+					success: (res) => {
+						console.log('got getSystemInfo', res)
+						store.commit('updateSystemInfo', res);
+					},
+				});
 			},
 			async login() {
 				// uni.login({

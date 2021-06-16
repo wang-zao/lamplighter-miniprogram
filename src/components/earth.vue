@@ -1,11 +1,11 @@
 <template>
 	<view class="earth_wrapper" >
-		<view>earth</view>
+		<!-- <view>earth</view> -->
       <canvas
         type="webgl"
         id="webgl"
         class="globe"
-        style="width: 1366px; height: 600px;"
+        style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
       >
         <!-- <cover-image
           class="earth_shadow"
@@ -20,7 +20,7 @@
         <start-page v-if="anmtCtrl.gameStartPageVisible" class="canvas_cover_start_panel" />
           <!-- v-show="!anmtCtrl.gameStartPageVisible && showingAbstractModal"  -->
         <!-- v-show="showingAbstractModalComputed" -->
-        <cover-view class="canvas_cover_cityname">
+        <!-- <cover-view class="canvas_cover_cityname">
           <ticket
             v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
             class="cover_ticket cover_ticke_left"
@@ -42,12 +42,7 @@
             reminder="下一站"
             @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
           />
-          <!-- <cover-view>{{currentCity.city_ascii}}</cover-view>
-          <cover-view>=></cover-view>
-          <cover-view
-            @click="e => changeAbstractVisibility()"
-          >{{nextCity.city_ascii}}</cover-view> -->
-        </cover-view>
+        </cover-view> -->
         <cover-view class="canvas_cover_plane"
           v-if="!anmtCtrl.gameStartPageVisible"
         >
@@ -58,7 +53,7 @@
             }"
           />
         </cover-view>
-        <cover-view class="canvas_cover_operation"
+        <!-- <cover-view class="canvas_cover_operation"
           v-if="!anmtCtrl.gameStartPageVisible"
         >
           <fly-control-cross-t
@@ -69,7 +64,7 @@
             v-show="anmtCtrl.crossXVisible"
             @clickedOneDirection="e => clickedOneDirection(e)"
           />
-        </cover-view>
+        </cover-view> -->
         <abstract-modal
           :visibility="anmtCtrl.showingAbstractModal"
           :abstract="anmtCtrl.abstractContent"
@@ -86,14 +81,15 @@
  * @description 
  * @event {Function} click 
  */
+import store from '@/store/index.js'    
 import { contry_json, ocean } from '@/utils/data';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 // import * as THREE from 'three';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import Plane from './plane.vue';
-import Ticket from './ticket.vue';
-import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
-import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
+// import Ticket from './ticket.vue';
+// import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
+// import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
 import StartPage from '@/components/start-page.vue';
 import AbstractModal from '@/components/abstract-modal.vue';
 // import * as THREE from '@/utils/three';
@@ -119,8 +115,8 @@ export default {
   data() {
     return {
       canvas: null,
-      canvasWidth: 1366,
-      canvasHeight: 600,
+      // canvasWidth: 1366,
+      // canvasHeight: 600,
       showCoverViews: false,
       camera: null,
       earthRadius: 400,
@@ -129,21 +125,34 @@ export default {
       // showingAbstractModal: false,
       earthColorLighter: '#51adcf',
       earthColorDarker: '#0278ae',
+      // earthColorBackground: '#dbf619',
       earthColorBackground: '#dbf6e9',
     }
   },
   components: {
     Plane,
-    Ticket,
+    // Ticket,
     StartPage,
     AbstractModal,
-    FlyControlCrossT,
-    FlyControlCrossX,
+    // FlyControlCrossT,
+    // FlyControlCrossX,
   },
   mounted() {
     this.drawEarth();
   },
   computed: {
+    canvasHeight() {
+      console.log('canvasHeightcanvasHeight', store.state.systemInfo.windowHeight / 3)
+      return store.state.systemInfo.windowHeight / 3 || 896 / 3 ;
+    },
+    canvasWidth() {
+      console.log('---systemInfo-------', store.state.systemInfo)
+      console.log('canvasWidthcanvasWidth', store.state.systemInfo.windowWidth)
+      return store.state.systemInfo.windowWidth || 414;
+    },
+    pixelRatio() {
+      return store.state.systemInfo.pixelRatio;
+    },
     canvasStyle() {
       console.log('canvasStyle', `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`)
       return `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`;
@@ -171,9 +180,9 @@ export default {
             this.canvas = canvas;
             const width = res[0].width
             const height = res[0].height
-            const dpr = uni.getSystemInfoSync().pixelRatio;
-            this.canvas.width = this.canvasWidth * dpr;
-            this.canvas.height = this.canvasHeight * dpr;
+            // const dpr = uni.getSystemInfoSync().pixelRatio;
+            this.canvas.width = this.canvasWidth * 2;
+            this.canvas.height = this.canvasHeight * 2;
             // ctx.scale(dpr, dpr);
             const threeObj = createScopedThreejs(canvas);
             this.globalTHREE = threeObj;
@@ -372,14 +381,14 @@ export default {
       scene.add(earthMesh);
 
     },
-    clickedOneDirection(direction) {
-      console.log('emitted button again', direction)
-      this.$emit('clickedOneDirection', direction);
-    },
-    changeAbstractVisibility(city, target) {
-      // this.abstractContent = city.abstract;
-      this.$emit('changeAbstractVisibility', target, city.abstract)
-    },
+    // clickedOneDirection(direction) {
+    //   console.log('emitted button again', direction)
+    //   this.$emit('clickedOneDirection', direction);
+    // },
+    // changeAbstractVisibility(city, target) {
+    //   // this.abstractContent = city.abstract;
+    //   this.$emit('changeAbstractVisibility', target, city.abstract)
+    // },
   }
 }
 </script>
@@ -387,12 +396,12 @@ export default {
 <style scoped lang="scss">
 @import '../utils/customAnimate.wxss';
 
-.globe {
-  position: fixed;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-}
+// .globe {
+//   // position: fixed;
+//   // left: 50%;
+//   // bottom: 0;
+//   // transform: translateX(-50%);
+// }
 .canvas_cover_abstract {
   position: fixed;
   left: 50%;
@@ -403,21 +412,21 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.canvas_cover_cityname {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 70vh;
-  color: #000;
-  width: 90vw;
-  padding: 0 10vw;
-  display: flex;
-  justify-content: space-between;
-  .cover_ticket {
-  animation-duration: .8s;
+// .canvas_cover_cityname {
+//   position: fixed;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   bottom: 70vh;
+//   color: #000;
+//   width: 90vw;
+//   padding: 0 10vw;
+//   display: flex;
+//   justify-content: space-between;
+//   .cover_ticket {
+//   animation-duration: .8s;
 
-  }
-}
+//   }
+// }
 .canvas_cover_plane {
   position: fixed;
   left: 50%;
