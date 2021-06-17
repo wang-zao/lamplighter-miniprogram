@@ -103,26 +103,26 @@ export default {
   },
   computed: {
     canvasHeight() {
-      console.log('canvasHeightcanvasHeight', store.state.systemInfo.windowHeight / 3)
+      // console.log('canvasHeightcanvasHeight', store.state.systemInfo.windowHeight / 3)
       return store.state.systemInfo.windowHeight / 3 || 896 / 3 ;
     },
     canvasWidth() {
-      console.log('---systemInfo-------', store.state.systemInfo)
-      console.log('canvasWidthcanvasWidth', store.state.systemInfo.windowWidth)
+      // console.log('---systemInfo-------', store.state.systemInfo)
+      // console.log('canvasWidthcanvasWidth', store.state.systemInfo.windowWidth)
       return store.state.systemInfo.windowWidth || 414;
     },
     pixelRatio() {
       return store.state.systemInfo.pixelRatio;
     },
     canvasStyle() {
-      console.log('canvasStyle', `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`)
+      // console.log('canvasStyle', `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`)
       return `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`;
     },
     showingAbstractModalComputed() {
       // return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
-      console.log('this.anmtCtrl.showingAbstractModal', this.anmtCtrl.showingAbstractModal)
-      console.log('!this.anmtCtrl.gameStartPageVisible', !this.anmtCtrl.gameStartPageVisible)
-      console.log('this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible', this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible)
+      // console.log('this.anmtCtrl.showingAbstractModal', this.anmtCtrl.showingAbstractModal)
+      // console.log('!this.anmtCtrl.gameStartPageVisible', !this.anmtCtrl.gameStartPageVisible)
+      // console.log('this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible', this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible)
       return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
       // return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
     },
@@ -142,9 +142,9 @@ export default {
             const width = res[0].width
             const height = res[0].height
             // const dpr = uni.getSystemInfoSync().pixelRatio;
-            console.log('-----------canvas')
-            console.log('-----------canvas')
-            console.log('-----------canvas', canvas)
+            // console.log('-----------canvas')
+            // console.log('-----------canvas')
+            // console.log('-----------canvas', canvas)
             // this.canvas._ctx.canvas.width = this.canvasWidth * 2;
             // this.canvas._ctx.canvas.height = this.canvasHeight * 2;
             // this.canvas.width = this.canvasWidth * 2;
@@ -153,7 +153,7 @@ export default {
             // this.canvas.style.height = `${this.canvasHeight * 2}px`;
             // this.canvas._ctx.scale(2,2);
             // ctx.scale(dpr, dpr);
-            console.log('-----------canvas2', canvas)
+            // console.log('-----------canvas2', canvas)
             const threeObj = createScopedThreejs(canvas);
             this.globalTHREE = threeObj;
             this.renderEarth(threeObj);
