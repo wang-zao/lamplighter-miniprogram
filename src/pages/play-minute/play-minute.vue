@@ -19,6 +19,7 @@
       :currentCity="currentCity"
       :nextCity="nextCity"
       :anmtCtrl="anmtCtrl"
+      :judgeCtrl="judgeCtrl"
     />
     <view
       class="content_panel operation_panel"
@@ -212,11 +213,11 @@
           this.anmtCtrl.showCoverViews = true;
         }, 1000);
       },
-      backToHome() {
-				uni.navigateTo({
-					url: '/pages/index/index'
-				});
-      },
+      // backToHome() {
+			// 	uni.navigateTo({
+			// 		url: '/pages/index/index'
+			// 	});
+      // },
       handleUserSelected(direction) {
         // console.log('clicked button', direction)
         const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
@@ -276,7 +277,7 @@ $section-3-operation-height: 30vh;
     // left: 0;
     // right: 0;
     height: $section-1-info-height;
-    padding: $general-paddng;
+    // padding: $general-paddng;
     font-size: 2rem;
     justify-content: space-between;
     // background: blue;

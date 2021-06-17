@@ -1,5 +1,4 @@
-;'
-?'<template>
+<template>
 	<cover-view
     v-show="visibility"
     class="abstract_wrapper"

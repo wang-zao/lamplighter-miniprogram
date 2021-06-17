@@ -7,25 +7,28 @@
       <view class="info_resttime">{{judgeCtrl.restTime}}</view>
     </view>
     <view class="info_2_cities">
-      <view class="canvas_cover_cityname">
+      <view class="canvas_cover_cityname" v-if="!anmtCtrl.gameStartPageVisible">
         <ticket
-          v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
           class="cover_ticket cover_ticke_left"
           :class="{
             fadeOutLeft: anmtCtrl.answerCorrectAnimationStep1,
           }"
+          :showAbstract="false"
           :cityInfo="currentCity"
+          :anmtCtrl="anmtCtrl"
           reminder="当前在"
           @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
         />
         <ticket
           v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
           class="cover_ticket cover_ticke_right"
+          :showAbstract="true"
           :class="{
             moveLeftTemperorally: anmtCtrl.answerCorrectAnimationStep1,
             fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
           }"
           :cityInfo="nextCity"
+          :anmtCtrl="anmtCtrl"
           reminder="下一站"
           @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
         />
@@ -70,6 +73,11 @@
 			return {
 			}
 		},
+    // computed: {
+    //   isNextCityAbscractVisible() {
+    //     return !this.anmtCtrl.answerCorrectAnimationStep1;
+    //   },
+    // },
 		methods: {
 			onClickEmit(e) {
 				this.$emit('clicked')
@@ -88,22 +96,30 @@
 
 .info_panel_wrapper {
   width: 100%;
+  height: 40vh;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
   .info_1_scores {
     width: 100vw;
+    // height: 
     display: flex;
     justify-content: space-between;
   }
   .info_2_cities {
+    height: 20vh;
     .canvas_cover_cityname {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 70vh;
+      // position: fixed;
+      // left: 50%;
+      // transform: translateX(-50%);
+      // bottom: 70vh;
       color: #000;
       width: 90vw;
       padding: 0 10vw;
       display: flex;
       justify-content: space-between;
+      align-items: top;
       .cover_ticket {
       animation-duration: .8s;
 

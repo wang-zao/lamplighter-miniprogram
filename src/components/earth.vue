@@ -1,5 +1,5 @@
 <template>
-	<view class="earth_wrapper" >
+	<view class="earth_wrapper">
 		<!-- <view>earth</view> -->
       <canvas
         type="webgl"
@@ -7,43 +7,17 @@
         class="globe"
         style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
       >
-        <!-- <cover-image
-          class="earth_shadow"
-          src="../static/earth_shadow.png"
-        /> -->
-        <!-- <cover-view class="canvas_cover_abstract">
-            <cover-view>{{currentCity.country}}</cover-view>
-            <cover-view></cover-view>
-            <cover-view
-            >{{nextCity.country}}</cover-view>
-        </cover-view> -->
-        <start-page v-if="anmtCtrl.gameStartPageVisible" class="canvas_cover_start_panel" />
-          <!-- v-show="!anmtCtrl.gameStartPageVisible && showingAbstractModal"  -->
-        <!-- v-show="showingAbstractModalComputed" -->
-        <!-- <cover-view class="canvas_cover_cityname">
-          <ticket
-            v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
-            class="cover_ticket cover_ticke_left"
-            :class="{
-              fadeOutLeft: anmtCtrl.answerCorrectAnimationStep1,
-            }"
-            :cityInfo="currentCity"
-            reminder="当前在"
-            @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
-          />
-          <ticket
-            v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
-            class="cover_ticket cover_ticke_right"
-            :class="{
-              moveLeftTemperorally: anmtCtrl.answerCorrectAnimationStep1,
-              fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
-            }"
-            :cityInfo="nextCity"
-            reminder="下一站"
-            @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
-          />
-        </cover-view> -->
-        <cover-view class="canvas_cover_plane"
+        <start-page
+          v-if="anmtCtrl.gameStartPageVisible"
+          class="canvas_cover_start_panel"
+        />
+        <end-page
+          :anmtCtrl="anmtCtrl"
+          :judgeCtrl="judgeCtrl"
+          v-if="anmtCtrl.gameEndPageVisible"
+          class="canvas_cover_end_panel"
+        />
+        <!-- <cover-view class="canvas_cover_plane"
           v-if="!anmtCtrl.gameStartPageVisible"
         >
           <plane class="cover_plane shake" 
@@ -52,26 +26,7 @@
               plane_shaking: anmtCtrl.isPlaneShaking,
             }"
           />
-        </cover-view>
-        <!-- <cover-view class="canvas_cover_operation"
-          v-if="!anmtCtrl.gameStartPageVisible"
-        >
-          <fly-control-cross-t
-            v-show="anmtCtrl.crossTVisible"
-            @clickedOneDirection="e => clickedOneDirection(e)"
-          />
-          <fly-control-cross-x
-            v-show="anmtCtrl.crossXVisible"
-            @clickedOneDirection="e => clickedOneDirection(e)"
-          />
         </cover-view> -->
-        <abstract-modal
-          :visibility="anmtCtrl.showingAbstractModal"
-          :abstract="anmtCtrl.abstractContent"
-          class="canvas_cover_abstract_panel"
-          @click="e => changeAbstractVisibility(currentCity, false)"
-          @changeAbstractVisibility="e => changeAbstractVisibility(currentCity, false)"
-        >2222222</abstract-modal>
       </canvas>
 	</view>
 </template>
@@ -91,7 +46,8 @@ import Plane from './plane.vue';
 // import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
 // import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
 import StartPage from '@/components/start-page.vue';
-import AbstractModal from '@/components/abstract-modal.vue';
+import EndPage from '@/components/end-page.vue';
+// import AbstractModal from '@/components/abstract-modal.vue';
 // import * as THREE from '@/utils/three';
 
 // const earth_surface = require('../static/earthmap_color.jpeg');
@@ -111,6 +67,10 @@ export default {
       type: Object,
       default: {},
     },
+    judgeCtrl: {
+      type: Object,
+      default: {},
+    },
   },
   data() {
     return {
@@ -126,14 +86,15 @@ export default {
       earthColorLighter: '#51adcf',
       earthColorDarker: '#0278ae',
       // earthColorBackground: '#dbf619',
-      earthColorBackground: '#dbf6e9',
+      earthColorBackground: '#ecfaf3',
     }
   },
   components: {
     Plane,
     // Ticket,
     StartPage,
-    AbstractModal,
+    EndPage,
+    // AbstractModal,
     // FlyControlCrossT,
     // FlyControlCrossX,
   },
@@ -181,12 +142,25 @@ export default {
             const width = res[0].width
             const height = res[0].height
             // const dpr = uni.getSystemInfoSync().pixelRatio;
-            this.canvas.width = this.canvasWidth * 2;
-            this.canvas.height = this.canvasHeight * 2;
+            console.log('-----------canvas')
+            console.log('-----------canvas')
+            console.log('-----------canvas', canvas)
+            // this.canvas._ctx.canvas.width = this.canvasWidth * 2;
+            // this.canvas._ctx.canvas.height = this.canvasHeight * 2;
+            // this.canvas.width = this.canvasWidth * 2;
+            // this.canvas.height = this.canvasHeight * 2;
+            // this.canvas.style.width = `${this.canvasWidth * 2}px`;
+            // this.canvas.style.height = `${this.canvasHeight * 2}px`;
+            // this.canvas._ctx.scale(2,2);
             // ctx.scale(dpr, dpr);
+            console.log('-----------canvas2', canvas)
             const threeObj = createScopedThreejs(canvas);
             this.globalTHREE = threeObj;
             this.renderEarth(threeObj);
+            // 下面这两行用来调整dpi，必须放在canvas requestAnimateFrame之后，摸索了半天，靠
+            this.canvas.width = this.canvasWidth * 2;
+            this.canvas.height = this.canvasHeight * 2;
+
         });
     },
     // convertLatLngToXyz(lat, lng, radius) {
@@ -317,7 +291,7 @@ export default {
       const geometry = new THREE.SphereGeometry(this.earthRadius, 100, 100);
       const material = new THREE.MeshPhongMaterial({
           transparent: true,
-          opacity: 0.9,
+          opacity: 1,
       });
       const sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
@@ -397,10 +371,10 @@ export default {
 @import '../utils/customAnimate.wxss';
 
 // .globe {
-//   // position: fixed;
-//   // left: 50%;
-//   // bottom: 0;
-//   // transform: translateX(-50%);
+//   width: 100%;
+//   height: 100%;
+//   max-width: 100%;
+//   max-height: 100%;
 // }
 .canvas_cover_abstract {
   position: fixed;
@@ -427,57 +401,62 @@ export default {
 
 //   }
 // }
-.canvas_cover_plane {
-  position: fixed;
-  left: 50%;
-  bottom: 45vh;
-  transform: translateX(-50%);
-  color: #000;
-  .cover_plane {
-    animation-iteration-count: infinite;
-    animation-duration: .5s;
-  }
-	.plane_shaking {
-		animation-play-state: running;
-	}
-	.plane_pausing {
-		animation-play-state: paused;
-	}
-}
-.canvas_cover_operation {
-  position: fixed;
-  left: 50%;
-  bottom: 10vh;
-  transform: translateX(-50%);
-  color: #000;
-	width: 70vw;
-	height: 20vh;
-}
+// .canvas_cover_plane {
+//   position: fixed;
+//   left: 50%;
+//   bottom: 45vh;
+//   transform: translateX(-50%);
+//   color: #000;
+//   .cover_plane {
+//     animation-iteration-count: infinite;
+//     animation-duration: .5s;
+//   }
+// 	.plane_shaking {
+// 		animation-play-state: running;
+// 	}
+// 	.plane_pausing {
+// 		animation-play-state: paused;
+// 	}
+// }
+// .canvas_cover_operation {
+//   position: fixed;
+//   left: 50%;
+//   bottom: 10vh;
+//   transform: translateX(-50%);
+//   color: #000;
+// 	width: 70vw;
+// 	height: 20vh;
+// }
 .canvas_cover_start_panel {
   position: fixed;
   left: 0;
   top: 0;
 }
-.canvas_cover_abstract_panel {
+.canvas_cover_end_panel {
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  bottom: 60vh;
-  width: 90vw;
-  border-radius: 2rem;
-  background: $dark-mode-mask;
-  // background: yellow;
+  left: 0;
+  top: 0;
 }
-.earth_shadow {
-  position: fixed;
-  bottom: 0;
-  width: 100vw;
-  height: 50vh;
-  left: 50%;
-  transform: translateX(-50%);
+// .canvas_cover_abstract_panel {
+//   position: fixed;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   display: flex;
+//   justify-content: center;
+//   bottom: 60vh;
+//   width: 90vw;
+//   border-radius: 2rem;
+//   background: $dark-mode-mask;
+//   // background: yellow;
+// }
+// .earth_shadow {
+//   position: fixed;
+//   bottom: 0;
+//   width: 100vw;
+//   height: 50vh;
+//   left: 50%;
+//   transform: translateX(-50%);
   // background: #3b6279;
   // background: linear-gradient(0deg, #3b6279fa 0%, #3b6279fa 30%, #3b627900 100%);
-}
+// }
 </style>
