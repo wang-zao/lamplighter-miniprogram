@@ -5,7 +5,7 @@
         type="webgl"
         id="webgl"
         class="globe"
-        style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+        :style="canvasStyle"
       >
         <start-page
           v-if="anmtCtrl.gameStartPageVisible"
@@ -17,6 +17,18 @@
           v-if="anmtCtrl.gameEndPageVisible"
           class="canvas_cover_end_panel"
         />
+        <cover-view class="canvas_cover_operation"
+          v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
+        >
+          <fly-control-cross-t
+            v-show="anmtCtrl.crossTVisible"
+            @clickedOneDirection="e => clickedOneDirection(e)"
+          />
+          <fly-control-cross-x
+            v-show="anmtCtrl.crossXVisible"
+            @clickedOneDirection="e => clickedOneDirection(e)"
+          />
+        </cover-view>
         <!-- <cover-view class="canvas_cover_plane"
           v-if="!anmtCtrl.gameStartPageVisible"
         >
@@ -36,6 +48,7 @@
  * @description 
  * @event {Function} click 
  */
+import Vue from 'vue';
 import store from '@/store/index.js'    
 import { contry_json, ocean } from '@/utils/data';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
@@ -43,8 +56,8 @@ import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import Plane from './plane.vue';
 // import Ticket from './ticket.vue';
-// import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
-// import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
+import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
+import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
 import StartPage from '@/components/start-page.vue';
 import EndPage from '@/components/end-page.vue';
 // import AbstractModal from '@/components/abstract-modal.vue';
@@ -52,7 +65,8 @@ import EndPage from '@/components/end-page.vue';
 
 // const earth_surface = require('../static/earthmap_color.jpeg');
 
-export default {
+export default Vue.extend({
+// export default {
   name: 'Earth',
   props: {
     currentCity: {
@@ -79,8 +93,8 @@ export default {
       // canvasHeight: 600,
       showCoverViews: false,
       camera: null,
-      earthRadius: 400,
-      cameraHeight: 400,
+      earthRadius: 300,
+      cameraHeight: 2500,
       globalTHREE: null,
       // showingAbstractModal: false,
       earthColorLighter: '#51adcf',
@@ -95,8 +109,8 @@ export default {
     StartPage,
     EndPage,
     // AbstractModal,
-    // FlyControlCrossT,
-    // FlyControlCrossX,
+    FlyControlCrossT,
+    FlyControlCrossX,
   },
   mounted() {
     this.drawEarth();
@@ -104,7 +118,7 @@ export default {
   computed: {
     canvasHeight() {
       // console.log('canvasHeightcanvasHeight', store.state.systemInfo.windowHeight / 3)
-      return store.state.systemInfo.windowHeight / 3 || 896 / 3 ;
+      return store.state.systemInfo.windowHeight * 0.6 || 896 * 0.6 ;
     },
     canvasWidth() {
       // console.log('---systemInfo-------', store.state.systemInfo)
@@ -216,8 +230,8 @@ export default {
           clearInterval(clock);
         }
 
-        let currentCameraLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, -20);
-        let currentLookAtLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, -60);
+        let currentCameraLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, -50);
+        let currentLookAtLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, 0);
         let currentCameraXYZ = this.convertLatLngToXyz(
           currentCameraLatLng.lat,
           currentCameraLatLng.lng,
@@ -262,7 +276,7 @@ export default {
 
       // const res = await uni.getSystemInfo();
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, this.canvasWidth  / this.canvasHeight, 0.5, 10000);
+      const camera = new THREE.PerspectiveCamera(10, this.canvasWidth  / this.canvasHeight, 0.5, 10000);
       this.camera = camera;
 
 
@@ -296,20 +310,20 @@ export default {
       const sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
 
-      // await this.drawEarthSurface(THREE, scene);
+      await this.drawEarthSurface(THREE, scene);
       // this.drawSpecificPoints(THREE, sphere);
       
 
       // Draw the GeoJSON
-      const test_json = ocean;
-      drawThreeGeo(
-        test_json,
-        this.earthRadius,
-        'sphere',
-        { color: '#4b5aa3' },
-        scene,
-        THREE,
-      );
+      // const test_json = ocean;
+      // drawThreeGeo(
+      //   test_json,
+      //   this.earthRadius,
+      //   'sphere',
+      //   { color: '#4b5aa3' },
+      //   scene,
+      //   THREE,
+      // );
 
       //Render the image
       const render = () => {
@@ -343,8 +357,8 @@ export default {
       }
     },
     async drawEarthSurface(THREE, scene ) {
-      const geometry = new THREE.SphereGeometry(this.earthRadius, 32, 32);
-      // let texture = await new THREE.TextureLoader().load('../static/earth_colorful.jpeg');
+      const geometry = new THREE.SphereGeometry(this.earthRadius + 5, 32, 32);
+      let texture = await new THREE.TextureLoader().load('../static/earth_colorful.jpeg');
       // let texture = new THREE.TextureLoader().load('src/static/earthmap_color.jpeg');
 
       texture.minFilter = THREE.LinearFilter;
@@ -355,16 +369,17 @@ export default {
       scene.add(earthMesh);
 
     },
-    // clickedOneDirection(direction) {
-    //   console.log('emitted button again', direction)
-    //   this.$emit('clickedOneDirection', direction);
-    // },
+    clickedOneDirection(direction) {
+      console.log('emitted button again', direction)
+      this.$emit('clickedOneDirection', direction);
+    },
     // changeAbstractVisibility(city, target) {
     //   // this.abstractContent = city.abstract;
     //   this.$emit('changeAbstractVisibility', target, city.abstract)
     // },
   }
-}
+});
+// }
 </script>
 
 <style scoped lang="scss">
@@ -418,15 +433,15 @@ export default {
 // 		animation-play-state: paused;
 // 	}
 // }
-// .canvas_cover_operation {
-//   position: fixed;
-//   left: 50%;
-//   bottom: 10vh;
-//   transform: translateX(-50%);
-//   color: #000;
-// 	width: 70vw;
-// 	height: 20vh;
-// }
+.canvas_cover_operation {
+  position: fixed;
+  left: 50%;
+  bottom: 10vh;
+  transform: translateX(-50%);
+  color: #000;
+	width: 70vw;
+	height: 20vh;
+}
 .canvas_cover_start_panel {
   position: fixed;
   left: 0;

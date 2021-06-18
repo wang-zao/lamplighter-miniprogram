@@ -32,7 +32,9 @@
 	 * @description 用于操纵飞机飞行方向的控制面板
 	 * @event {Function} click 点击触发事件
 	 */
-	export default {
+	import Vue from 'vue';
+
+	export default Vue.extend({
 		name: 'FlyControlCrossT',
 		props: {
 		},
@@ -47,7 +49,7 @@
 				this.$emit('clickedOneDirection', direction)
 			}
 		}
-	}
+	});
 </script>
 
 <style scoped lang="scss">

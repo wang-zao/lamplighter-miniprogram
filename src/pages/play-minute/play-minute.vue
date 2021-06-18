@@ -5,6 +5,7 @@
       class="content_panel info_panel"
     >
       <info-panel
+        v-if="!anmtCtrl.gameEndPageVisible"
         :anmtCtrl="anmtCtrl"
         :judgeCtrl="judgeCtrl"
         :currentCity="currentCity"
@@ -16,28 +17,28 @@
       ref="flyingEarth"
       @renderCompleted="showAllCoverViews"
       @changeAbstractVisibility="(t, a) => changeAbstractVisibility(t, a)"
+      @clickedOneDirection="e => handleUserSelected(e)"
       :currentCity="currentCity"
       :nextCity="nextCity"
       :anmtCtrl="anmtCtrl"
       :judgeCtrl="judgeCtrl"
     />
-    <view
+    <!-- <view
       class="content_panel operation_panel"
     >
-      <!-- v-if="!anmtCtrl.gameStartPageVisible" -->
-      <!-- <fly-control-cross-t
+      <fly-control-cross-t
         v-show="anmtCtrl.crossTVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
       />
       <fly-control-cross-x
         v-show="anmtCtrl.crossXVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
-      /> -->
+      />
       <operation-panel
         :anmtCtrl="anmtCtrl"
         @clickedOneDirection="e => handleUserSelected(e)"
       />
-    </view>
+    </view> -->
     <!-- <view v-if="anmtCtrl.gameEndPageVisible" class="content_panel end_panel">
       <view class="end_panel_content">
         <view>Game Over</view>
@@ -106,6 +107,8 @@
 					userSelect: '',
 					isCorrect: false,
           isUserSelected: false,
+          correctCityList: [],
+          wrongCityList: [],
 				},
         cityList: [],
 			}
@@ -224,6 +227,9 @@
         this.anmtCtrl.showingAbstractModal = false;
         if (direction === this.judgeCtrl.correctDirection) {
           this.judgeCtrl.totalMiles += getScoreWhenCorrect(userAnswerTime);
+          if (!this.judgeCtrl.correctCityList.includes(this.nextCity.point_name)) {
+            this.judgeCtrl.correctCityList.push(this.nextCity.point_name);
+          }
           this.$refs.flyingEarth.flyFromOneToAnother(
             this.currentCity.lat,
             this.currentCity.lon,
@@ -236,6 +242,9 @@
           this.checkRestCityDataCapacity();
         } else {
           this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
+          if (!this.judgeCtrl.wrongCityList.includes(this.nextCity.point_name)) {
+            this.judgeCtrl.wrongCityList.push(this.nextCity.point_name);
+          }
           this.cityQueueBrokeOne();
           this.calcAnswer();
         }
@@ -254,8 +263,8 @@
 
 $general-paddng: 1rem;
 $section-1-info-height: 40vh;
-$section-2-earth-height: 30vh;
-$section-3-operation-height: 30vh;
+$section-2-earth-height: 60vh;
+$section-3-operation-height: 0vh;
 
 .play_minute_wrapper {
 	background: $dark-mode-bg;

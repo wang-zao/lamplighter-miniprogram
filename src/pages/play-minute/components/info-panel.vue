@@ -106,6 +106,18 @@
     // height: 
     display: flex;
     justify-content: space-between;
+    // background: yellow;
+    align-items: flex-end;
+    padding: 3vh 0;
+    // line-height: 20vh;
+    height: 20vh;
+    .info_grade {
+      margin-left: 10vw;
+
+    }
+    .info_resttime {
+      margin-right: 5vw;
+    }
   }
   .info_2_cities {
     height: 20vh;
@@ -119,7 +131,7 @@
       padding: 0 10vw;
       display: flex;
       justify-content: space-between;
-      align-items: top;
+      align-items: flex-start;
       .cover_ticket {
       animation-duration: .8s;
 
