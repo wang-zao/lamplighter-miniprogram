@@ -37,6 +37,10 @@
 	export default Vue.extend({
 		name: 'FlyControlCrossT',
 		props: {
+			anmtCtrl: {
+				type: Object,
+				default: {},
+			},
 		},
 		data() {
 			return {
@@ -46,7 +50,10 @@
 		methods: {
 			onClick(direction) {
         console.log('emitted button', direction)
-				this.$emit('clickedOneDirection', direction)
+				if (this.anmtCtrl.operationPanelDisabled) {
+					return;
+				}
+				this.$emit('clickedOneDirection', direction);
 			}
 		}
 	});

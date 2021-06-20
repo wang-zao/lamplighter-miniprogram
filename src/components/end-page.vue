@@ -6,9 +6,9 @@
     <cover-view class="end_panel_score">
       <cover-view>avatar</cover-view>
       <cover-view>王凿</cover-view>
-      <cover-view class="score_number">{{judgeCtrl.totalMiles.toFixed(0)}} km</cover-view>
-      <cover-view>飞行评分：75</cover-view>
-      <cover-view>称号：路痴本痴</cover-view>
+      <cover-view class="score_number">{{rankScore}} 🌏</cover-view>
+      <cover-view>飞行评分：{{rankData.rank}}</cover-view>
+      <cover-view>称号：{{rankData.text}}</cover-view>
     </cover-view>
     <cover-view class="end_panel_details">
       <cover-view class="detail_title">本次战绩</cover-view>
@@ -55,6 +55,8 @@
 	 * @description 
 	 * @event {Function} click 
 	 */
+
+  import { calc_fly_rank } from '@/utils/common';
 	export default {
 		name: 'EndPage',
 		props: {
@@ -73,6 +75,14 @@
 				showingNumbers: true,
 			}
 		},
+    computed: {
+      rankScore() {
+        return this.judgeCtrl.totalMiles.toFixed(0);
+      },
+      rankData() {
+        return calc_fly_rank(this.rankScore);
+      },
+    },
 		created() {
       this.startTimeLoop();
 		},
@@ -114,7 +124,7 @@ $general-panel-width: 60vw;
   .end_panel_score {
     text-align: center;
     height: $score-panel-height;
-    max-height: $score-panel-height;
+    // max-height: $score-panel-height;
     min-height: $score-panel-height;
     // background: green;
     display: flex;
@@ -131,7 +141,7 @@ $general-panel-width: 60vw;
     // flex-direction: column;
     // justify-content: center;
     height: $detail-panel-height;
-    max-height: $detail-panel-height;
+    // max-height: $detail-panel-height;
     min-height: $detail-panel-height;
     width: $general-panel-width;
     // background: $uni-bg-color-mask;

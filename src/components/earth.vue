@@ -21,10 +21,12 @@
           v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
         >
           <fly-control-cross-t
+            :anmtCtrl="anmtCtrl"
             v-show="anmtCtrl.crossTVisible"
             @clickedOneDirection="e => clickedOneDirection(e)"
           />
           <fly-control-cross-x
+            :anmtCtrl="anmtCtrl"
             v-show="anmtCtrl.crossXVisible"
             @clickedOneDirection="e => clickedOneDirection(e)"
           />

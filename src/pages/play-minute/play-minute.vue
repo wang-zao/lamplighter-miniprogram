@@ -97,6 +97,8 @@
           isPlaneShaking: false,
           showingAbstractModal: false,
           abstractContent: '',
+          switchCityTime: 700,
+          operationPanelDisabled: false,
         },
 				judgeCtrl: {
 					correctDirection: '',
@@ -196,11 +198,13 @@
           return;
         }
         this.anmtCtrl.answerCorrectAnimationStep1 = true;
+        // this.anmtCtrl.operationPanelDisabled = true;
         setTimeout(() => {
           this.anmtCtrl.answerCorrectAnimationStep1 = false;
           this.anmtCtrl.answerCorrectAnimationStep2 = true;
           this.currentCity = this.nextCity;
           this.nextCity = { ...this.cityList.pop(0) };
+          this.calcAnswer();
         }, 600);
         setTimeout(() => {
           this.anmtCtrl.answerCorrectAnimationStep2 = false;
@@ -209,6 +213,7 @@
       },
       cityQueueBrokeOne() {
         this.nextCity = { ...this.cityList.pop(0) };
+        this.calcAnswer();
       },
       showAllCoverViews() {
         setTimeout(() => {
@@ -221,15 +226,25 @@
 			// 		url: '/pages/index/index'
 			// 	});
       // },
-      handleUserSelected(direction) {
-        // console.log('clicked button', direction)
+      async handleUserSelected(direction) {
+        if (this.anmtCtrl.operationPanelDisabled) {
+          return;
+        }
+        this.anmtCtrl.operationPanelDisabled = true;
         const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
         this.anmtCtrl.showingAbstractModal = false;
         if (direction === this.judgeCtrl.correctDirection) {
+          // 1.两秒防抖
+          setTimeout(() => {
+            this.anmtCtrl.operationPanelDisabled = false;
+          }, this.anmtCtrl.switchCityTime);
+          // 2.计算得分
           this.judgeCtrl.totalMiles += getScoreWhenCorrect(userAnswerTime);
+          // 3.计入列表
           if (!this.judgeCtrl.correctCityList.includes(this.nextCity.point_name)) {
             this.judgeCtrl.correctCityList.push(this.nextCity.point_name);
           }
+          // 4.进行飞翔
           this.$refs.flyingEarth.flyFromOneToAnother(
             this.currentCity.lat,
             this.currentCity.lon,
@@ -237,16 +252,21 @@
             this.nextCity.lon,
           )
           this.anmtCtrl.answerCorrectAnimation = true;
+          // 5.切换城市
           this.cityQueuePopOne(false);
-          this.calcAnswer();
+          // this.calcAnswer();
           this.checkRestCityDataCapacity();
         } else {
+          // 1.两秒防抖
+          setTimeout(() => {
+            this.anmtCtrl.operationPanelDisabled = false;
+          }, this.anmtCtrl.switchCityTime);
           this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
           if (!this.judgeCtrl.wrongCityList.includes(this.nextCity.point_name)) {
             this.judgeCtrl.wrongCityList.push(this.nextCity.point_name);
           }
           this.cityQueueBrokeOne();
-          this.calcAnswer();
+          // this.calcAnswer();
         }
         // 重设开始答题时间，这个还需要调整，引入switch_time之后
         this.judgeCtrl.startAnswerCurQuestionTime = this.judgeCtrl.restTime;
