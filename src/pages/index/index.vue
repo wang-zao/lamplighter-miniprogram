@@ -36,7 +36,9 @@
 
 <script lang="ts">
 	import Vue from 'vue';
+  import store from '@/store/index.js'    
 	import FlyUfoShowcase from '../../components/fly-ufo-showcase.vue'
+	import { TestModal, UserModel } from '../../api/index';
 	export default Vue.extend({
 		data() {
 			return {
@@ -46,6 +48,8 @@
 		onLoad() {
 			this.login();
 			this.getUserProfile();
+			this.getTestData();
+			this.getSystemInfo();
 		},
 		methods: {
 			startGeneral() {
@@ -53,13 +57,26 @@
 					url: '/pages/select-world/select-world'
 				})
 			},
-			login() {
-				uni.login({
-					provider: 'weixin',
-					success: function (loginRes) {
-						console.log('loginRes.authResult:', loginRes.authResult);
-					}
+			getSystemInfo() {
+				wx.getSystemInfo({
+					success: (res) => {
+						console.log('got getSystemInfo', res)
+						store.commit('updateSystemInfo', res);
+					},
 				});
+			},
+			async login() {
+				// uni.login({
+				// 	provider: 'weixin',
+				// 	success: function (loginRes) {
+				// 		console.log('loginRes.authResult:', loginRes.authResult);
+				// 	}
+				// });
+				const userInfo = await UserModel.getUserOpenId();
+				// const res = await wx.cloud.callFunction({
+				// 	name: 'user_auth',
+				// });
+				console.log('UserModel getOwnInfo result: ', userInfo);
 			},
 			async getUserProfile() {
 				const res = await uni.getUserProfile({
@@ -69,6 +86,11 @@
 			},
 			moveHandle() {
 				
+			},
+			async getTestData() {
+				console.log('TestModal', TestModal)
+				const res = await TestModal.getTestData();
+				console.log('getTestData', res)
 			},
 		},
 		components: {

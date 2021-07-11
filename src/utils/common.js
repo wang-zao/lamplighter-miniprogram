@@ -130,3 +130,113 @@ export const calc_next_direction = (x1, y1, x2, y2) => {
       return 'north';
   }
 };
+
+export const getPenaltyTimeWhenWrong = (userAnswerTime) => {
+  if (userAnswerTime && !isNaN(userAnswerTime)) {
+    switch (true) {
+      case 0 <= userAnswerTime && userAnswerTime < 1:
+        return 8;
+      case 1 <= userAnswerTime && userAnswerTime < 2:
+        return 4;
+      case 2 <= userAnswerTime && userAnswerTime < 3:
+        return 2;
+      case 3 <= userAnswerTime && userAnswerTime < 4:
+        return 1;
+      case 4 <= userAnswerTime:
+        return 0;
+      default:
+        return 0;
+    }
+  }
+  return 0;
+}
+
+export const getScoreWhenCorrect = (userAnswerTime) => {
+  if (userAnswerTime && !isNaN(userAnswerTime)) {
+    switch (true) {
+      case 0 <= userAnswerTime && userAnswerTime < 1:
+        return 15;
+      case 1 <= userAnswerTime && userAnswerTime < 2:
+        return 14;
+      case 2 <= userAnswerTime && userAnswerTime < 3:
+        return 13;
+      case 3 <= userAnswerTime && userAnswerTime < 4:
+        return 12;
+      case 4 <= userAnswerTime && userAnswerTime < 5:
+        return 11;
+      case 5 <= userAnswerTime:
+        return 10;
+      default:
+        return 0;
+    }
+  }
+  return 0;
+}
+
+
+export const calc_fly_rank = (inputScore) => {
+  const score = parseInt(String(inputScore), 10);
+  switch (true) {
+    case 0 <= score && score < 50:
+      return { text: '南辕北辙', rank: 35 };
+    case 50 <= score && score < 100:
+      return { text: '东挨西撞', rank: 55 };
+    case 100 <= score && score < 150:
+      return { text: '南来北往', rank: 65 };
+    case 150 <= score && score < 200:
+      return { text: '东奔西走', rank: 75 };
+    case 200 <= score && score < 250:
+      return { text: '走南闯北', rank: 80 };
+    case 250 <= score && score < 300:
+      return { text: '东荡西驰', rank: 85 };
+    case 300 <= score && score < 350:
+      return { text: '横飞无阻', rank: 90 };
+    case 350 <= score && score < 400:
+      return { text: '四窜如神', rank: 95 };
+    case 400 <= score:
+      return { text: '量子大仙', rank: 100 };
+    default:
+      return { text: '', rank: '' };
+  }
+};
+
+export const get_flight_orbit_height = (
+  from_lat, from_lon,
+  to_lat, to_lon,
+  cur_lat, cur_lon,
+) => {
+  const dis = calc_shortest_dis(from_lon, from_lat, to_lon, to_lat);
+  const cur_dis = calc_shortest_dis(from_lon, from_lat, cur_lon, cur_lat);
+  const dis_r = dis / 2;
+  const height = dis_r / 30 - (cur_dis - dis_r) ** 2 / (dis_r * 30);
+  return height;
+};
+
+export const get_flight_orbit_height_precise = (
+  from_lat, from_lon,
+  to_lat, to_lon,
+  cur_lat, cur_lon,
+) => {
+  const dis = calc_shortest_dis(from_lon, from_lat, to_lon, to_lat);
+  const cur_dis = calc_shortest_dis(from_lon, from_lat, cur_lon, cur_lat);
+  const dis_r = dis / 2;
+  const height = ((1 - ((cur_dis - dis_r) ** 2) / (dis_r * dis_r)) * (dis_r / 2)) ** (1 / 2);
+  return height;
+};
+
+export const draw_line = (x_values, y_values, z_values, options, THREE, container) => {
+
+  var line_geom = new THREE.Geometry();
+  createVertexForEachPoint(line_geom, x_values, y_values, z_values, THREE);
+
+  var line_material = new THREE.LineBasicMaterial(options);
+  var line = new THREE.Line(line_geom, line_material);
+  container.add(line);
+}
+
+const createVertexForEachPoint = (object_geometry, values_axis1, values_axis2, values_axis3, THREE) => {
+  for (var i = 0; i < values_axis1.length; i++) {
+      object_geometry.vertices.push(new THREE.Vector3(values_axis1[i],
+          values_axis2[i], values_axis3[i]));
+  }
+}

@@ -20,6 +20,7 @@ export const drawThreeGeo = (json, radius, shape, materalOptions, container, THR
   //Re-usable array to hold coordinate values. This is necessary so that you can add
   //interpolated coordinates. Otherwise, lines go through the sphere instead of wrapping around.
 
+  console.log('json_geom---', json_geom)
   for (var geom_num = 0; geom_num < json_geom.length; geom_num++) {
 
       if (json_geom[geom_num].type == 'Point') {

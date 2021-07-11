@@ -32,6 +32,10 @@
 	export default {
 		name: 'FlyControlCrossX',
 		props: {
+			anmtCtrl: {
+				type: Object,
+				default: {},
+			},
 		},
 		data() {
 			return {
@@ -41,6 +45,9 @@
 		methods: {
 			onClick(direction) {
         console.log('emitted button', direction)
+				if (this.anmtCtrl.operationPanelDisabled) {
+					return;
+				}
 				this.$emit('clickedOneDirection', direction)
 			}
 		}
