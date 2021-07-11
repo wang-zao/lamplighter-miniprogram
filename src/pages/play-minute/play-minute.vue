@@ -131,8 +131,9 @@
           0,
           this.currentCity.lat,
           this.currentCity.lon,
-        )
+        );
         this.calcAnswer();
+        this.$refs.flyingEarth.allowDrawOrbit();
         console.log('init fiinised')
       },
       async getCityData() {

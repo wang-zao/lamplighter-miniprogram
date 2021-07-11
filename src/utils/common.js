@@ -199,3 +199,44 @@ export const calc_fly_rank = (inputScore) => {
       return { text: '', rank: '' };
   }
 };
+
+export const get_flight_orbit_height = (
+  from_lat, from_lon,
+  to_lat, to_lon,
+  cur_lat, cur_lon,
+) => {
+  const dis = calc_shortest_dis(from_lon, from_lat, to_lon, to_lat);
+  const cur_dis = calc_shortest_dis(from_lon, from_lat, cur_lon, cur_lat);
+  const dis_r = dis / 2;
+  const height = dis_r / 30 - (cur_dis - dis_r) ** 2 / (dis_r * 30);
+  return height;
+};
+
+export const get_flight_orbit_height_precise = (
+  from_lat, from_lon,
+  to_lat, to_lon,
+  cur_lat, cur_lon,
+) => {
+  const dis = calc_shortest_dis(from_lon, from_lat, to_lon, to_lat);
+  const cur_dis = calc_shortest_dis(from_lon, from_lat, cur_lon, cur_lat);
+  const dis_r = dis / 2;
+  const height = ((1 - ((cur_dis - dis_r) ** 2) / (dis_r * dis_r)) * (dis_r / 2)) ** (1 / 2);
+  return height;
+};
+
+export const draw_line = (x_values, y_values, z_values, options, THREE, container) => {
+
+  var line_geom = new THREE.Geometry();
+  createVertexForEachPoint(line_geom, x_values, y_values, z_values, THREE);
+
+  var line_material = new THREE.LineBasicMaterial(options);
+  var line = new THREE.Line(line_geom, line_material);
+  container.add(line);
+}
+
+const createVertexForEachPoint = (object_geometry, values_axis1, values_axis2, values_axis3, THREE) => {
+  for (var i = 0; i < values_axis1.length; i++) {
+      object_geometry.vertices.push(new THREE.Vector3(values_axis1[i],
+          values_axis2[i], values_axis3[i]));
+  }
+}
