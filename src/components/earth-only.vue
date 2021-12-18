@@ -49,6 +49,7 @@ export default {
     Plane,
   },
   mounted() {
+    console.log('into earth onload only----------!');
     this.drawEarth();
   },
   computed: {

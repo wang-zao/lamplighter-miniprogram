@@ -38,7 +38,9 @@
 	import Vue from 'vue';
   import store from '@/store/index.js'    
 	import FlyUfoShowcase from '../../components/fly-ufo-showcase.vue'
-	import { TestModal, UserModel } from '../../api/index';
+	import { TestModal, UserModel } from '@/api/index.js';
+	import API from '@/api/index.ts';
+	// import service from '@/api/https';
 	export default Vue.extend({
 		data() {
 			return {
@@ -46,6 +48,7 @@
 			}
 		},
 		onLoad() {
+			this.testAxios();
 			this.login();
 			this.getUserProfile();
 			this.getTestData();
@@ -56,6 +59,13 @@
 				uni.navigateTo({
 					url: '/pages/select-world/select-world'
 				})
+			},
+			async testAxios() {
+				console.log('testAxios');
+				const res = await API.getGameQuestions(1);
+				const res2 = await API.getAllCategories();
+				console.log('tested result===', res);
+				console.log('tested result===', res2);
 			},
 			getSystemInfo() {
 				wx.getSystemInfo({

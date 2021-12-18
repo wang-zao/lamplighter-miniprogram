@@ -1,6 +1,6 @@
 <template>
 	<view class="earth_wrapper">
-		<!-- <view>earth</view> -->
+		<view>earth</view>
       <canvas
         type="webgl"
         id="webgl"
@@ -42,6 +42,7 @@
           />
         </cover-view> -->
       </canvas>
+		<view>earth end</view>
 	</view>
 </template>
 
@@ -70,7 +71,7 @@ import EndPage from '@/components/end-page.vue';
 
 export default Vue.extend({
 // export default {
-  name: 'Earth',
+  name: 'EarthGlobe',
   props: {
     currentCity: {
       type: Object,
@@ -104,8 +105,8 @@ export default Vue.extend({
       // showingAbstractModal: false,
       earthColorLighter: '#51adcf',
       earthColorDarker: '#0278ae',
-      // earthColorBackground: '#dbf619',
-      earthColorBackground: '#ecfaf3',
+      earthColorBackground: '#dbf619',
+      // earthColorBackground: '#ecfaf3',
       height_array: [],
       flyTimeSpan: 1000,
       flyAnimationFreq: 25,
@@ -122,7 +123,7 @@ export default Vue.extend({
     FlyControlCrossX,
   },
   mounted() {
-    console.log('into earth onload of old earth!----------');
+    console.log('into earth onload!----------');
     this.drawEarth();
   },
   computed: {
@@ -156,39 +157,55 @@ export default Vue.extend({
       // this.$emit('clickedOneDirection', direction)
     },
     drawEarth() {
+      console.log('drawEarth!!!!!!!!')
       uni.createSelectorQuery()
         .in(this)
         .select('#webgl')
         .node()
         .exec((res) => {
-            const canvas = res[0].node;
-            this.canvas = canvas;
-            const width = res[0].width
-            const height = res[0].height
-            // const dpr = uni.getSystemInfoSync().pixelRatio;
-            // console.log('-----------canvas')
-            // console.log('-----------canvas')
-            // console.log('-----------canvas', canvas)
-            // this.canvas._ctx.canvas.width = this.canvasWidth * 2;
-            // this.canvas._ctx.canvas.height = this.canvasHeight * 2;
-            // this.canvas.width = this.canvasWidth * 2;
-            // this.canvas.height = this.canvasHeight * 2;
-            // this.canvas.style.width = `${this.canvasWidth * 2}px`;
-            // this.canvas.style.height = `${this.canvasHeight * 2}px`;
-            // this.canvas._ctx.scale(2,2);
-            // ctx.scale(dpr, dpr);
-            // console.log('-----------canvas2', canvas)
-            const threeObj = createScopedThreejs(canvas);
-            this.globalTHREE = threeObj;
-            this.renderEarth(threeObj);
-            // 下面这两行用来调整dpi，必须放在canvas requestAnimateFrame之后，摸索了半天，靠
-            this.canvas.width = this.canvasWidth * 2;
-            this.canvas.height = this.canvasHeight * 2;
+          console.log('res')
+          console.log('locating res', res)
+          const canvas = res[0].node;
+
+          let ctx = canvas.getContext("webgl");
+          ctx.clearColor(1, 0, 0, 1);
+          ctx.clear(ctx.COLOR_BUFFER_BIT);
+          console.log('ctx', ctx)
+
+          this.canvas = canvas;
+          const width = res[0].width
+          const height = res[0].height
+          const threeObj = createScopedThreejs(canvas);
+          this.globalTHREE = threeObj;
+          console.log('globalTHREE', this.globalTHREE)
+          console.log('threeObj', threeObj)
+          this.renderEarth(threeObj);
+          // 下面这两行用来调整dpi，必须放在canvas requestAnimateFrame之后，摸索了半天，靠
+          // this.canvas.width = this.canvasWidth * 2;
+          // this.canvas.height = this.canvasHeight * 2;
 
         });
+      console.log('drawEarth okkkkk!!!!!!!!')
+      
+    },
+    async sleepWhileLoading() {
+      let sleepCount = 0;
+      while (!this.globalTHREE) {
+        sleepCount += 1;
+        await new Promise(r => setTimeout(r, 200));
+        console.log('sleepCount', sleepCount);
+        if (sleepCount > 20) {
+          break;
+        }
+      }
+      return;
     },
     // convertLatLngToXyz(lat, lng, radius) {
-    convertLatLngToXyz(lat, lng, radius, THREE) {
+    async convertLatLngToXyz(lat, lng, radius, THREE) {
+      // await this.sleepWhileLoading();
+      if (!this.globalTHREE) {
+        return { x: 0, y: 0, z: 0 };
+      }
       const phi = (90 - lat) * Math.PI / 180,
         theta = (180 - lng) * Math.PI / 180,
         position = new THREE.Vector3();
@@ -333,7 +350,7 @@ export default Vue.extend({
       }, 10);
     },
     async renderEarth(THREE) {
-
+      console.log(' into renderEarth');
       // const res = await uni.getSystemInfo();
       const scene = new THREE.Scene();
       this.globalScene = scene;
@@ -376,24 +393,30 @@ export default Vue.extend({
       
 
       // Draw the GeoJSON
-      const test_json = ocean;
-      drawThreeGeo(
-        test_json,
-        this.earthRadius,
-        'sphere',
-        { color: '#4b5aa3' },
-        scene,
-        THREE,
-      );
+      // const test_json = ocean;
+      // drawThreeGeo(
+      //   test_json,
+      //   this.earthRadius,
+      //   'sphere',
+      //   { color: '#4b5aa3' },
+      //   scene,
+      //   THREE,
+      // );
+      console.log('almost  outof renderEarth');
 
       //Render the image
       const render = () => {
           // controls.update();
+          // console.log('rendering!')
           this.canvas.requestAnimationFrame(render);
           renderer.setClearColor(this.earthColorBackground, 1);
+          
           renderer.render(scene, this.camera);
       }
       render();
+
+      console.log(' outof renderEarth', scene);
+
     },
     drawSpecificPoints(THREE, sphere) {
       const coords = [
