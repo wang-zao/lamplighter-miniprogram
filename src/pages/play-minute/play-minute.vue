@@ -12,7 +12,8 @@
         :nextCity="nextCity"
       />
     </view>
-    <earth
+    <view>this is earth</view>
+    <earth-globe
       class="content_panel earth_panel"
       ref="flyingEarth"
       @renderCompleted="showAllCoverViews"
@@ -55,6 +56,7 @@
 <script>
 	import Vue from 'vue';
   import store from '@/store/index.js'    
+	import API from '@/api/index.ts';
   import { GameModal } from '../../api/index';
   import InfoPanel from './components/info-panel.vue';
   import OperationPanel from './components/operation-panel.vue';
@@ -62,7 +64,8 @@
   // import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
   // import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
   import StartPage from '@/components/start-page.vue';
-  import Earth from '@/components/earth.vue';
+  // import Earth from '@/components/earth.vue';
+  import EarthGlobe from '@/components/earth-globe.vue';
 	import { falseCityData } from '@/utils/data';
 	import {
     calc_shortest_dis,
@@ -78,7 +81,7 @@
 			StartPage,
 			InfoPanel,
 			OperationPanel,
-			Earth,
+			EarthGlobe,
 		},
 		data() {
 			return {
@@ -120,30 +123,33 @@
 		},
 		methods: {
       async init() {
-        console.log('initing')
+        console.log('initing-------------------------')
         this.showStartPage();
         // this.startTimeLoop();
         await this.getCityData();
         this.cityQueuePopOne(true);
         this.cityQueuePopOne(true);
-        this.$refs.flyingEarth.flyFromOneToAnother(
-          0,
-          0,
-          this.currentCity.lat,
-          this.currentCity.lon,
-        );
+        // this.$refs.flyingEarth.flyFromOneToAnother(
+        //   0,
+        //   0,
+        //   this.currentCity.lat,
+        //   this.currentCity.lon,
+        // );
         this.calcAnswer();
-        this.$refs.flyingEarth.allowDrawOrbit();
+        // this.$refs.flyingEarth.allowDrawOrbit();
         console.log('init fiinised')
       },
       async getCityData() {
         try {
           const gameId = store.state.selectedGameId;
-          const { list } = await GameModal.getGameQuestions(gameId);
+          console.log('gameId', gameId)
+          // const { list } = await GameModal.getGameQuestions(gameId);
+				  const list = await API.getGameQuestions(gameId);
           console.log('getGameQuestionsgetGameQuestions', list)
-          list.forEach(i => {
-            this.cityList.push(i);
-          });
+          // list.forEach(i => {
+          //   this.cityList.push(i);
+          // });
+          this.cityList = list.sort((a, b) => Number(a.id) - Number(b.id));
           //  = list;
         } catch (e) {
           
@@ -195,7 +201,7 @@
       cityQueuePopOne(withoutAnimation = true) {
         if (withoutAnimation) {
           this.currentCity = this.nextCity;
-          this.nextCity = { ...this.cityList.pop(0) };
+          this.nextCity = { ...this.cityList.shift() };
           return;
         }
         this.anmtCtrl.answerCorrectAnimationStep1 = true;
@@ -204,7 +210,7 @@
           this.anmtCtrl.answerCorrectAnimationStep1 = false;
           this.anmtCtrl.answerCorrectAnimationStep2 = true;
           this.currentCity = this.nextCity;
-          this.nextCity = { ...this.cityList.pop(0) };
+          this.nextCity = { ...this.cityList.shift() };
           this.calcAnswer();
         }, 600);
         setTimeout(() => {
@@ -213,8 +219,10 @@
         
       },
       cityQueueBrokeOne() {
-        this.nextCity = { ...this.cityList.pop(0) };
-        this.calcAnswer();
+        setTimeout(() => {
+          this.dataCtrl.nextCity = { ...this.dataCtrl.cityList.shift() };
+          this.calcAnswer();
+        }, 600);
       },
       showAllCoverViews() {
         setTimeout(() => {

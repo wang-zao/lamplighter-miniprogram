@@ -97,6 +97,8 @@
 		// margin: auto;
 		text-align: center;
 		line-height: 2rem;
+    background: linear-gradient(90deg, #eeeedd 10%, #fff 40%)
+
 	}
 }
 </style>

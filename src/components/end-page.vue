@@ -84,7 +84,7 @@
       },
     },
 		created() {
-      this.startTimeLoop();
+      // this.startTimeLoop();
 		},
 		methods: {
 			onClick(direction) {
@@ -210,6 +210,10 @@ $general-panel-width: 60vw;
   }
   .end_panel_footer {
     font-size: 1rem;
+    color: #84c4a1;
+    color: #437459;
+    color: #e2c7bc;
+    color: #92553c;
   }
 }
 </style>

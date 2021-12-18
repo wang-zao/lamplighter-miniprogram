@@ -6,7 +6,7 @@
   >
     <view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</view>
     <view class="ticket_placename" @click="changeAbstractVisibility">
-      {{cityInfo.point_name}}
+      {{cityInfo.name_chn}}
     </view>
     <view v-if="showAbstract" class="ticket_abstract">
       {{ abstractContent }}
@@ -48,7 +48,7 @@
         if (this.anmtCtrl.answerCorrectAnimationStep1) {
           return '';
         }
-        return this.cityInfo.abstract;
+        return this.cityInfo.abs_chn;
       }
     },
 		created() {

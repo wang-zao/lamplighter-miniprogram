@@ -45,8 +45,10 @@
   /// <reference path="../../api/index.d.ts" />
 	import Vue from 'vue';
   import store from '@/store/index.js'    
+	import API from '@/api/index.ts';
   import WorldItem from './components/world-item.vue';
-  import { ThemeModal } from '../../api/index';
+    // @ts-ignore
+  import { ThemeModal } from '../../api/index.js';
 	export default Vue.extend({
 		data() {
 			return {
@@ -73,47 +75,50 @@
 				})
 			},
       async getAllThemes() {
-        const { data } = await ThemeModal.getAllThemes();
-        this.alignGameWithTheme(data as GameInfoItem[]);
+        // const { data } = await ThemeModal.getAllThemes();
+				const data = await API.getAllCategories();
+        // const data = await ThemeModal.getAllThemes();
+        console.log('data categories', data);
+        this.alignGameWithTheme(data);
       },
-      alignGameWithTheme(data: GameInfoItem[]) {
-        data.forEach((i: GameInfoItem) => {
-          const {
-            game_chn,
-            game_icon_url,
-            game_id,
-            game_status,
-            id,
-            poi_count,
-            theme_chn,
-            theme_description,
-            theme_id,
-            unlock_min_score,
-            _id,
-          } = i;
+      alignGameWithTheme(data: any) {
+        data.forEach((i: GameCategory) => {
+          // const {
+          //   game_chn,
+          //   game_icon_url: '',
+          //   game_id: '',
+          //   game_status,
+          //   id,
+          //   poi_count,
+          //   theme_chn,
+          //   theme_description,
+          //   theme_id,
+          //   unlock_min_score,
+          //   _id,
+          // } = i;
           const gameInfo = {
-            game_chn,
-            game_icon_url,
-            game_id,
-            game_status,
-            id,
-            unlock_min_score,
-            _id,
+            game_chn: i.category_chn,
+            game_icon_url: '',
+            game_id: i.level_id,
+            disabled: false,
+            id: i.id,
+            unlock_min_score: i.unlock_score,
+            _id: i.id,
           };
           const themeInfo = {
-            poi_count,
-            theme_chn,
-            theme_description,
-            theme_id,
+            poi_count: 4,
+            theme_chn: '选择关卡',
+            theme_description: '',
+            theme_id: 1,
             theme_games: [gameInfo],
           };
-          const existThemeIdx = this.themes_list.findIndex((i: ThemeInfoAligned) => {
-            return i.theme_id === theme_id;
+          const existThemeIdx = this.themes_list.findIndex((i: any) => {
+            return i.theme_id === themeInfo.theme_id;
           });
           if (existThemeIdx >= 0) {
-            (this.themes_list[existThemeIdx] as ThemeInfoAligned).theme_games.push(gameInfo);
+            (this.themes_list[existThemeIdx] as any).theme_games.push(gameInfo);
           } else if (!existThemeIdx || existThemeIdx < 0) {
-            (this.themes_list as ThemeInfoAligned[]).push(themeInfo);
+            (this.themes_list as any).push(themeInfo);
           }
         });
       },
