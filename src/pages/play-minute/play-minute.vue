@@ -24,22 +24,22 @@
       :anmtCtrl="anmtCtrl"
       :judgeCtrl="judgeCtrl"
     />
-    <!-- <view
+    <view
       class="content_panel operation_panel"
     >
-      <fly-control-cross-t
+      <!-- <fly-control-cross-t
         v-show="anmtCtrl.crossTVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
       />
       <fly-control-cross-x
         v-show="anmtCtrl.crossXVisible"
         @clickedOneDirection="e => handleUserSelected(e)"
-      />
+      /> -->
       <operation-panel
         :anmtCtrl="anmtCtrl"
         @clickedOneDirection="e => handleUserSelected(e)"
       />
-    </view> -->
+    </view>
     <!-- <view v-if="anmtCtrl.gameEndPageVisible" class="content_panel end_panel">
       <view class="end_panel_content">
         <view>Game Over</view>
@@ -165,7 +165,7 @@
         setTimeout(() => {
           this.anmtCtrl.gameStartPageVisible = false;
           this.startTimeLoop();
-        }, 3000);
+        }, 1000);
       },
       gameEnd() {
         this.anmtCtrl.gameEndPageVisible = true;
@@ -220,7 +220,7 @@
       },
       cityQueueBrokeOne() {
         setTimeout(() => {
-          this.dataCtrl.nextCity = { ...this.dataCtrl.cityList.shift() };
+          this.nextCity = { ...this.cityList.shift() };
           this.calcAnswer();
         }, 600);
       },
@@ -291,9 +291,9 @@
 <style scoped lang="scss">
 
 $general-paddng: 1rem;
-$section-1-info-height: 40vh;
-$section-2-earth-height: 60vh;
-$section-3-operation-height: 0vh;
+$section-1-info-height: 25vh;
+$section-2-earth-height: 50vh;
+$section-3-operation-height: 25vh;
 
 .play_minute_wrapper {
 	background: $dark-mode-bg;

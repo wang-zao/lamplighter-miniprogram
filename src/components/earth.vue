@@ -17,7 +17,7 @@
           v-if="anmtCtrl.gameEndPageVisible"
           class="canvas_cover_end_panel"
         />
-        <cover-view class="canvas_cover_operation"
+        <!-- <cover-view class="canvas_cover_operation"
           v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
         >
           <fly-control-cross-t
@@ -30,7 +30,7 @@
             v-show="anmtCtrl.crossXVisible"
             @clickedOneDirection="e => clickedOneDirection(e)"
           />
-        </cover-view>
+        </cover-view> -->
         <!-- <cover-view class="canvas_cover_plane"
           v-if="!anmtCtrl.gameStartPageVisible"
         >
