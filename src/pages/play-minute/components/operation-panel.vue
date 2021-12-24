@@ -4,7 +4,7 @@
 		class="operation_panel_wrapper"
 	>
     <cover-view class="canvas_cover_operation"
-      v-if="!anmtCtrl.gameStartPageVisible"
+      v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
     >
       <fly-control-cross-t
         v-show="anmtCtrl.crossTVisible"

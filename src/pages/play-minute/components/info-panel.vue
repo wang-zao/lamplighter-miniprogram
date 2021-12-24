@@ -3,8 +3,8 @@
 		class="info_panel_wrapper"
 	>
     <view class="info_1_scores">
-      <view class="info_grade">{{judgeCtrl.totalMiles.toFixed(0)}}</view>
-      <view class="info_resttime">{{judgeCtrl.restTime}}</view>
+      <view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</view>
+      <view class="info_resttime">⏰ {{judgeCtrl.restTime}}</view>
     </view>
     <view class="info_2_cities">
       <view class="canvas_cover_cityname" v-if="!anmtCtrl.gameStartPageVisible">
@@ -101,22 +101,23 @@
   justify-content: space-between;
   flex-direction: column;
   align-items: center;
+  color: #fff;
   .info_1_scores {
     width: 100vw;
     // height: 
     display: flex;
-    justify-content: space-between;
+    // justify-content: ;
     // background: yellow;
     align-items: flex-end;
     padding: 3vh 0;
     // line-height: 20vh;
     height: 15vh;
     .info_grade {
-      margin-left: 10vw;
+      margin-left: 5vw;
 
     }
     .info_resttime {
-      margin-right: 5vw;
+      margin-left: 2rem;
     }
   }
   .info_2_cities {
@@ -126,7 +127,7 @@
       // left: 50%;
       // transform: translateX(-50%);
       // bottom: 70vh;
-      color: #000;
+      color: #fff;
       width: 90vw;
       padding: 0 10vw;
       display: flex;

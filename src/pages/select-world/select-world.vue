@@ -69,6 +69,7 @@
 				});
       },
 			startPlayingGeneral() {
+        
         store.commit('updateSelectedGameId', this.selectedGameId);
 				uni.navigateTo({
 					url: '/pages/play-minute/play-minute'

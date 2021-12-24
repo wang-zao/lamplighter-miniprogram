@@ -15,21 +15,21 @@
         class="canvas_cover_end_panel"
       />
     </canvas>
-    <cover-view
+    <!-- <cover-view
       class="canvas_cover_operation"
-      v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
+      v-show="showingCtrlCompass"
     >
       <fly-control-cross-t
         :anmtCtrl="anmtCtrl"
-        v-show="anmtCtrl.crossTVisible"
+        v-show="showingCtrlCompass && anmtCtrl.crossTVisible"
         @clickedOneDirection="e => clickedOneDirection(e)"
       />
       <fly-control-cross-x
         :anmtCtrl="anmtCtrl"
-        v-show="anmtCtrl.crossXVisible"
+        v-show="showingCtrlCompass && anmtCtrl.crossXVisible"
         @clickedOneDirection="e => clickedOneDirection(e)"
       />
-    </cover-view>
+    </cover-view> -->
 	</view>
 </template>
 
@@ -40,7 +40,7 @@
  */
 import Vue from 'vue';
 import store from '@/store/index.js'    
-import { contry_json, ocean } from '@/utils/data';
+// import { contry_json, ocean } from '@/utils/data';
 import { get_flight_orbit_height, draw_line } from '@/utils/common';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
@@ -82,9 +82,7 @@ export default Vue.extend({
       earthSurfaceOffset: 10,
       earthColorLighter: '#51adcf',
       earthColorDarker: '#0278ae',
-      earthColorBackground: '#dbf619',
-      // earthBackgroundColor: '#0b2353',
-      earthColorBackground: '#ecfaf3',
+      earthColorBackground: '#0b2353',
       height_array: [],
       flyTimeSpan: 1000,
       flyAnimationFreq: 25,
@@ -113,7 +111,10 @@ export default Vue.extend({
     showingAbstractModalComputed() {
       return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
     },
-    
+    showingCtrlCompass() {
+      // return false;
+      // return !anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible;
+    }
   },
   methods: {
     drawEarth() {
@@ -179,7 +180,8 @@ export default Vue.extend({
     
     async drawEarthSurface(THREE, scene ) {
       const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32);
-      let texture = new THREE.TextureLoader().load('../static/earth_colorful.jpeg');
+      let texture = new THREE.TextureLoader().load('../static/earth-blue-dn-1.jpg');
+      // let texture = new THREE.TextureLoader().load('../static/earth_colorful.jpeg');
 
       texture.minFilter = THREE.LinearFilter;
       const material  = new THREE.MeshBasicMaterial({

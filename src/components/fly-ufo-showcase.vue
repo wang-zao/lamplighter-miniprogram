@@ -46,11 +46,14 @@
 					headNorthTail: anmtCtrl.headNorthTail,
 				}"
 			/>
-			<image
+			<view class="ufo_item_body" >
+				🚁
+			</view>
+			<!-- <image
 				class="ufo_item_body"
 				src="../static/ufo_blue.png"
 				mode="widthFix"
-			/>
+			/> -->
 		</view>
   </view>
 	<view class="city_item">
@@ -65,7 +68,7 @@
 			fadeOutUp: anmtCtrl.fadeOutUp,
 			hided: anmtCtrl.hideCity,
 		}">
-			<view class="animated_city_icon">c</view>
+			<view class="animated_city_icon">{{currentCity.emoji}}</view>
 			<view class="animated_city_text">{{currentCity.name}}</view>
 		</view>
 	</view>
@@ -107,7 +110,8 @@
 				},
 				currentCity: {
 					name: '北京',
-					next: 'south'
+					next: 'south',
+					emoji: '🏬',
 				},
 				leaveCss: '',
 				enterCss: '',
@@ -124,15 +128,18 @@
 				sampleCityList: [
 					{
 						name: '马尼拉',
-						next: 'west'
+						next: 'west',
+						emoji: '🏖',
 					},
 					{
 						name: '阿尔及尔',
-						next: 'north'
+						next: 'north',
+						emoji: '⛰',
 					},
 					{
 						name: '雅典',
-						next: 'east'
+						next: 'east',
+						emoji: '🏛',
 					},
 				]
 			}
@@ -300,6 +307,10 @@
   animation-duration: 1.2s;
 }
 .ufo_item_body {
+	position: absolute;
+	top: -0.5rem;
+	left: 0.5rem;
+	font-size: 3rem;
 	width: 3rem;
 }
 .ufo_item_icon {

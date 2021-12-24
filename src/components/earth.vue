@@ -52,7 +52,7 @@
  */
 import Vue from 'vue';
 import store from '@/store/index.js'    
-import { contry_json, ocean } from '@/utils/data';
+// import { contry_json, ocean } from '@/utils/data';
 import { get_flight_orbit_height, draw_line } from '@/utils/common';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 // import * as THREE from 'three';
@@ -375,16 +375,16 @@ export default Vue.extend({
       // this.drawSpecificPoints(THREE, sphere);
       
 
-      // Draw the GeoJSON
-      const test_json = ocean;
-      drawThreeGeo(
-        test_json,
-        this.earthRadius,
-        'sphere',
-        { color: '#4b5aa3' },
-        scene,
-        THREE,
-      );
+      // // Draw the GeoJSON
+      // const test_json = ocean;
+      // drawThreeGeo(
+      //   test_json,
+      //   this.earthRadius,
+      //   'sphere',
+      //   { color: '#4b5aa3' },
+      //   scene,
+      //   THREE,
+      // );
 
       //Render the image
       const render = () => {

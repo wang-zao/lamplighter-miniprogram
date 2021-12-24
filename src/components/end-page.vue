@@ -40,7 +40,7 @@
       </cover-view>
     </cover-view>
     <cover-view class="end_panel_operations">
-      <cover-view>再来一局</cover-view>
+      <cover-view @click="playAgain">再来一局</cover-view>
       <cover-view>分享</cover-view>
       <cover-view @click="backToHome">首页</cover-view>
     </cover-view>
@@ -95,6 +95,11 @@
 					url: '/pages/index/index'
 				});
       },
+      playAgain() {
+        uni.navigateTo({
+					url: '/pages/play-minute/play-minute'
+				})
+      }
 		}
 	}
 </script>

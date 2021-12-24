@@ -56,8 +56,9 @@
 		},
 		methods: {
 			startGeneral() {
+        store.commit('updateSelectedGameId', 1);
 				uni.navigateTo({
-					url: '/pages/select-world/select-world'
+					url: '/pages/play-minute/play-minute'
 				})
 			},
 			async testAxios() {
@@ -160,8 +161,12 @@ btm_infos: 10%;
 
 
 .button_general {
-	background: $general-bright-button-background;
+	background: transparent;
 	text-align: center;
+	border-radius: 2rem;
+	border: 2px #fff solid;
+	color: #fff;
+
 }
 
 .button_start {
