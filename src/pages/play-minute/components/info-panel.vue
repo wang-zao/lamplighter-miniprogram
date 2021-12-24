@@ -96,7 +96,7 @@
 
 .info_panel_wrapper {
   width: 100%;
-  height: 40vh;
+  height: 25vh;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -110,7 +110,7 @@
     align-items: flex-end;
     padding: 3vh 0;
     // line-height: 20vh;
-    height: 20vh;
+    height: 15vh;
     .info_grade {
       margin-left: 10vw;
 
@@ -120,7 +120,7 @@
     }
   }
   .info_2_cities {
-    height: 20vh;
+    height: 10vh;
     .canvas_cover_cityname {
       // position: fixed;
       // left: 50%;
