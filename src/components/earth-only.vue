@@ -23,7 +23,7 @@
  * @description 
  * @event {Function} click 
  */
-import { contry_json } from '@/utils/data';
+// import { contry_json } from '@/utils/data';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 // import * as THREE from 'three';
 import { createScopedThreejs } from 'threejs-miniprogram';
@@ -238,15 +238,15 @@ export default {
       }
 
       // Draw the GeoJSON
-      const test_json = contry_json;
-      drawThreeGeo(
-        test_json,
-        this.earthRadius,
-        'sphere',
-        { color: '#4b5aa3' },
-        scene,
-        THREE,
-      );
+      // const test_json = contry_json;
+      // drawThreeGeo(
+      //   test_json,
+      //   this.earthRadius,
+      //   'sphere',
+      //   { color: '#4b5aa3' },
+      //   scene,
+      //   THREE,
+      // );
 
       //Render the image
       const render = () => {

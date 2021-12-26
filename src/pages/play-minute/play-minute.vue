@@ -66,7 +66,6 @@
   import StartPage from '@/components/start-page.vue';
   // import Earth from '@/components/earth.vue';
   import EarthGlobe from '@/components/earth-globe.vue';
-	import { falseCityData } from '@/utils/data';
 	import {
     calc_shortest_dis,
     calc_next_direction,
@@ -154,7 +153,6 @@
         } catch (e) {
           
         }
-        // this.cityList = falseCityData;
       },
       checkRestCityDataCapacity() {
         if (this.cityList && this.cityList.length <= 5) {
