@@ -131,6 +131,31 @@ export const calc_next_direction = (x1, y1, x2, y2) => {
   }
 };
 
+export const calc_next_direction_chn = (azimuth) => {
+  switch (true) {
+    case 0 <= azimuth && azimuth < 22.5:
+      return '北';
+    case 22.5 <= azimuth && azimuth < 67.5:
+      return '东北';
+    case 67.5 <= azimuth && azimuth < 112.5:
+      return '东';
+    case 112.5 <= azimuth && azimuth < 157.5:
+      return '东南';
+    case 157.5 <= azimuth && azimuth < 202.5:
+      return '南';
+    case 202.5 <= azimuth && azimuth < 247.5:
+      return '西南';
+    case 247.5 <= azimuth && azimuth < 292.5:
+      return '西';
+    case 292.5 <= azimuth && azimuth < 337.5:
+      return '西北';
+    case 337.5 <= azimuth && azimuth < 360:
+      return '北';
+    default:
+      return '北';
+  }
+};
+
 export const getPenaltyTimeWhenWrong = (userAnswerTime) => {
   if (userAnswerTime && !isNaN(userAnswerTime)) {
     switch (true) {
@@ -240,3 +265,21 @@ const createVertexForEachPoint = (object_geometry, values_axis1, values_axis2, v
           values_axis2[i], values_axis3[i]));
   }
 }
+
+export const getRotateDegFromMatrix = (matrixString) => {
+  const items = matrixString.split(',')
+  const [a,b,c,d,e,f] = items.map(i => parseFloat(i.replace(/[^\d.-]/gi, '')));
+  var aa=Math.round(180*Math.asin(a)/ Math.PI);  
+  var bb=Math.round(180*Math.acos(b)/ Math.PI);  
+  var cc=Math.round(180*Math.asin(c)/ Math.PI);  
+  var dd=Math.round(180*Math.acos(d)/ Math.PI);  
+  var deg=0;  
+  if(aa==bb||-aa==bb){  
+    deg=dd;  
+  }else if(-aa+bb==180){  
+    deg=180+cc;  
+  }else if(aa+bb==180){  
+    deg=360-cc||360-dd;  
+  }  
+  return deg>=360 ? 0 : deg;  
+}  
