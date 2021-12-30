@@ -6,14 +6,15 @@
     <cover-view class="canvas_cover_operation"
       v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
     >
-      <fly-control-cross-t
+      <compass />
+      <!-- <fly-control-cross-t
         v-show="anmtCtrl.crossTVisible"
         @clickedOneDirection="e => clickedOneDirection(e)"
       />
       <fly-control-cross-x
         v-show="anmtCtrl.crossXVisible"
         @clickedOneDirection="e => clickedOneDirection(e)"
-      />
+      /> -->
     </cover-view>
 	</view>
 </template>
@@ -27,12 +28,14 @@
 
   import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
   import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
+  import Compass from '@/components/compass.vue';
 
 	export default {
 		name: 'OperationPanel',
     components: {
       FlyControlCrossT,
       FlyControlCrossX,
+      Compass,
     },
 		props: {
       anmtCtrl: {
