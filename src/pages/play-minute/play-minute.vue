@@ -54,9 +54,9 @@
 </template>
 
 <script>
-	import Vue from 'vue';
+  import Vue from 'vue';
   import store from '@/store/index.js'    
-	import API from '@/api/index.ts';
+  import API from '@/api/index.ts';
   import { GameModal } from '../../api/index';
   import InfoPanel from './components/info-panel.vue';
   import OperationPanel from './components/operation-panel.vue';
@@ -66,7 +66,7 @@
   import StartPage from '@/components/start-page.vue';
   // import Earth from '@/components/earth.vue';
   import EarthGlobe from '@/components/earth-globe.vue';
-	import {
+  import {
     calc_shortest_dis,
     calc_next_direction,
     calc_azimuth,
@@ -75,20 +75,20 @@
     getScoreFromDegreeDistance,
     isDegreeWithinRange,
   } from '@/utils/common';
-	export default Vue.extend({
-		components: {
-			// FlyUfoResponsive,
-			// FlyControlCrossT,
-			// FlyControlCrossX,
-			StartPage,
-			InfoPanel,
-			OperationPanel,
-			EarthGlobe,
-		},
-		data() {
-			return {
-				currentCity: {},
-				nextCity: {},
+  export default Vue.extend({
+    components: {
+      // FlyUfoResponsive,
+      // FlyControlCrossT,
+      // FlyControlCrossX,
+      StartPage,
+      InfoPanel,
+      OperationPanel,
+      EarthGlobe,
+    },
+    data() {
+      return {
+        currentCity: {},
+        nextCity: {},
         anmtCtrl: {
           crossTVisible: false,
           crossXVisible: false,
@@ -105,26 +105,26 @@
           switchCityTime: 700,
           operationPanelDisabled: false,
         },
-				judgeCtrl: {
-					correctDirection: '',
-					correctDeg: 0,
-					distance: '',
+        judgeCtrl: {
+          correctDirection: '',
+          correctDeg: 0,
+          distance: '',
           totalMiles: 0,
           restTime: 60,
           startAnswerCurQuestionTime: 60,
-					userSelect: '',
-					isCorrect: false,
+          userSelect: '',
+          isCorrect: false,
           isUserSelected: false,
           correctCityList: [],
           wrongCityList: [],
-				},
+        },
         cityList: [],
-			}
-		},
-		onLoad() {
+      }
+    },
+    onLoad() {
       this.init();
-		},
-		methods: {
+    },
+    methods: {
       async init() {
         console.log('initing-------------------------')
         this.showStartPage();
@@ -147,7 +147,7 @@
           const gameId = store.state.selectedGameId;
           console.log('gameId', gameId)
           // const { list } = await GameModal.getGameQuestions(gameId);
-				  const list = await API.getGameQuestions(gameId);
+          const list = await API.getGameQuestions(gameId);
           console.log('getGameQuestionsgetGameQuestions', list)
           // list.forEach(i => {
           //   this.cityList.push(i);
@@ -234,9 +234,9 @@
         }, 1000);
       },
       // backToHome() {
-			// 	uni.navigateTo({
-			// 		url: '/pages/index/index'
-			// 	});
+      //   uni.navigateTo({
+      //     url: '/pages/index/index'
+      //   });
       // },
       async handleUserSelected(selectedDegree) {
         console.log('handleUserSelected===', selectedDegree)
@@ -246,7 +246,6 @@
         this.anmtCtrl.operationPanelDisabled = true;
         const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
         this.anmtCtrl.showingAbstractModal = false;
-        // if (selectedDegree === this.judgeCtrl.correctDirection) {
         if (isDegreeWithinRange(selectedDegree, this.judgeCtrl.correctDeg)) {
           // 1.两秒防抖
           setTimeout(() => {
@@ -254,7 +253,6 @@
           }, this.anmtCtrl.switchCityTime);
           // 2.计算得分
           this.judgeCtrl.totalMiles += getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
-          // this.judgeCtrl.totalMiles += getScoreWhenCorrect(userAnswerTime);
           // 3.计入列表
           if (!this.judgeCtrl.correctCityList.includes(this.nextCity.point_name)) {
             this.judgeCtrl.correctCityList.push(this.nextCity.point_name);
@@ -290,8 +288,8 @@
         this.anmtCtrl.showingAbstractModal = target;
         this.anmtCtrl.abstractContent = abstract;
       },
-		},
-	});
+    },
+  });
 </script>
 
 <style scoped lang="scss">
@@ -302,7 +300,7 @@ $section-2-earth-height: 50vh;
 $section-3-operation-height: 25vh;
 
 .play_minute_wrapper {
-	background: $dark-mode-bg;
+  background: $dark-mode-bg;
   width: 100vw;
   height: 100vh;
 }

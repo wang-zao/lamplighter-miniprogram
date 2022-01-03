@@ -307,7 +307,5 @@ export const getScoreFromDegreeDistance = (selectedDeg, correctDeg) => {
   const leftDistance = (360 + selectedDeg - correctDeg) % 360;
   const rightDistance = (360 + correctDeg - selectedDeg) % 360;
   const score = 10 - Math.round(Math.min(leftDistance, rightDistance) / (bias * 2) * 9);
-  console.log('this is input', selectedDeg, correctDeg)
-  console.log('this is score', score)
   return score;
 }
