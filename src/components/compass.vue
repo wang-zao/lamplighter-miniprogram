@@ -81,6 +81,8 @@
           computedStyle: ['transform']
         },(data)=>{
           this.currentDegree = getRotateDegFromMatrix(data.transform)
+          // console.log('currentDegree set===', this.currentDegree)
+          this.$emit('clickedOneDirection', this.currentDegree);
         }).exec()
       }
     }
@@ -138,7 +140,7 @@ $needle-radius: 4vw;
     .airplane_background {
       width: 2 * $aircraft-radius;
       height: 2 * $aircraft-radius;
-      animation: rotate 1s infinite linear;
+      animation: rotate 2s infinite linear;
       animation-play-state: paused;
     }
     .airplane_paused {

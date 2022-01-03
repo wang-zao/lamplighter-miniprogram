@@ -282,4 +282,32 @@ export const getRotateDegFromMatrix = (matrixString) => {
     deg=360-cc||360-dd;  
   }  
   return deg>=360 ? 0 : deg;  
-}  
+}
+
+export const isDegreeWithinRange = (selectedDeg, correctDeg) => {
+  const bias = 90;
+  if (bias <= correctDeg && correctDeg <= 360 - bias) {
+    const leftLimit = correctDeg - bias;
+    const rightLimit = correctDeg + bias;
+    return leftLimit <= selectedDeg && selectedDeg <= rightLimit;
+  } else if (correctDeg < bias) {
+    const leftLimit = 360 + correctDeg - bias;
+    const rightLimit = correctDeg + bias;
+    return (leftLimit <= selectedDeg) || (selectedDeg <= rightLimit);
+  } else if (correctDeg > 360 - bias) {
+    const leftLimit = correctDeg - bias;
+    const rightLimit = correctDeg + bias - 360;
+    return (leftLimit <= selectedDeg) || (selectedDeg <= rightLimit);
+  }
+  return false;
+}
+
+export const getScoreFromDegreeDistance = (selectedDeg, correctDeg) => {
+  const bias = 90;
+  const leftDistance = (360 + selectedDeg - correctDeg) % 360;
+  const rightDistance = (360 + correctDeg - selectedDeg) % 360;
+  const score = 10 - Math.round(Math.min(leftDistance, rightDistance) / (bias * 2) * 9);
+  console.log('this is input', selectedDeg, correctDeg)
+  console.log('this is score', score)
+  return score;
+}

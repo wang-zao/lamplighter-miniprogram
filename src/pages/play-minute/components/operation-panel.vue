@@ -6,7 +6,9 @@
     <cover-view class="canvas_cover_operation"
       v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
     >
-      <compass />
+      <compass
+        @clickedOneDirection="e => clickedOneDirection(e)"
+      />
       <!-- <fly-control-cross-t
         v-show="anmtCtrl.crossTVisible"
         @clickedOneDirection="e => clickedOneDirection(e)"

@@ -69,8 +69,11 @@
 	import {
     calc_shortest_dis,
     calc_next_direction,
+    calc_azimuth,
     getPenaltyTimeWhenWrong,
     getScoreWhenCorrect,
+    getScoreFromDegreeDistance,
+    isDegreeWithinRange,
   } from '@/utils/common';
 	export default Vue.extend({
 		components: {
@@ -104,6 +107,7 @@
         },
 				judgeCtrl: {
 					correctDirection: '',
+					correctDeg: 0,
 					distance: '',
           totalMiles: 0,
           restTime: 60,
@@ -183,6 +187,7 @@
         const n = this.nextCity;
         this.judgeCtrl.distance = calc_shortest_dis(c.lon, c.lat, n.lon, n.lat);
         this.judgeCtrl.correctDirection = calc_next_direction(c.lon, c.lat, n.lon, n.lat);
+        this.judgeCtrl.correctDeg = calc_azimuth(c.lon, c.lat, n.lon, n.lat);
         this.allowUserInput();
       },
       allowUserInput() {
@@ -233,20 +238,23 @@
 			// 		url: '/pages/index/index'
 			// 	});
       // },
-      async handleUserSelected(direction) {
+      async handleUserSelected(selectedDegree) {
+        console.log('handleUserSelected===', selectedDegree)
         if (this.anmtCtrl.operationPanelDisabled) {
           return;
         }
         this.anmtCtrl.operationPanelDisabled = true;
         const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
         this.anmtCtrl.showingAbstractModal = false;
-        if (direction === this.judgeCtrl.correctDirection) {
+        // if (selectedDegree === this.judgeCtrl.correctDirection) {
+        if (isDegreeWithinRange(selectedDegree, this.judgeCtrl.correctDeg)) {
           // 1.两秒防抖
           setTimeout(() => {
             this.anmtCtrl.operationPanelDisabled = false;
           }, this.anmtCtrl.switchCityTime);
           // 2.计算得分
-          this.judgeCtrl.totalMiles += getScoreWhenCorrect(userAnswerTime);
+          this.judgeCtrl.totalMiles += getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
+          // this.judgeCtrl.totalMiles += getScoreWhenCorrect(userAnswerTime);
           // 3.计入列表
           if (!this.judgeCtrl.correctCityList.includes(this.nextCity.point_name)) {
             this.judgeCtrl.correctCityList.push(this.nextCity.point_name);
