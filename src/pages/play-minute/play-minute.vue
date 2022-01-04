@@ -110,8 +110,9 @@
           correctDeg: 0,
           distance: '',
           totalMiles: 0,
-          restTime: 60,
-          startAnswerCurQuestionTime: 60,
+          restTime: 10,
+          // startAnswerCurQuestionTime: 60,
+          countdownStartTime:10,  //按每题计时
           userSelect: '',
           isCorrect: false,
           isUserSelected: false,
@@ -244,7 +245,7 @@
           return;
         }
         this.anmtCtrl.operationPanelDisabled = true;
-        const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
+        // const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
         this.anmtCtrl.showingAbstractModal = false;
         if (isDegreeWithinRange(selectedDegree, this.judgeCtrl.correctDeg)) {
           // 1.两秒防抖
@@ -274,15 +275,16 @@
           setTimeout(() => {
             this.anmtCtrl.operationPanelDisabled = false;
           }, this.anmtCtrl.switchCityTime);
-          this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
+          // this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
           if (!this.judgeCtrl.wrongCityList.includes(this.nextCity.point_name)) {
             this.judgeCtrl.wrongCityList.push(this.nextCity.point_name);
           }
           this.cityQueueBrokeOne();
           // this.calcAnswer();
+          this.gameEnd();
         }
         // 重设开始答题时间，这个还需要调整，引入switch_time之后
-        this.judgeCtrl.startAnswerCurQuestionTime = this.judgeCtrl.restTime;
+        this.judgeCtrl.restTime = this.judgeCtrl.countdownStartTime;
       },
       changeAbstractVisibility(target, abstract) {
         this.anmtCtrl.showingAbstractModal = target;
