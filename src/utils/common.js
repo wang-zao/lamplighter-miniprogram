@@ -1,3 +1,8 @@
+import {
+  PLAYING_ALLOWED_AZIMUSH_BIAS,
+  PLAYING_MAX_SCORE_PER_QUESTION,
+} from './constants';
+
 export const directionMapNWSE = {
   east: {
     leaveCss: 'fadeOutLeft',
@@ -282,4 +287,29 @@ export const getRotateDegFromMatrix = (matrixString) => {
     deg=360-cc||360-dd;  
   }  
   return deg>=360 ? 0 : deg;  
-}  
+}
+
+const getMinDistance = (selectedDeg, correctDeg) => {
+  const { bias, base } = {
+    bias: PLAYING_ALLOWED_AZIMUSH_BIAS,
+    base: PLAYING_MAX_SCORE_PER_QUESTION,
+  }
+  const getDistance = (a, b) => (360 + a - b) % 360;
+  const minDistance = Math.min(
+    getDistance(selectedDeg, correctDeg),
+    getDistance(correctDeg, selectedDeg), 
+  );
+  return {
+    isDegreeWithinRange: minDistance <= bias,
+    score: base - Math.round(minDistance / bias * (base - 1)),
+  }
+}
+
+
+export const isDegreeWithinRange = (selectedDeg, correctDeg) => {
+  return getMinDistance(selectedDeg, correctDeg).isDegreeWithinRange;
+}
+
+export const getScoreFromDegreeDistance = (selectedDeg, correctDeg) => {
+  return getMinDistance(selectedDeg, correctDeg).score;
+}

@@ -54,9 +54,9 @@
 </template>
 
 <script>
-	import Vue from 'vue';
+  import Vue from 'vue';
   import store from '@/store/index.js'    
-	import API from '@/api/index.ts';
+  import API from '@/api/index.ts';
   import { GameModal } from '../../api/index';
   import InfoPanel from './components/info-panel.vue';
   import OperationPanel from './components/operation-panel.vue';
@@ -66,26 +66,29 @@
   import StartPage from '@/components/start-page.vue';
   // import Earth from '@/components/earth.vue';
   import EarthGlobe from '@/components/earth-globe.vue';
-	import {
+  import {
     calc_shortest_dis,
     calc_next_direction,
+    calc_azimuth,
     getPenaltyTimeWhenWrong,
     getScoreWhenCorrect,
+    getScoreFromDegreeDistance,
+    isDegreeWithinRange,
   } from '@/utils/common';
-	export default Vue.extend({
-		components: {
-			// FlyUfoResponsive,
-			// FlyControlCrossT,
-			// FlyControlCrossX,
-			StartPage,
-			InfoPanel,
-			OperationPanel,
-			EarthGlobe,
-		},
-		data() {
-			return {
-				currentCity: {},
-				nextCity: {},
+  export default Vue.extend({
+    components: {
+      // FlyUfoResponsive,
+      // FlyControlCrossT,
+      // FlyControlCrossX,
+      StartPage,
+      InfoPanel,
+      OperationPanel,
+      EarthGlobe,
+    },
+    data() {
+      return {
+        currentCity: {},
+        nextCity: {},
         anmtCtrl: {
           crossTVisible: false,
           crossXVisible: false,
@@ -102,25 +105,27 @@
           switchCityTime: 700,
           operationPanelDisabled: false,
         },
-				judgeCtrl: {
-					correctDirection: '',
-					distance: '',
+        judgeCtrl: {
+          correctDirection: '',
+          correctDeg: 0,
+          distance: '',
           totalMiles: 0,
-          restTime: 60,
-          startAnswerCurQuestionTime: 60,
-					userSelect: '',
-					isCorrect: false,
+          restTime: 10,
+          // startAnswerCurQuestionTime: 60,
+          countdownStartTime:10,  //按每题计时
+          userSelect: '',
+          isCorrect: false,
           isUserSelected: false,
           correctCityList: [],
           wrongCityList: [],
-				},
+        },
         cityList: [],
-			}
-		},
-		onLoad() {
+      }
+    },
+    onLoad() {
       this.init();
-		},
-		methods: {
+    },
+    methods: {
       async init() {
         console.log('initing-------------------------')
         this.showStartPage();
@@ -143,7 +148,7 @@
           const gameId = store.state.selectedGameId;
           console.log('gameId', gameId)
           // const { list } = await GameModal.getGameQuestions(gameId);
-				  const list = await API.getGameQuestions(gameId);
+          const list = await API.getGameQuestions(gameId);
           console.log('getGameQuestionsgetGameQuestions', list)
           // list.forEach(i => {
           //   this.cityList.push(i);
@@ -183,6 +188,7 @@
         const n = this.nextCity;
         this.judgeCtrl.distance = calc_shortest_dis(c.lon, c.lat, n.lon, n.lat);
         this.judgeCtrl.correctDirection = calc_next_direction(c.lon, c.lat, n.lon, n.lat);
+        this.judgeCtrl.correctDeg = calc_azimuth(c.lon, c.lat, n.lon, n.lat);
         this.allowUserInput();
       },
       allowUserInput() {
@@ -229,24 +235,25 @@
         }, 1000);
       },
       // backToHome() {
-			// 	uni.navigateTo({
-			// 		url: '/pages/index/index'
-			// 	});
+      //   uni.navigateTo({
+      //     url: '/pages/index/index'
+      //   });
       // },
-      async handleUserSelected(direction) {
+      async handleUserSelected(selectedDegree) {
+        console.log('handleUserSelected===', selectedDegree)
         if (this.anmtCtrl.operationPanelDisabled) {
           return;
         }
         this.anmtCtrl.operationPanelDisabled = true;
-        const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
+        // const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
         this.anmtCtrl.showingAbstractModal = false;
-        if (direction === this.judgeCtrl.correctDirection) {
+        if (isDegreeWithinRange(selectedDegree, this.judgeCtrl.correctDeg)) {
           // 1.两秒防抖
           setTimeout(() => {
             this.anmtCtrl.operationPanelDisabled = false;
           }, this.anmtCtrl.switchCityTime);
           // 2.计算得分
-          this.judgeCtrl.totalMiles += getScoreWhenCorrect(userAnswerTime);
+          this.judgeCtrl.totalMiles += getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
           // 3.计入列表
           if (!this.judgeCtrl.correctCityList.includes(this.nextCity.point_name)) {
             this.judgeCtrl.correctCityList.push(this.nextCity.point_name);
@@ -268,22 +275,23 @@
           setTimeout(() => {
             this.anmtCtrl.operationPanelDisabled = false;
           }, this.anmtCtrl.switchCityTime);
-          this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
+          // this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
           if (!this.judgeCtrl.wrongCityList.includes(this.nextCity.point_name)) {
             this.judgeCtrl.wrongCityList.push(this.nextCity.point_name);
           }
           this.cityQueueBrokeOne();
           // this.calcAnswer();
+          this.gameEnd();
         }
         // 重设开始答题时间，这个还需要调整，引入switch_time之后
-        this.judgeCtrl.startAnswerCurQuestionTime = this.judgeCtrl.restTime;
+        this.judgeCtrl.restTime = this.judgeCtrl.countdownStartTime;
       },
       changeAbstractVisibility(target, abstract) {
         this.anmtCtrl.showingAbstractModal = target;
         this.anmtCtrl.abstractContent = abstract;
       },
-		},
-	});
+    },
+  });
 </script>
 
 <style scoped lang="scss">
@@ -294,7 +302,7 @@ $section-2-earth-height: 50vh;
 $section-3-operation-height: 25vh;
 
 .play_minute_wrapper {
-	background: $dark-mode-bg;
+  background: $dark-mode-bg;
   width: 100vw;
   height: 100vh;
 }
