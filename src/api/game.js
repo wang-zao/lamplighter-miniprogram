@@ -21,10 +21,9 @@ class GameModal {
     return wx.cloud.database({ env: this.env }).serverDate({ offset })
   }
 
-  async getGameQuestions(gameId) {
-    await this.initDB(gameId);
-    console.log('this.model', this.model)
-    const size = 10;
+  async getGameQuestions(collectionName) {
+    await this.initDB(collectionName);
+    const size = 20;
     try {
       return this.model.aggregate()
       .sample({ size })

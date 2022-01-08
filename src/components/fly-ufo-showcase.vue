@@ -1,6 +1,6 @@
 <template>
 <view class="ufo_wrapper">
-	<view >place holder</view>
+	<view class="ufo_placeholder">place holder</view>
 	<view class="dialog_wrap dialog_right shake" :class="{
 		dialog_shaking: anmtCtrl.isDialogShaking,
 		dialog_pausing: anmtCtrl.isDialogPausing,
@@ -70,6 +70,7 @@
 		}">
 			<view class="animated_city_icon">{{currentCity.emoji}}</view>
 			<view class="animated_city_text">{{currentCity.name}}</view>
+			<view class="animated_city_backtext">{{currentCity.direction}}</view>
 		</view>
 	</view>
 </view>
@@ -112,6 +113,7 @@
 					name: '北京',
 					next: 'south',
 					emoji: '🏬',
+					direction: '东',
 				},
 				leaveCss: '',
 				enterCss: '',
@@ -127,19 +129,22 @@
 				},
 				sampleCityList: [
 					{
-						name: '马尼拉',
+						name: '新加坡市',
 						next: 'west',
 						emoji: '🏖',
+						direction: '南',
 					},
 					{
-						name: '阿尔及尔',
+						name: '开罗',
 						next: 'north',
 						emoji: '⛰',
+						direction: '西',
 					},
 					{
-						name: '雅典',
+						name: '巴黎',
 						next: 'east',
 						emoji: '🏛',
+						direction: '北',
 					},
 				]
 			}
@@ -232,6 +237,10 @@
 
 .ufo_wrapper {
 	position: relative;
+	.ufo_placeholder {
+		opacity: 0;
+		user-select: none;
+	}
 }
 .dialog_wrap {
 	position: absolute;
@@ -242,6 +251,7 @@
 	height: 2.2rem;
 	transition: .3s ease;
 	animation-iteration-count: infinite;
+	color: #222;
 }
 .dialog_left {
 	right: 60%;
@@ -334,11 +344,24 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	position: relative;
+}
+
+.animated_city_backtext {
+	position: absolute;
+	left: 0;
+	top: 0;
+	font-size: 10rem;
+	opacity: 0.1;
+	margin-left: -5rem;
+	margin-top: -3rem;
+	color: #fff;
 }
 
 .animated_city_text {
 	font-size: .8rem;
 	white-space: nowrap;
+	color: #fff;
 }
 
 .hided {
