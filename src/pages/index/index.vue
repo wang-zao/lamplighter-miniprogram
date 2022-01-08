@@ -4,18 +4,15 @@
 			<fly-ufo-showcase />
 		</view>
 		<view class="mid_buttons">
-			<view class="info_line_1 info_line">
+			<!-- TODO: 用户信息部分等用户登录功能修好后放出 -->
+			<view class="info_line_1 info_line"  v-if="false">
 				<view class="user">wangzao</view>
 				<view class="string">的</view>
 				<view class="game_name">东南西北</view>
 			</view>
-			<view class="info_line_2 info_line">
-				<view class="type">限时模式</view>
+			<view class="info_line_2 info_line"  v-if="false">
+				<view class="type">里程数</view>
 				<view class="kilometer">1232km</view>
-			</view>
-			<view class="info_line_3 info_line">
-				<view class="type">漫游模式</view>
-				<view class="kilometer">12321km</view>
 			</view>
 			<view class="buttons_line_2 buttons_line">
 				<view class="button_start button_general" @click="startGeneral">开始</view>
@@ -48,7 +45,6 @@
 			}
 		},
 		onLoad() {
-			this.testAxios();
 			this.login();
 			this.getUserProfile();
 			this.getTestData();
@@ -60,13 +56,6 @@
 				uni.navigateTo({
 					url: '/pages/play-minute/play-minute'
 				})
-			},
-			async testAxios() {
-				console.log('testAxios');
-				const res = await API.getGameQuestions(1);
-				const res2 = await API.getAllCategories();
-				console.log('tested result===', res);
-				console.log('tested result===', res2);
 			},
 			getSystemInfo() {
 				wx.getSystemInfo({
@@ -118,7 +107,7 @@
 	align-items: center;
 	justify-content: center;
 	background: $dark-mode-bg;
-	color: #6a6a6a;
+	color: #fff;
 	height: 100vh;
 	font-size: 1rem;
 }

@@ -42,6 +42,9 @@ import Vue from 'vue';
 import store from '@/store/index.js'    
 // import { contry_json, ocean } from '@/utils/data';
 import { get_flight_orbit_height, draw_line } from '@/utils/common';
+import {
+  PICTURES_URL,
+} from '@/utils/constants';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
@@ -180,7 +183,7 @@ export default Vue.extend({
     
     async drawEarthSurface(THREE, scene ) {
       const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32);
-      let texture = new THREE.TextureLoader().load('../static/earth-blue-dn-1.jpg');
+      let texture = new THREE.TextureLoader().load(PICTURES_URL.EARTH);
       // let texture = new THREE.TextureLoader().load('../static/earth_colorful.jpeg');
 
       texture.minFilter = THREE.LinearFilter;

@@ -1,6 +1,6 @@
 <template>
 	<cover-view class="start_wrapper" >
-		<cover-view class="start_reminder">连续飞跃正确，可以获得双倍里程哦</cover-view>
+		<cover-view class="start_reminder">{{currentTip}}</cover-view>
 		<cover-view v-if="showingNumbers" class="start_count_down">{{countDownTime}}</cover-view>
 		<cover-view v-else class="start_count_down">起飞！</cover-view>
 	</cover-view>
@@ -11,6 +11,10 @@
 	 * @description 
 	 * @event {Function} click 
 	 */
+  import {
+    TIPS_OF_PLAYING,
+  } from '@/utils/texts';
+
 	export default {
 		name: 'StartPage',
 		props: {
@@ -19,17 +23,28 @@
 			return {
 				countDownTime: 3,
 				showingNumbers: true,
+        currentTip: '加载中...',
 			}
 		},
-		created() {
+    created() {
+      this.getRandomTips();
       this.startTimeLoop();
+    },
+		mounted() {
+      // this.startTimeLoop();
 		},
 		methods: {
 			onClick(direction) {
 				// this.$emit('clickedOneDirection', direction)
 			},
+      getRandomTips() {
+        const randomIdx = Math.floor(Math.random() * TIPS_OF_PLAYING.length);
+        this.currentTip = TIPS_OF_PLAYING[randomIdx];
+      },
 			startTimeLoop() {
+        console.log('startTimeLooping...')
         const clock = setInterval(() => {
+          console.log('setInterval...', this.countDownTime)
           if (this.countDownTime > 1) {
             this.countDownTime -= 1;
           } else if (this.countDownTime <= 1) {
@@ -56,14 +71,17 @@
   justify-content: center;
   flex-direction: column;
   .start_count_down {
-    color: #000;
+    color: #fff;
     text-align: center;
     font-size: 2rem;
   }
   .start_reminder {
-    color: #000;
-    font-size: 0.5rem;
+    color: #fff;
+    font-size: 1rem;
     margin-bottom: 5rem;
+    max-width: 80vw;
+    white-space: pre-wrap;
+    text-align: center;
   }
 }
 </style>

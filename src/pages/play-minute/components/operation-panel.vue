@@ -3,7 +3,7 @@
 	<view
 		class="operation_panel_wrapper"
 	>
-    <cover-view class="canvas_cover_operation"
+    <view class="canvas_cover_operation"
       v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
     >
       <compass
@@ -17,7 +17,7 @@
         v-show="anmtCtrl.crossXVisible"
         @clickedOneDirection="e => clickedOneDirection(e)"
       /> -->
-    </cover-view>
+    </view>
 	</view>
 </template>
 

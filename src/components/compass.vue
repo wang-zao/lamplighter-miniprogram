@@ -7,7 +7,7 @@
       <view class="compass_item compass_plate">
         <image
           class="compass_background"
-          src="../static/compass.png"
+          :src="PICTURES_URL.COMPASS"
           mode="heightFix" />
       </view>
       <view class="compass_item compass_aircraft"
@@ -19,7 +19,7 @@
             airplane_paused: pausingRotation,
             airplane_rotating: !pausingRotation,
           }"
-          src="../static/airplane.png"
+          :src="PICTURES_URL.AIRPLANE"
           mode="heightFix"
         />
       </view>
@@ -43,6 +43,9 @@
     getRotateDegFromMatrix,
     calc_next_direction_chn
   } from '@/utils/common';
+import {
+  PICTURES_URL,
+} from '@/utils/constants';
 
   export default {
     name: 'Compass',
@@ -57,6 +60,7 @@
         currentDegree: 0,
         pausingRotation: true,
         calc_next_direction_chn: calc_next_direction_chn,
+        PICTURES_URL: PICTURES_URL,
       }
     },
     mounted() {

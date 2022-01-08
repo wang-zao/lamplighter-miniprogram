@@ -27,28 +27,11 @@
     <view
       class="content_panel operation_panel"
     >
-      <!-- <fly-control-cross-t
-        v-show="anmtCtrl.crossTVisible"
-        @clickedOneDirection="e => handleUserSelected(e)"
-      />
-      <fly-control-cross-x
-        v-show="anmtCtrl.crossXVisible"
-        @clickedOneDirection="e => handleUserSelected(e)"
-      /> -->
       <operation-panel
         :anmtCtrl="anmtCtrl"
         @clickedOneDirection="e => handleUserSelected(e)"
       />
     </view>
-    <!-- <view v-if="anmtCtrl.gameEndPageVisible" class="content_panel end_panel">
-      <view class="end_panel_content">
-        <view>Game Over</view>
-        <view>{{judgeCtrl.totalMiles.toFixed(0)}} km</view>
-        <view @click="backToHome">回到首页</view>
-      </view>
-    </view> -->
-    <!-- <start-page v-if="anmtCtrl.gameStartPageVisible" class="content_panel start_panel" /> -->
-    
   </view>
 </view>
 </template>
@@ -57,14 +40,10 @@
   import Vue from 'vue';
   import store from '@/store/index.js'    
   import API from '@/api/index.ts';
-  import { GameModal } from '../../api/index';
+  import { GameModal } from '@/api/index.js';
   import InfoPanel from './components/info-panel.vue';
   import OperationPanel from './components/operation-panel.vue';
-  // import FlyUfoResponsive from '@/components/fly-ufo-responsive.vue';
-  // import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
-  // import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
   import StartPage from '@/components/start-page.vue';
-  // import Earth from '@/components/earth.vue';
   import EarthGlobe from '@/components/earth-globe.vue';
   import {
     calc_shortest_dis,
@@ -75,11 +54,12 @@
     getScoreFromDegreeDistance,
     isDegreeWithinRange,
   } from '@/utils/common';
+  import {
+    DATABASE,
+  } from '@/utils/constants';
+
   export default Vue.extend({
     components: {
-      // FlyUfoResponsive,
-      // FlyControlCrossT,
-      // FlyControlCrossX,
       StartPage,
       InfoPanel,
       OperationPanel,
@@ -145,18 +125,12 @@
       },
       async getCityData() {
         try {
-          const gameId = store.state.selectedGameId;
-          console.log('gameId', gameId)
-          // const { list } = await GameModal.getGameQuestions(gameId);
-          const list = await API.getGameQuestions(gameId);
-          console.log('getGameQuestionsgetGameQuestions', list)
-          // list.forEach(i => {
-          //   this.cityList.push(i);
-          // });
+          const colloctionName = DATABASE.QUESTION_COLLECTION_NAME;
+          const { list } = await GameModal.getGameQuestions(colloctionName);
+          // const gameId = store.state.selectedGameId;
+          // const list = await API.getGameQuestions(gameId);
           this.cityList = list.sort((a, b) => Number(a.id) - Number(b.id));
-          //  = list;
         } catch (e) {
-          
         }
       },
       checkRestCityDataCapacity() {
@@ -192,7 +166,6 @@
         this.allowUserInput();
       },
       allowUserInput() {
-        console.log('judding');
         const dir = this.judgeCtrl.correctDirection;
         if (['north', 'east', 'west', 'south'].includes(dir)) {
           this.anmtCtrl.crossTVisible = true;
@@ -234,11 +207,6 @@
           this.anmtCtrl.showCoverViews = true;
         }, 1000);
       },
-      // backToHome() {
-      //   uni.navigateTo({
-      //     url: '/pages/index/index'
-      //   });
-      // },
       async handleUserSelected(selectedDegree) {
         console.log('handleUserSelected===', selectedDegree)
         if (this.anmtCtrl.operationPanelDisabled) {
@@ -255,9 +223,7 @@
           // 2.计算得分
           this.judgeCtrl.totalMiles += getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
           // 3.计入列表
-          if (!this.judgeCtrl.correctCityList.includes(this.nextCity.point_name)) {
-            this.judgeCtrl.correctCityList.push(this.nextCity.point_name);
-          }
+          this.judgeCtrl.correctCityList.push(this.nextCity.name_chn);
           // 4.进行飞翔
           this.$refs.flyingEarth.flyFromOneToAnother(
             this.currentCity.lat,
@@ -275,12 +241,9 @@
           setTimeout(() => {
             this.anmtCtrl.operationPanelDisabled = false;
           }, this.anmtCtrl.switchCityTime);
-          // this.judgeCtrl.restTime -= getPenaltyTimeWhenWrong(userAnswerTime);
-          if (!this.judgeCtrl.wrongCityList.includes(this.nextCity.point_name)) {
-            this.judgeCtrl.wrongCityList.push(this.nextCity.point_name);
-          }
+          // 3.计入列表
+          this.judgeCtrl.wrongCityList.push(this.nextCity.name_chn);
           this.cityQueueBrokeOne();
-          // this.calcAnswer();
           this.gameEnd();
         }
         // 重设开始答题时间，这个还需要调整，引入switch_time之后
@@ -312,46 +275,17 @@ $section-3-operation-height: 25vh;
   justify-content: space-between;
   flex-direction: column;
   align-items: center;
-  // .content_panel {
-    // position: fixed;
-    // display: flex;
-  // }
   .info_panel {
-    // top: 5rem;
-    // left: 0;
-    // right: 0;
     height: $section-1-info-height;
-    // padding: $general-paddng;
     font-size: 2rem;
     justify-content: space-between;
-    // background: blue;
   }
   .earth_panel {
     height: $section-2-earth-height;
-    // background: yellowgreen;
-    // top: 0;
-    // left: 0;
   }
   .operation_panel {
     height: $section-3-operation-height;
-    // background: green;
   }
-  // .end_panel {
-  //   top: 0;
-  //   left: 0;
-  //   background: $uni-bg-color-mask;
-  //   width: 100vw;
-  //   height: 100vh;
-  //   display: flex;
-  //   align-items: center;
-  //   justify-content: center;
-  //   flex-direction: column;
-  //   .end_panel_content {
-  //     text-align: center;
-  //     color: #fff;
-  //     margin-bottom: 60vh;
-  //   }
-  // }
   .test_nothing {
     color: #bbe6ff;
     color: #072d43;
