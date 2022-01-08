@@ -15,21 +15,6 @@
         class="canvas_cover_end_panel"
       />
     </canvas>
-    <!-- <cover-view
-      class="canvas_cover_operation"
-      v-show="showingCtrlCompass"
-    >
-      <fly-control-cross-t
-        :anmtCtrl="anmtCtrl"
-        v-show="showingCtrlCompass && anmtCtrl.crossTVisible"
-        @clickedOneDirection="e => clickedOneDirection(e)"
-      />
-      <fly-control-cross-x
-        :anmtCtrl="anmtCtrl"
-        v-show="showingCtrlCompass && anmtCtrl.crossXVisible"
-        @clickedOneDirection="e => clickedOneDirection(e)"
-      />
-    </cover-view> -->
   </view>
 </template>
 
@@ -47,8 +32,6 @@ import {
 } from '@/utils/constants';
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
-import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
-import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
 import StartPage from '@/components/start-page.vue';
 import EndPage from '@/components/end-page.vue';
 
@@ -78,11 +61,12 @@ export default Vue.extend({
       canvas: null,
       showCoverViews: false,
       camera: null,
-      earthRadius: 300,
+      earthRadius: 400,
       cameraHeight: 4500,
       globalTHREE: null,
       globalScene: null,
       earthSurfaceOffset: 10,
+      earthCameraHeadOffset: -45,
       earthColorLighter: '#51adcf',
       earthColorDarker: '#0278ae',
       earthColorBackground: '#0b2353',
@@ -95,18 +79,16 @@ export default Vue.extend({
   components: {
     StartPage,
     EndPage,
-    FlyControlCrossT,
-    FlyControlCrossX,
   },
   mounted() {
     this.drawEarth();
   },
   computed: {
     canvasHeight() {
-      return store.state.systemInfo.windowHeight * 0.5 || 896 * 0.5 ;
+      return store.state.systemInfo.windowHeight * 0.9 || 896 * 0.9 ;
     },
     canvasWidth() {
-      return store.state.systemInfo.windowWidth || 414;
+      return store.state.systemInfo.windowWidth * 3 || 414 * 3;
     },
     canvasStyle() {
       return `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`;
@@ -114,10 +96,6 @@ export default Vue.extend({
     showingAbstractModalComputed() {
       return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
     },
-    showingCtrlCompass() {
-      // return false;
-      // return !anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible;
-    }
   },
   methods: {
     drawEarth() {
@@ -267,7 +245,7 @@ export default Vue.extend({
           clearInterval(clock);
         }
 
-        let currentCameraLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, -50);
+        let currentCameraLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, this.earthCameraHeadOffset);
         let currentLookAtLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, 0);
         let currentCameraXYZ = this.convertLatLngToXyz(
           currentCameraLatLng.lat,
@@ -344,7 +322,6 @@ export default Vue.extend({
 
   }
 });
-// }
 </script>
 
 <style scoped lang="scss">

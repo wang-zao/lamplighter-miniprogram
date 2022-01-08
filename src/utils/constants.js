@@ -8,5 +8,5 @@ export const DATABASE = {
 export const PICTURES_URL = {
   AIRPLANE: 'cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/airplane.png',
   COMPASS: 'cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/compass.png',
-  EARTH: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/earth-blue-dn-1.jpg',
+  EARTH: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/earth-blue-cmprs.png',
 }
