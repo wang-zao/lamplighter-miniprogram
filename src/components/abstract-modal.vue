@@ -1,5 +1,5 @@
 <template>
-	<cover-view
+  <cover-view
     v-show="visibility"
     class="abstract_wrapper"
     @click="changeAbstractVisibility"
@@ -13,13 +13,13 @@
 </template>
 
 <script>
-	/**
-	 * @description 
-	 * @event {Function} click 
-	 */
-	export default {
-		name: 'AbstractModal',
-		props: {
+  /**
+   * @description 
+   * @event {Function} click 
+   */
+  export default {
+    name: 'AbstractModal',
+    props: {
       abstract: {
         type: String,
         default: '',
@@ -28,19 +28,19 @@
         type: Boolean,
         default: false,
       },
-		},
-		data() {
-			return {
-			}
-		},
-		created() {
-		},
-		methods: {
-			changeAbstractVisibility() {
-				this.$emit('changeAbstractVisibility', this.cityInfo)
-			}
-		}
-	}
+    },
+    data() {
+      return {
+      }
+    },
+    created() {
+    },
+    methods: {
+      changeAbstractVisibility() {
+        this.$emit('changeAbstractVisibility', this.cityInfo)
+      }
+    }
+  }
 </script>
 
 <style scoped lang="scss">

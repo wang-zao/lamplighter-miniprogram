@@ -1,5 +1,5 @@
 <template>
-	<cover-view class="plane_wrapper" >
+  <cover-view class="plane_wrapper" >
     <cover-image
       class="ufo_item_body"
       src="../static/ufo_blue.png"
@@ -16,30 +16,30 @@
         headNorthTail: anmtCtrl.headNorthTail,
       }"
     />
-	</cover-view>
+  </cover-view>
 </template>
 
 <script>
-	/**
-	 * @description 
-	 * @event {Function} click 
-	 */
-	export default {
-		name: 'Plane',
-		props: {
-		},
-		data() {
-			return {
-			}
-		},
-		created() {
-		},
-		methods: {
-			onClick(direction) {
-				// this.$emit('clickedOneDirection', direction)
-			}
-		}
-	}
+  /**
+   * @description 
+   * @event {Function} click 
+   */
+  export default {
+    name: 'Plane',
+    props: {
+    },
+    data() {
+      return {
+      }
+    },
+    created() {
+    },
+    methods: {
+      onClick(direction) {
+        // this.$emit('clickedOneDirection', direction)
+      }
+    }
+  }
 </script>
 
 <style scoped lang="scss">

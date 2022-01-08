@@ -51,15 +51,15 @@
 </template>
 
 <script>
-	/**
-	 * @description 
-	 * @event {Function} click 
-	 */
+  /**
+   * @description 
+   * @event {Function} click 
+   */
 
   import { calc_fly_rank } from '@/utils/common';
-	export default {
-		name: 'EndPage',
-		props: {
+  export default {
+    name: 'EndPage',
+    props: {
       anmtCtrl: {
         type: Object,
         default: {},
@@ -68,13 +68,13 @@
         type: Object,
         default: {},
       },
-		},
-		data() {
-			return {
-				countDownTime: 3,
-				showingNumbers: true,
-			}
-		},
+    },
+    data() {
+      return {
+        countDownTime: 3,
+        showingNumbers: true,
+      }
+    },
     computed: {
       rankScore() {
         return this.judgeCtrl.totalMiles.toFixed(0);
@@ -83,25 +83,25 @@
         return calc_fly_rank(this.rankScore);
       },
     },
-		created() {
+    created() {
       // this.startTimeLoop();
-		},
-		methods: {
-			onClick(direction) {
-				// this.$emit('clickedOneDirection', direction)
-			},
+    },
+    methods: {
+      onClick(direction) {
+        // this.$emit('clickedOneDirection', direction)
+      },
       backToHome() {
-				uni.navigateTo({
-					url: '/pages/index/index'
-				});
+        uni.navigateTo({
+          url: '/pages/index/index'
+        });
       },
       playAgain() {
         uni.navigateTo({
-					url: '/pages/play-minute/play-minute'
-				})
+          url: '/pages/play-minute/play-minute'
+        })
       }
-		}
-	}
+    }
+  }
 </script>
 
 <style scoped lang="scss">

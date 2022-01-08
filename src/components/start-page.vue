@@ -1,47 +1,47 @@
 <template>
-	<cover-view class="start_wrapper" >
-		<cover-view class="start_reminder">{{currentTip}}</cover-view>
-		<cover-view v-if="showingNumbers" class="start_count_down">{{countDownTime}}</cover-view>
-		<cover-view v-else class="start_count_down">起飞！</cover-view>
-	</cover-view>
+  <cover-view class="start_wrapper" >
+    <cover-view class="start_reminder">{{currentTip}}</cover-view>
+    <cover-view v-if="showingNumbers" class="start_count_down">{{countDownTime}}</cover-view>
+    <cover-view v-else class="start_count_down">起飞！</cover-view>
+  </cover-view>
 </template>
 
 <script>
-	/**
-	 * @description 
-	 * @event {Function} click 
-	 */
+  /**
+   * @description 
+   * @event {Function} click 
+   */
   import {
     TIPS_OF_PLAYING,
   } from '@/utils/texts';
 
-	export default {
-		name: 'StartPage',
-		props: {
-		},
-		data() {
-			return {
-				countDownTime: 3,
-				showingNumbers: true,
+  export default {
+    name: 'StartPage',
+    props: {
+    },
+    data() {
+      return {
+        countDownTime: 3,
+        showingNumbers: true,
         currentTip: '加载中...',
-			}
-		},
+      }
+    },
     created() {
       this.getRandomTips();
       this.startTimeLoop();
     },
-		mounted() {
+    mounted() {
       // this.startTimeLoop();
-		},
-		methods: {
-			onClick(direction) {
-				// this.$emit('clickedOneDirection', direction)
-			},
+    },
+    methods: {
+      onClick(direction) {
+        // this.$emit('clickedOneDirection', direction)
+      },
       getRandomTips() {
         const randomIdx = Math.floor(Math.random() * TIPS_OF_PLAYING.length);
         this.currentTip = TIPS_OF_PLAYING[randomIdx];
       },
-			startTimeLoop() {
+      startTimeLoop() {
         console.log('startTimeLooping...')
         const clock = setInterval(() => {
           console.log('setInterval...', this.countDownTime)
@@ -52,9 +52,9 @@
             clearInterval(clock);
           }
         }, 1000);
-			}
-		}
-	}
+      }
+    }
+  }
 </script>
 
 <style scoped lang="scss">

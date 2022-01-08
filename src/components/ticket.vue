@@ -1,5 +1,5 @@
 <template>
-	<view
+  <view
     class="ticket_wrapper" 
     :class="{ ticket_wrapper_abstracted: showAbstract }"
     @click="changeAbstractVisibility"
@@ -15,13 +15,13 @@
 </template>
 
 <script>
-	/**
-	 * @description 
-	 * @event {Function} click 
-	 */
-	export default {
-		name: 'Ticket',
-		props: {
+  /**
+   * @description 
+   * @event {Function} click 
+   */
+  export default {
+    name: 'Ticket',
+    props: {
       cityInfo: {
         type: Object,
         default: {},
@@ -38,11 +38,11 @@
         type: Object,
         default: {},
       },
-		},
-		data() {
-			return {
-			}
-		},
+    },
+    data() {
+      return {
+      }
+    },
     computed: {
       abstractContent() {
         if (this.anmtCtrl.answerCorrectAnimationStep1) {
@@ -51,14 +51,14 @@
         return this.cityInfo.abs_chn;
       }
     },
-		created() {
-		},
-		methods: {
-			changeAbstractVisibility() {
-				this.$emit('changeAbstractVisibility', this.cityInfo)
-			}
-		}
-	}
+    created() {
+    },
+    methods: {
+      changeAbstractVisibility() {
+        this.$emit('changeAbstractVisibility', this.cityInfo)
+      }
+    }
+  }
 </script>
 
 <style scoped lang="scss">

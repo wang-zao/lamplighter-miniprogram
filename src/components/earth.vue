@@ -1,6 +1,6 @@
 <template>
-	<view class="earth_wrapper">
-		<!-- <view>earth</view> -->
+  <view class="earth_wrapper">
+    <!-- <view>earth</view> -->
       <canvas
         type="webgl"
         id="webgl"
@@ -42,7 +42,7 @@
           />
         </cover-view> -->
       </canvas>
-	</view>
+  </view>
 </template>
 
 <script>
@@ -487,12 +487,12 @@ export default Vue.extend({
 //     animation-iteration-count: infinite;
 //     animation-duration: .5s;
 //   }
-// 	.plane_shaking {
-// 		animation-play-state: running;
-// 	}
-// 	.plane_pausing {
-// 		animation-play-state: paused;
-// 	}
+//   .plane_shaking {
+//     animation-play-state: running;
+//   }
+//   .plane_pausing {
+//     animation-play-state: paused;
+//   }
 // }
 .canvas_cover_operation {
   position: fixed;
@@ -500,8 +500,8 @@ export default Vue.extend({
   bottom: 10vh;
   transform: translateX(-50%);
   color: #000;
-	width: 70vw;
-	height: 20vh;
+  width: 70vw;
+  height: 20vh;
 }
 .canvas_cover_start_panel {
   position: fixed;

@@ -1,6 +1,6 @@
 <template>
-	<view class="earth_wrapper" >
-		<view>earth</view>
+  <view class="earth_wrapper" >
+    <view>earth</view>
       <canvas
         type="webgl"
         id="webgl"
@@ -15,7 +15,7 @@
         </cover-view>
         <cover-view class="canvas_gradient">5555</cover-view>
       </canvas>
-	</view>
+  </view>
 </template>
 
 <script>
