@@ -1,7 +1,7 @@
 <template>
-	<view
-		class="info_panel_wrapper"
-	>
+  <view
+    class="info_panel_wrapper"
+  >
     <view class="info_1_scores">
       <view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</view>
       <view class="info_resttime">⏰ {{judgeCtrl.restTime}}</view>
@@ -34,24 +34,24 @@
         />
       </view>
     </view>
-	</view>
+  </view>
 </template>
 
 <script>
-	/**
-	 * info panel 选择世界的世界单元
-	 * @description 用于展示选择世界的世界单元
-	 * @event {Function} click 点击触发事件
-	 */
+  /**
+   * info panel 选择世界的世界单元
+   * @description 用于展示选择世界的世界单元
+   * @event {Function} click 点击触发事件
+   */
 
   import Ticket from '@/components/ticket.vue';
 
-	export default {
-		name: 'InfoPanel',
+  export default {
+    name: 'InfoPanel',
     components: {
       Ticket,
-		},
-		props: {
+    },
+    props: {
       currentCity: {
         type: Object,
         default: {},
@@ -68,26 +68,26 @@
         type: Object,
         default: {},
       },
-		},
-		data() {
-			return {
-			}
-		},
+    },
+    data() {
+      return {
+      }
+    },
     // computed: {
     //   isNextCityAbscractVisible() {
     //     return !this.anmtCtrl.answerCorrectAnimationStep1;
     //   },
     // },
-		methods: {
-			onClickEmit(e) {
-				this.$emit('clicked')
-			},
+    methods: {
+      onClickEmit(e) {
+        this.$emit('clicked')
+      },
       changeAbstractVisibility(city, target) {
         // this.abstractContent = city.abstract;
         this.$emit('changeAbstractVisibility', target, city.abstract)
       },
-		}
-	}
+    }
+  }
 </script>
 
 

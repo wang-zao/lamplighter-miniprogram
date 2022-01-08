@@ -1,6 +1,6 @@
 <template>
-	<view class="earth_wrapper">
-		<canvas
+  <view class="earth_wrapper">
+    <canvas
       type="webgl" id="webgl"
       :style="canvasStyle"
     >
@@ -30,7 +30,7 @@
         @clickedOneDirection="e => clickedOneDirection(e)"
       />
     </cover-view> -->
-	</view>
+  </view>
 </template>
 
 <script>
@@ -123,16 +123,16 @@ export default Vue.extend({
     drawEarth() {
       uni.createSelectorQuery()
         .in(this)
-				.select('#webgl')
-				.node()
-				.exec((res) => {
-					const canvas = res[0].node
-					const THREE = createScopedThreejs(canvas)
+        .select('#webgl')
+        .node()
+        .exec((res) => {
+          const canvas = res[0].node
+          const THREE = createScopedThreejs(canvas)
           this.globalTHREE = THREE;
-					this.renderEarth(THREE, canvas)
+          this.renderEarth(THREE, canvas)
           canvas.width = this.canvasWidth * 2;
           canvas.height = this.canvasHeight * 2;
-				})
+        })
     },
     async renderEarth(THREE, canvas) {
       const scene = new THREE.Scene();
@@ -366,8 +366,8 @@ export default Vue.extend({
   bottom: 10vh;
   transform: translateX(-50%);
   color: #000;
-	width: 70vw;
-	height: 20vh;
+  width: 70vw;
+  height: 20vh;
 }
 .canvas_cover_start_panel {
   position: fixed;

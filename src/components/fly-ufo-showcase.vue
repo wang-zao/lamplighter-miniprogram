@@ -1,371 +1,371 @@
 <template>
 <view class="ufo_wrapper">
-	<view class="ufo_placeholder">place holder</view>
-	<view class="dialog_wrap dialog_right shake" :class="{
-		dialog_shaking: anmtCtrl.isDialogShaking,
-		dialog_pausing: anmtCtrl.isDialogPausing,
-	}">
-		<view class="dialog_subtitle">现在</view>
-		<view class="dialog_title">
-			<view class="dialog_title_current dialog_title_right" :class="{
-				fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
-			}">向{{dataCtrl.dialoggedDirection}}飞！</view>
-			<view class="dialog_title_next dialog_title_right" :class="{
-				fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
-			}">向{{dataCtrl.dialoggedDirectionNext}}飞！</view>
-		</view>
-	</view>
-	<view class="dialog_wrap dialog_left shake" :class="{
-		dialog_shaking: anmtCtrl.isDialogShaking,
-		dialog_pausing: anmtCtrl.isDialogPausing,
-	}">
-		<view class="dialog_subtitle">到达了</view>
-		<view class="dialog_title">
-			<view class="dialog_title_current dialog_title_left" :class="{
-				fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
-			}">{{dataCtrl.dialoggedCity}}</view>
-			<view class="dialog_title_next dialog_title_left" :class="{
-				fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
-			}">{{dataCtrl.dialoggedCityNext}}</view>
-		</view>
-	</view>
+  <view class="ufo_placeholder">place holder</view>
+  <view class="dialog_wrap dialog_right shake" :class="{
+    dialog_shaking: anmtCtrl.isDialogShaking,
+    dialog_pausing: anmtCtrl.isDialogPausing,
+  }">
+    <view class="dialog_subtitle">现在</view>
+    <view class="dialog_title">
+      <view class="dialog_title_current dialog_title_right" :class="{
+        fadeOutDownSmall: anmtCtrl.isDialogTitleSwitchingRight
+      }">向{{dataCtrl.dialoggedDirection}}飞！</view>
+      <view class="dialog_title_next dialog_title_right" :class="{
+        fadeInUpSmall: anmtCtrl.isDialogTitleSwitchingRight
+      }">向{{dataCtrl.dialoggedDirectionNext}}飞！</view>
+    </view>
+  </view>
+  <view class="dialog_wrap dialog_left shake" :class="{
+    dialog_shaking: anmtCtrl.isDialogShaking,
+    dialog_pausing: anmtCtrl.isDialogPausing,
+  }">
+    <view class="dialog_subtitle">到达了</view>
+    <view class="dialog_title">
+      <view class="dialog_title_current dialog_title_left" :class="{
+        fadeOutDownSmall: anmtCtrl.isDialogTitleSwitching
+      }">{{dataCtrl.dialoggedCity}}</view>
+      <view class="dialog_title_next dialog_title_left" :class="{
+        fadeInUpSmall: anmtCtrl.isDialogTitleSwitching
+      }">{{dataCtrl.dialoggedCityNext}}</view>
+    </view>
+  </view>
 
   <view class="ufo_item">
     <view class="ufo_item_icon shake" :class="{
-			dialog_shaking: anmtCtrl.isDialogShaking,
-			dialog_pausing: anmtCtrl.isDialogPausing,
-		}">
-			<image
-				class="ufo_item_light"
-				src="../static/ufo_light_circle.png"
-				mode="heightFix"
-				:class="{
-					headEastTail: anmtCtrl.headEastTail,
-					headWestTail: anmtCtrl.headWestTail,
-					headSouthTail: anmtCtrl.headSouthTail,
-					headNorthTail: anmtCtrl.headNorthTail,
-				}"
-			/>
-			<view class="ufo_item_body" >
-				🚁
-			</view>
-			<!-- <image
-				class="ufo_item_body"
-				src="../static/ufo_blue.png"
-				mode="widthFix"
-			/> -->
-		</view>
+      dialog_shaking: anmtCtrl.isDialogShaking,
+      dialog_pausing: anmtCtrl.isDialogPausing,
+    }">
+      <image
+        class="ufo_item_light"
+        src="../static/ufo_light_circle.png"
+        mode="heightFix"
+        :class="{
+          headEastTail: anmtCtrl.headEastTail,
+          headWestTail: anmtCtrl.headWestTail,
+          headSouthTail: anmtCtrl.headSouthTail,
+          headNorthTail: anmtCtrl.headNorthTail,
+        }"
+      />
+      <view class="ufo_item_body" >
+        🚁
+      </view>
+      <!-- <image
+        class="ufo_item_body"
+        src="../static/ufo_blue.png"
+        mode="widthFix"
+      /> -->
+    </view>
   </view>
-	<view class="city_item">
-		<view class="animated_city" :class="{
-			fadeInRight: anmtCtrl.fadeInRight,
-			fadeOutRight: anmtCtrl.fadeOutRight,
-			fadeInLeft: anmtCtrl.fadeInLeft,
-			fadeOutLeft: anmtCtrl.fadeOutLeft,
-			fadeInDown: anmtCtrl.fadeInDown,
-			fadeOutDown: anmtCtrl.fadeOutDown,
-			fadeInUp: anmtCtrl.fadeInUp,
-			fadeOutUp: anmtCtrl.fadeOutUp,
-			hided: anmtCtrl.hideCity,
-		}">
-			<view class="animated_city_icon">{{currentCity.emoji}}</view>
-			<view class="animated_city_text">{{currentCity.name}}</view>
-			<view class="animated_city_backtext">{{currentCity.direction}}</view>
-		</view>
-	</view>
+  <view class="city_item">
+    <view class="animated_city" :class="{
+      fadeInRight: anmtCtrl.fadeInRight,
+      fadeOutRight: anmtCtrl.fadeOutRight,
+      fadeInLeft: anmtCtrl.fadeInLeft,
+      fadeOutLeft: anmtCtrl.fadeOutLeft,
+      fadeInDown: anmtCtrl.fadeInDown,
+      fadeOutDown: anmtCtrl.fadeOutDown,
+      fadeInUp: anmtCtrl.fadeInUp,
+      fadeOutUp: anmtCtrl.fadeOutUp,
+      hided: anmtCtrl.hideCity,
+    }">
+      <view class="animated_city_icon">{{currentCity.emoji}}</view>
+      <view class="animated_city_text">{{currentCity.name}}</view>
+      <view class="animated_city_backtext">{{currentCity.direction}}</view>
+    </view>
+  </view>
 </view>
 </template>
 
 <script>
-	/**
-	 * FlyingUfoShowcase 首页展示ufo飞来飞去的动画画布组件
-	 * @description 首页展示ufo飞来飞去的动画画布组件
-	 */
-	import { directionMapNWSE } from '@/utils/common';
-	export default {
-		name: 'FlyUfoShowcase',
-		props: {},
-		data() {
-			return {
-				cityEntering: false,
-				cityLeaving: false,
-				timeoutID: 0,
-				anmtCtrl: {
-					fadeInRight: false,
-					fadeOutRight: false,
-					fadeInLeft: false,
-					fadeOutLeft: false,
-					fadeInDown: false,
-					fadeOutDown: false,
-					fadeInUp: false,
-					fadeOutUp: false,
-					hideCity: false,
-					isDialogShaking: false,
-					isDialogPausing: true,
-					isDialogTitleSwitching: false,
-					isDialogTitleSwitchingRight: false,
-					headEastTail: false,
-					headWestTail: false,
-					headNorthTail: false,
-					headSouthTail: false,
-				},
-				currentCity: {
-					name: '北京',
-					next: 'south',
-					emoji: '🏬',
-					direction: '东',
-				},
-				leaveCss: '',
-				enterCss: '',
-				timeCtrl: {
-					fly: 600,
-					period: 3000,
-				},
-				dataCtrl: {
-					dialoggedCity: '北京',
-					dialoggedDirection: '南',
-					dialoggedCityNext: '北京',
-					dialoggedDirectionNext: '南',
-				},
-				sampleCityList: [
-					{
-						name: '新加坡市',
-						next: 'west',
-						emoji: '🏖',
-						direction: '南',
-					},
-					{
-						name: '开罗',
-						next: 'north',
-						emoji: '⛰',
-						direction: '西',
-					},
-					{
-						name: '巴黎',
-						next: 'east',
-						emoji: '🏛',
-						direction: '北',
-					},
-				]
-			}
-		},
-		created() {
-			this.startCityFlyLoop();
-		},
-		beforeDestroy() {
-			clearTimeout(this.timeoutID);
-		},
-		computed: {
-			cityAnimationClassName() {
-				return '';
-			}
-		},
-		methods: {
-			executeAnimation(cssString, time) {
-				const animation = cssString;
-				this.anmtCtrl[animation] = true;
-				setTimeout(() => {
-					this.anmtCtrl[animation] = false;
-				}, time)
-			},
-			swapCity() {
-				const temp = this.currentCity;
-				this.currentCity = { ...this.sampleCityList.slice(0, 1)[0] };
-				this.sampleCityList = [ ...this.sampleCityList.slice(1, 4), temp ]
-				this.sampleCityList = [ ...this.sampleCityList ]
-			},
-			updateCssType(city) {
-				this.leaveCss = directionMapNWSE[city.next].leaveCss;
-				this.enterCss = directionMapNWSE[city.next].enterCss;
-			},
-			updateDialogContext() {
-				const nextDrct = directionMapNWSE[this.currentCity.next].chn;
-				const nextCity = this.currentCity.name;
-				this.dataCtrl.dialoggedCityNext = nextCity;
-				this.anmtCtrl.isDialogTitleSwitching = true;
-				setTimeout(() => {
-					this.anmtCtrl.isDialogTitleSwitching = false;
-					this.dataCtrl.dialoggedCity = nextCity;
-				}, 300)
-				setTimeout(() => {
-					this.dataCtrl.dialoggedDirectionNext = nextDrct;
-					this.anmtCtrl.isDialogTitleSwitchingRight = true;
-				}, 300)
-				setTimeout(() => {
-					this.anmtCtrl.isDialogTitleSwitchingRight = false;
-					this.dataCtrl.dialoggedDirection = nextDrct;
-				}, 600)
-			},
-			changeDialogShakingStatus() {
-				this.anmtCtrl.isDialogPausing = !this.anmtCtrl.isDialogPausing;
-				this.anmtCtrl.isDialogShaking = !this.anmtCtrl.isDialogShaking;
-			},
-			flyToNext(direction) {
-				this.changeDialogShakingStatus();
-				this.executeAnimation(directionMapNWSE[direction].leaveCss, this.timeCtrl.fly);
-				this.executeAnimation(directionMapNWSE[direction].ufoLightCss, this.timeCtrl.fly * 2);
-				// 离开当前城市1000ms后再交换数据
-				setTimeout(() => {
-					this.swapCity();
-				}, this.timeCtrl.fly);
-				// 离开当前城市1000ms后就马上飞入新的城市
-				setTimeout(() => {
-					this.executeAnimation(directionMapNWSE[direction].enterCss, this.timeCtrl.fly);
-				}, this.timeCtrl.fly);
-				// 离开当前城市2000ms后到达，更新城市信息
-				setTimeout(() => {
-					this.changeDialogShakingStatus();
-					this.updateDialogContext();
-				}, this.timeCtrl.fly * 2);
-			},
-			startCityFlyLoop() {
-				let direction = this.currentCity.next;
-				this.flyToNext(direction);
-				// 飞行执行用时2500，停留1000，周期3500
-				const id = setInterval(() => {
-					direction = this.currentCity.next;
-					this.flyToNext(direction);
-				}, this.timeCtrl.period);
-				this.timeoutID = id;
-			}
-		}
-	}
+  /**
+   * FlyingUfoShowcase 首页展示ufo飞来飞去的动画画布组件
+   * @description 首页展示ufo飞来飞去的动画画布组件
+   */
+  import { directionMapNWSE } from '@/utils/common';
+  export default {
+    name: 'FlyUfoShowcase',
+    props: {},
+    data() {
+      return {
+        cityEntering: false,
+        cityLeaving: false,
+        timeoutID: 0,
+        anmtCtrl: {
+          fadeInRight: false,
+          fadeOutRight: false,
+          fadeInLeft: false,
+          fadeOutLeft: false,
+          fadeInDown: false,
+          fadeOutDown: false,
+          fadeInUp: false,
+          fadeOutUp: false,
+          hideCity: false,
+          isDialogShaking: false,
+          isDialogPausing: true,
+          isDialogTitleSwitching: false,
+          isDialogTitleSwitchingRight: false,
+          headEastTail: false,
+          headWestTail: false,
+          headNorthTail: false,
+          headSouthTail: false,
+        },
+        currentCity: {
+          name: '北京',
+          next: 'south',
+          emoji: '🏬',
+          direction: '东',
+        },
+        leaveCss: '',
+        enterCss: '',
+        timeCtrl: {
+          fly: 600,
+          period: 3000,
+        },
+        dataCtrl: {
+          dialoggedCity: '北京',
+          dialoggedDirection: '南',
+          dialoggedCityNext: '北京',
+          dialoggedDirectionNext: '南',
+        },
+        sampleCityList: [
+          {
+            name: '新加坡市',
+            next: 'west',
+            emoji: '🏖',
+            direction: '南',
+          },
+          {
+            name: '开罗',
+            next: 'north',
+            emoji: '⛰',
+            direction: '西',
+          },
+          {
+            name: '巴黎',
+            next: 'east',
+            emoji: '🏛',
+            direction: '北',
+          },
+        ]
+      }
+    },
+    created() {
+      this.startCityFlyLoop();
+    },
+    beforeDestroy() {
+      clearTimeout(this.timeoutID);
+    },
+    computed: {
+      cityAnimationClassName() {
+        return '';
+      }
+    },
+    methods: {
+      executeAnimation(cssString, time) {
+        const animation = cssString;
+        this.anmtCtrl[animation] = true;
+        setTimeout(() => {
+          this.anmtCtrl[animation] = false;
+        }, time)
+      },
+      swapCity() {
+        const temp = this.currentCity;
+        this.currentCity = { ...this.sampleCityList.slice(0, 1)[0] };
+        this.sampleCityList = [ ...this.sampleCityList.slice(1, 4), temp ]
+        this.sampleCityList = [ ...this.sampleCityList ]
+      },
+      updateCssType(city) {
+        this.leaveCss = directionMapNWSE[city.next].leaveCss;
+        this.enterCss = directionMapNWSE[city.next].enterCss;
+      },
+      updateDialogContext() {
+        const nextDrct = directionMapNWSE[this.currentCity.next].chn;
+        const nextCity = this.currentCity.name;
+        this.dataCtrl.dialoggedCityNext = nextCity;
+        this.anmtCtrl.isDialogTitleSwitching = true;
+        setTimeout(() => {
+          this.anmtCtrl.isDialogTitleSwitching = false;
+          this.dataCtrl.dialoggedCity = nextCity;
+        }, 300)
+        setTimeout(() => {
+          this.dataCtrl.dialoggedDirectionNext = nextDrct;
+          this.anmtCtrl.isDialogTitleSwitchingRight = true;
+        }, 300)
+        setTimeout(() => {
+          this.anmtCtrl.isDialogTitleSwitchingRight = false;
+          this.dataCtrl.dialoggedDirection = nextDrct;
+        }, 600)
+      },
+      changeDialogShakingStatus() {
+        this.anmtCtrl.isDialogPausing = !this.anmtCtrl.isDialogPausing;
+        this.anmtCtrl.isDialogShaking = !this.anmtCtrl.isDialogShaking;
+      },
+      flyToNext(direction) {
+        this.changeDialogShakingStatus();
+        this.executeAnimation(directionMapNWSE[direction].leaveCss, this.timeCtrl.fly);
+        this.executeAnimation(directionMapNWSE[direction].ufoLightCss, this.timeCtrl.fly * 2);
+        // 离开当前城市1000ms后再交换数据
+        setTimeout(() => {
+          this.swapCity();
+        }, this.timeCtrl.fly);
+        // 离开当前城市1000ms后就马上飞入新的城市
+        setTimeout(() => {
+          this.executeAnimation(directionMapNWSE[direction].enterCss, this.timeCtrl.fly);
+        }, this.timeCtrl.fly);
+        // 离开当前城市2000ms后到达，更新城市信息
+        setTimeout(() => {
+          this.changeDialogShakingStatus();
+          this.updateDialogContext();
+        }, this.timeCtrl.fly * 2);
+      },
+      startCityFlyLoop() {
+        let direction = this.currentCity.next;
+        this.flyToNext(direction);
+        // 飞行执行用时2500，停留1000，周期3500
+        const id = setInterval(() => {
+          direction = this.currentCity.next;
+          this.flyToNext(direction);
+        }, this.timeCtrl.period);
+        this.timeoutID = id;
+      }
+    }
+  }
 </script>
 
 <style scoped lang="scss">
 @import '../utils/customAnimate.wxss';
 
 .ufo_wrapper {
-	position: relative;
-	.ufo_placeholder {
-		opacity: 0;
-		user-select: none;
-	}
+  position: relative;
+  .ufo_placeholder {
+    opacity: 0;
+    user-select: none;
+  }
 }
 .dialog_wrap {
-	position: absolute;
-	background: $general-bright-button-background;
-	padding: 0.8rem;
-	min-width: 4rem;
-	max-width: 4rem;
-	height: 2.2rem;
-	transition: .3s ease;
-	animation-iteration-count: infinite;
-	color: #222;
+  position: absolute;
+  background: $general-bright-button-background;
+  padding: 0.8rem;
+  min-width: 4rem;
+  max-width: 4rem;
+  height: 2.2rem;
+  transition: .3s ease;
+  animation-iteration-count: infinite;
+  color: #222;
 }
 .dialog_left {
-	right: 60%;
-	top: 15vh;
-	transform: skewY(15deg) scaleX(0.9);
-	border-radius: 2rem 2rem 0 2rem;
-	text-align: right;
+  right: 60%;
+  top: 15vh;
+  transform: skewY(15deg) scaleX(0.9);
+  border-radius: 2rem 2rem 0 2rem;
+  text-align: right;
   animation-duration: .45s;
 }
 .dialog_right {
-	left: 60%;
-	top: 20vh;
-	transform: skewY(-15deg) scaleX(0.9);
-	border-radius: 2rem 2rem 2rem 0;
+  left: 60%;
+  top: 20vh;
+  transform: skewY(-15deg) scaleX(0.9);
+  border-radius: 2rem 2rem 2rem 0;
   animation-duration: .55s;
 }
 .dialog_subtitle {
-	font-size: .6rem;
+  font-size: .6rem;
 }
 .dialog_title {
-	position: relative;
-	white-space: wrap;
+  position: relative;
+  white-space: wrap;
 }
 .dialog_title_next {
-	position: absolute;
-	top: -1rem;
-	left: 0;
-	opacity: 0;
+  position: absolute;
+  top: -1rem;
+  left: 0;
+  opacity: 0;
   animation-duration: .3s;
 }
 .dialog_title_current {
-	position: absolute;
-	top: 0;
+  position: absolute;
+  top: 0;
   animation-duration: .3s;
 }
 .dialog_title_right {
-	left: 0;
+  left: 0;
 }
 .dialog_title_left {
-	right: 0;
+  right: 0;
 }
 .dialog_shaking {
-	animation-play-state: running;
+  animation-play-state: running;
 }
 .dialog_pausing {
-	animation-play-state: paused;
+  animation-play-state: paused;
 }
 .ufo_item {
-	position: absolute;
-	top: 30vh;
-	left: 50%;
-	right: 50%;
-	font-size: 2rem;
-	margin-left: -1.5rem;
+  position: absolute;
+  top: 30vh;
+  left: 50%;
+  right: 50%;
+  font-size: 2rem;
+  margin-left: -1.5rem;
 }
 .ufo_item_light {
-	position: absolute;
-	height: 16rem;
-	top: -6rem;
-	left: -1.5rem;
-	right: 0;
-	margin: auto;
+  position: absolute;
+  height: 16rem;
+  top: -6rem;
+  left: -1.5rem;
+  right: 0;
+  margin: auto;
   animation-duration: 1.2s;
 }
 .ufo_item_body {
-	position: absolute;
-	top: -0.5rem;
-	left: 0.5rem;
-	font-size: 3rem;
-	width: 3rem;
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 3rem;
+  width: 3rem;
 }
 .ufo_item_icon {
-	position: relative;
-	animation-iteration-count: infinite;
+  position: relative;
+  animation-iteration-count: infinite;
   animation-duration: .5s;
 }
 .city_item {
-	position: absolute;
-	top: 45vh;
-	left: 50%;
-	right: 50%;
-	font-size: 2rem;
-	margin-left: -0.5rem;
+  position: absolute;
+  top: 45vh;
+  left: 50%;
+  right: 50%;
+  font-size: 2rem;
+  margin-left: -0.5rem;
 }
 
 .animated_city {
   animation-duration: 600ms;
   animation-fill-mode: forwards;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .animated_city_backtext {
-	position: absolute;
-	left: 0;
-	top: 0;
-	font-size: 10rem;
-	opacity: 0.1;
-	margin-left: -5rem;
-	margin-top: -3rem;
-	color: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 10rem;
+  opacity: 0.1;
+  margin-left: -5rem;
+  margin-top: -3rem;
+  color: #fff;
 }
 
 .animated_city_text {
-	font-size: .8rem;
-	white-space: nowrap;
-	color: #fff;
+  font-size: .8rem;
+  white-space: nowrap;
+  color: #fff;
 }
 
 .hided {
-	opacity: 0;
+  opacity: 0;
 }
 
 

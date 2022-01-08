@@ -43,41 +43,41 @@
 
 <script lang="ts">
   /// <reference path="../../api/index.d.ts" />
-	import Vue from 'vue';
+  import Vue from 'vue';
   import store from '@/store/index.js'    
-	import API from '@/api/index.ts';
+  import API from '@/api/index.ts';
   import WorldItem from './components/world-item.vue';
     // @ts-ignore
   import { ThemeModal } from '../../api/index.js';
-	export default Vue.extend({
-		data() {
-			return {
-				gameMode: '',
-				currentWorld: '世界城市',
-				myTotalScore: 23,
+  export default Vue.extend({
+    data() {
+      return {
+        gameMode: '',
+        currentWorld: '世界城市',
+        myTotalScore: 23,
         themes_list: [],
         selectedGameId: 'game_001',
-			}
-		},
-		onLoad() {
+      }
+    },
+    onLoad() {
       this.getAllThemes();
-		},
-		methods: {
+    },
+    methods: {
       backToHome() {
-				uni.navigateTo({
-					url: '/pages/index/index'
-				});
+        uni.navigateTo({
+          url: '/pages/index/index'
+        });
       },
-			startPlayingGeneral() {
+      startPlayingGeneral() {
         
         store.commit('updateSelectedGameId', this.selectedGameId);
-				uni.navigateTo({
-					url: '/pages/play-minute/play-minute'
-				})
-			},
+        uni.navigateTo({
+          url: '/pages/play-minute/play-minute'
+        })
+      },
       async getAllThemes() {
         // const { data } = await ThemeModal.getAllThemes();
-				const data = await API.getAllCategories();
+        const data = await API.getAllCategories();
         // const data = await ThemeModal.getAllThemes();
         console.log('data categories', data);
         this.alignGameWithTheme(data);
@@ -127,21 +127,21 @@
         console.log('selected', game);
         this.selectedGameId = game.game_id;
       },
-		},
-		components:{
-			WorldItem
-		}
-	});
+    },
+    components:{
+      WorldItem
+    }
+  });
 </script>
 
 <style scoped lang="scss">
 .page_wrapper {
   height: 100vh;
-	background: $dark-mode-bg;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+  background: $dark-mode-bg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .select_info {
   height: 10%;
@@ -157,9 +157,9 @@
   margin: 5% 0;
   width: 90vw;
   display: flex;
-	flex-direction: row;
+  flex-direction: row;
   justify-content: space-between;
-	align-items: center;
+  align-items: center;
   flex-wrap: wrap;
   overflow-y: scroll;
   .theme_title {
@@ -174,8 +174,8 @@
   height: 20%;
   display: flex;
   justify-content: space-between;
-	align-items: center;
-	width: 60vw;
+  align-items: center;
+  width: 60vw;
 }
 .select_confirm_confirm {
   width: 70%;
@@ -184,9 +184,9 @@
   width: 20%;
 }
 .select_confirm_btn {
-	background: $general-bright-button-background;
+  background: $general-bright-button-background;
   text-align: center;
-	line-height: 40px;
-	line-height: 40px;
+  line-height: 40px;
+  line-height: 40px;
 }
 </style>

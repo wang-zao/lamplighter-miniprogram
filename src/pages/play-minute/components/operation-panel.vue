@@ -1,8 +1,8 @@
 
 <template>
-	<view
-		class="operation_panel_wrapper"
-	>
+  <view
+    class="operation_panel_wrapper"
+  >
     <view class="canvas_cover_operation"
       v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
     >
@@ -18,47 +18,47 @@
         @clickedOneDirection="e => clickedOneDirection(e)"
       /> -->
     </view>
-	</view>
+  </view>
 </template>
 
 <script>
-	/**
-	 * info panel 选择世界的世界单元
-	 * @description 用于展示选择世界的世界单元
-	 * @event {Function} click 点击触发事件
-	 */
+  /**
+   * info panel 选择世界的世界单元
+   * @description 用于展示选择世界的世界单元
+   * @event {Function} click 点击触发事件
+   */
 
   import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
   import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
   import Compass from '@/components/compass.vue';
 
-	export default {
-		name: 'OperationPanel',
+  export default {
+    name: 'OperationPanel',
     components: {
       FlyControlCrossT,
       FlyControlCrossX,
       Compass,
     },
-		props: {
+    props: {
       anmtCtrl: {
         type: Object,
         default: {},
       },
-		},
-		data() {
-			return {
-			}
-		},
-		methods: {
-			onClickEmit(e) {
-				this.$emit('clicked')
-			},
+    },
+    data() {
+      return {
+      }
+    },
+    methods: {
+      onClickEmit(e) {
+        this.$emit('clicked')
+      },
       clickedOneDirection(direction) {
         // console.log('emitted button again', direction)
         this.$emit('clickedOneDirection', direction);
       },
-		}
-	}
+    }
+  }
 </script>
 
 
