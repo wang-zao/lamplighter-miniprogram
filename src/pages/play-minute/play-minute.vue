@@ -12,7 +12,6 @@
         :nextCity="nextCity"
       />
     </view>
-    <view>this is earth</view>
     <earth-globe
       class="content_panel earth_panel"
       ref="flyingEarth"
@@ -113,12 +112,12 @@
         await this.getCityData();
         this.cityQueuePopOne(true);
         this.cityQueuePopOne(true);
-        // this.$refs.flyingEarth.flyFromOneToAnother(
-        //   0,
-        //   0,
-        //   this.currentCity.lat,
-        //   this.currentCity.lon,
-        // );
+        this.$refs.flyingEarth.flyFromOneToAnother(
+          0,
+          0,
+          this.currentCity.lat,
+          this.currentCity.lon,
+        );
         this.calcAnswer();
         // this.$refs.flyingEarth.allowDrawOrbit();
         console.log('init fiinised')
@@ -234,7 +233,6 @@
           this.anmtCtrl.answerCorrectAnimation = true;
           // 5.切换城市
           this.cityQueuePopOne(false);
-          // this.calcAnswer();
           this.checkRestCityDataCapacity();
         } else {
           // 1.两秒防抖
@@ -260,8 +258,8 @@
 <style scoped lang="scss">
 
 $general-paddng: 1rem;
-$section-1-info-height: 25vh;
-$section-2-earth-height: 50vh;
+$section-1-info-height: 35vh;
+$section-2-earth-height: 60vh;
 $section-3-operation-height: 25vh;
 
 .play_minute_wrapper {
