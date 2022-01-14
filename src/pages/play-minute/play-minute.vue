@@ -90,13 +90,16 @@
           distance: '',
           totalMiles: 0,
           restTime: 10,
-          // startAnswerCurQuestionTime: 60,
           countdownStartTime:10,  //按每题计时
           userSelect: '',
           isCorrect: false,
           isUserSelected: false,
           correctCityList: [],
           wrongCityList: [],
+        },
+        pageCtrl: {
+          currentPage: 0,
+          pageSize: 20,
         },
         cityList: [],
       }
@@ -125,15 +128,20 @@
       async getCityData() {
         try {
           const colloctionName = DATABASE.QUESTION_COLLECTION_NAME;
-          const { list } = await GameModal.getGameQuestions(colloctionName);
+          const list = await GameModal.getGameQuestions(colloctionName, this.pageCtrl.currentPage, this.pageCtrl.pageSize);
           // const gameId = store.state.selectedGameId;
           // const list = await API.getGameQuestions(gameId);
-          this.cityList = list.sort((a, b) => Number(a.id) - Number(b.id));
+          list
+            .sort((a, b) => Number(a.id) - Number(b.id))
+            .forEach(item => {
+              this.cityList.push(item);
+            });
         } catch (e) {
         }
       },
       checkRestCityDataCapacity() {
         if (this.cityList && this.cityList.length <= 5) {
+          this.pageCtrl.currentPage += 1;
           this.getCityData();
         }
       },
@@ -212,7 +220,6 @@
           return;
         }
         this.anmtCtrl.operationPanelDisabled = true;
-        // const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
         this.anmtCtrl.showingAbstractModal = false;
         if (isDegreeWithinRange(selectedDegree, this.judgeCtrl.correctDeg)) {
           // 1.两秒防抖

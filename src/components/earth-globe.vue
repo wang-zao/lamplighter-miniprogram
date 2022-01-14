@@ -72,8 +72,16 @@ export default Vue.extend({
       earthColorBackground: '#0b2353',
       height_array: [],
       flyTimeSpan: 1000,
-      flyAnimationFreq: 25,
+      flyAnimationFreq: 50,
       allowingDrawOrbit: false,
+      lightBallConfig: {
+        ballRadius: 10,
+        ballHeight: 50,
+        ballColor: '#ffffff',
+        lightColor: '#ffffff',
+        lightIntencity:  0.2,
+        lightDistance:  5000,
+      }
     }
   },
   components: {
@@ -275,6 +283,7 @@ export default Vue.extend({
         currentGroundLng += delta_lng;
         count += 1;
       }, f);
+      this.drawLightBall(lat2, lng2);
     },
     allowDrawOrbit() {
       this.allowingDrawOrbit = true;
@@ -296,6 +305,24 @@ export default Vue.extend({
           this.globalTHREE, this.globalScene,
         );
       }
+    },
+    drawLightBall(lat, lng) {
+      const cfg = this.lightBallConfig;
+      const ball = new this.globalTHREE.Mesh(
+        new this.globalTHREE.SphereGeometry(cfg.ballRadius, 32, 32), 
+        new this.globalTHREE.MeshBasicMaterial({ color: cfg.ballColor }),
+      );
+      const light = new this.globalTHREE.PointLight(cfg.lightColor, cfg.lightIntencity, cfg.lightDistance );
+      let xyz = this.convertLatLngToXyz(
+        lat, lng,
+        this.earthRadius + cfg.ballHeight,
+        this.globalTHREE,
+      );
+
+      ball.position.set(xyz.x, xyz.y, xyz.z);
+      light.position.set(xyz.x, xyz.y, xyz.z);
+      this.globalScene.add(ball);
+      this.globalScene.add(light);
     },
     testFlyFunction(THREE) {
       let ccount = 0;
