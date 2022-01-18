@@ -14,6 +14,10 @@
         v-if="anmtCtrl.gameEndPageVisible"
         class="canvas_cover_end_panel"
       />
+      <compass
+        v-if="currentRoute === 'play-minute' && !anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
+        class="canvas_cover_compass"
+      />
     </canvas>
   </view>
 </template>
@@ -34,19 +38,13 @@ import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
 import EndPage from '@/components/end-page.vue';
+import Compass from '@/components/compass.vue';
+import { EventBus } from '@/utils/eventBus';
 
 export default Vue.extend({
 // export default {
   name: 'EarthGlobe',
   props: {
-    currentCity: {
-      type: Object,
-      default: {},
-    },
-    nextCity: {
-      type: Object,
-      default: {},
-    },
     anmtCtrl: {
       type: Object,
       default: {},
@@ -55,11 +53,14 @@ export default Vue.extend({
       type: Object,
       default: {},
     },
+    currentRoute: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
       canvas: null,
-      showCoverViews: false,
       camera: null,
       earthRadius: 400,
       cameraHeight: 4500,
@@ -72,29 +73,38 @@ export default Vue.extend({
       earthColorBackground: '#0b2353',
       height_array: [],
       flyTimeSpan: 1000,
-      flyAnimationFreq: 25,
+      flyAnimationFreq: 50,
       allowingDrawOrbit: false,
+      lightBallConfig: {
+        ballRadius: 10,
+        ballHeight: 50,
+        ballColor: '#ffffff',
+        lightColor: '#ffffff',
+        lightIntencity:  0.2,
+        lightDistance:  5000,
+      },
+      rotationClockId: -1,
     }
   },
   components: {
     StartPage,
     EndPage,
+    Compass,
   },
-  mounted() {
-    this.drawEarth();
+  async mounted() {
+    this.watchEarthRotation();
+    this.watchFlyingEvent();
+    await this.drawEarth();
   },
   computed: {
     canvasHeight() {
       return store.state.systemInfo.windowHeight * 0.9 || 896 * 0.9 ;
     },
     canvasWidth() {
-      return store.state.systemInfo.windowWidth * 3 || 414 * 3;
+      return store.state.systemInfo.windowWidth * 1 || 414 * 1;
     },
     canvasStyle() {
       return `width: ${this.canvasWidth}px; height: ${this.canvasHeight}px;`;
-    },
-    showingAbstractModalComputed() {
-      return this.anmtCtrl.showingAbstractModal && !this.anmtCtrl.gameStartPageVisible;
     },
   },
   methods: {
@@ -110,7 +120,10 @@ export default Vue.extend({
           this.renderEarth(THREE, canvas)
           canvas.width = this.canvasWidth * 2;
           canvas.height = this.canvasHeight * 2;
-        })
+        });
+      this.flyFromOneToAnother(
+        40, 179, 40, 116,
+      );
     },
     async renderEarth(THREE, canvas) {
       const scene = new THREE.Scene();
@@ -157,8 +170,12 @@ export default Vue.extend({
           renderer.render(scene, this.camera);
       }
       render();
+
+      // enable auto rotate
+      if (this.currentRoute === 'home') {
+        EventBus.$emit('enableEarthRotation');
+      }
     },
-    
     async drawEarthSurface(THREE, scene ) {
       const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32);
       let texture = new THREE.TextureLoader().load(PICTURES_URL.EARTH);
@@ -275,6 +292,7 @@ export default Vue.extend({
         currentGroundLng += delta_lng;
         count += 1;
       }, f);
+      this.drawLightBall(lat2, lng2);
     },
     allowDrawOrbit() {
       this.allowingDrawOrbit = true;
@@ -297,6 +315,24 @@ export default Vue.extend({
         );
       }
     },
+    drawLightBall(lat, lng) {
+      const cfg = this.lightBallConfig;
+      const ball = new this.globalTHREE.Mesh(
+        new this.globalTHREE.SphereGeometry(cfg.ballRadius, 32, 32), 
+        new this.globalTHREE.MeshBasicMaterial({ color: cfg.ballColor }),
+      );
+      const light = new this.globalTHREE.PointLight(cfg.lightColor, cfg.lightIntencity, cfg.lightDistance );
+      let xyz = this.convertLatLngToXyz(
+        lat, lng,
+        this.earthRadius + cfg.ballHeight,
+        this.globalTHREE,
+      );
+
+      ball.position.set(xyz.x, xyz.y, xyz.z);
+      light.position.set(xyz.x, xyz.y, xyz.z);
+      this.globalScene.add(ball);
+      this.globalScene.add(light);
+    },
     testFlyFunction(THREE) {
       let ccount = 0;
       let east = true
@@ -315,12 +351,27 @@ export default Vue.extend({
         }, 5000)
       }, 10);
     },
-
-    clickedOneDirection(direction) {
-      this.$emit('clickedOneDirection', direction);
+    watchFlyingEvent() {
+      EventBus.$on('flyFromOneToAnother', (flyConfig) => {
+        const { fromLat, fromLon, toLat, toLon } = flyConfig;
+        this.flyFromOneToAnother(fromLat, fromLon, toLat, toLon);
+      });
     },
-
-  }
+    watchEarthRotation() {
+      EventBus.$on('enableEarthRotation', () => {
+        if (this.rotationClockId === -1) {
+          this.rotationClockId = setInterval(() => {
+            this.globalScene.rotation.y += 0.001;
+          }, 10);
+        }
+      });
+      EventBus.$on('disableEarthRotation', () => {
+        clearInterval(this.rotationClockId);
+        this.rotationClockId = -1;
+        this.globalScene.rotation.y = 0;
+      });
+    },
+  },
 });
 </script>
 
@@ -355,5 +406,10 @@ export default Vue.extend({
   position: fixed;
   left: 0;
   top: 0;
+}
+.canvas_cover_compass {
+  position: fixed;
+  left: 0;
+  top: 70%;
 }
 </style>

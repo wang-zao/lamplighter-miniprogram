@@ -21,14 +21,18 @@ class GameModal {
     return wx.cloud.database({ env: this.env }).serverDate({ offset })
   }
 
-  async getGameQuestions(collectionName) {
+  async getGameQuestions(
+    collectionName, page, size,
+  ) {
     await this.initDB(collectionName);
-    const size = 20;
     try {
-      return this.model.aggregate()
-      .sample({ size })
-      .end()
+      const { data } = await this.model.orderBy('id', 'asc')
+        .skip(page * size)
+        .limit(size)
+        .get()
+      return data
     } catch (error) {
+      console.log('error!!!', error)
       throw error
     }
   }

@@ -1,155 +1,137 @@
 <template>
-<view class="play_minute_wrapper">
-  <view class="play_minute_content">
-    <view
+<cover-view class="play_minute_wrapper">
+  <cover-view class="play_minute_content">
+    <cover-view
       class="content_panel info_panel"
     >
       <info-panel
         v-if="!anmtCtrl.gameEndPageVisible"
-        :anmtCtrl="anmtCtrl"
-        :judgeCtrl="judgeCtrl"
         :currentCity="currentCity"
         :nextCity="nextCity"
       />
-    </view>
-    <earth-globe
-      class="content_panel earth_panel"
-      ref="flyingEarth"
-      @renderCompleted="showAllCoverViews"
-      @changeAbstractVisibility="(t, a) => changeAbstractVisibility(t, a)"
-      @clickedOneDirection="e => handleUserSelected(e)"
-      :currentCity="currentCity"
-      :nextCity="nextCity"
-      :anmtCtrl="anmtCtrl"
-      :judgeCtrl="judgeCtrl"
-    />
-    <view
+    </cover-view>
+    <cover-view
       class="content_panel operation_panel"
     >
-      <operation-panel
-        :anmtCtrl="anmtCtrl"
-        @clickedOneDirection="e => handleUserSelected(e)"
-      />
-    </view>
-  </view>
-</view>
+    </cover-view>
+  </cover-view>
+</cover-view>
 </template>
 
 <script>
-  import Vue from 'vue';
-  import store from '@/store/index.js'    
-  import API from '@/api/index.ts';
-  import { GameModal } from '@/api/index.js';
-  import InfoPanel from './components/info-panel.vue';
-  import OperationPanel from './components/operation-panel.vue';
-  import StartPage from '@/components/start-page.vue';
-  import EarthGlobe from '@/components/earth-globe.vue';
-  import {
-    calc_shortest_dis,
-    calc_next_direction,
-    calc_azimuth,
-    getPenaltyTimeWhenWrong,
-    getScoreWhenCorrect,
-    getScoreFromDegreeDistance,
-    isDegreeWithinRange,
-  } from '@/utils/common';
-  import {
-    DATABASE,
-  } from '@/utils/constants';
+import Vue from 'vue';
+import store from '@/store/index.js'    
+import API from '@/api/index.ts';
+import { GameModal } from '@/api/index.js';
+import InfoPanel from './components/info-panel.vue';
+import EarthGlobe from '@/components/earth-globe.vue';
+import {
+  calc_shortest_dis,
+  calc_next_direction,
+  calc_azimuth,
+  getScoreFromDegreeDistance,
+  isDegreeWithinRange,
+} from '@/utils/common';
+import {
+  DATABASE,
+} from '@/utils/constants';
+import { EventBus } from '@/utils/eventBus';
 
   export default Vue.extend({
+    name: 'PlayMinute',
     components: {
-      StartPage,
       InfoPanel,
-      OperationPanel,
       EarthGlobe,
     },
     data() {
       return {
         currentCity: {},
         nextCity: {},
-        anmtCtrl: {
-          crossTVisible: false,
-          crossXVisible: false,
-          gameEndPageVisible: false,
-          gameStartPageVisible: true,
-          showCoverViews: false,
-          answerCorrectAnimationStep1: false,
-          answerCorrectAnimationStep2: false,
-          answerWrongAnimation: false,
-          isPlanePausing: true,
-          isPlaneShaking: false,
-          showingAbstractModal: false,
-          abstractContent: '',
-          switchCityTime: 700,
-          operationPanelDisabled: false,
-        },
-        judgeCtrl: {
-          correctDirection: '',
-          correctDeg: 0,
-          distance: '',
-          totalMiles: 0,
-          restTime: 10,
-          // startAnswerCurQuestionTime: 60,
-          countdownStartTime:10,  //按每题计时
-          userSelect: '',
-          isCorrect: false,
-          isUserSelected: false,
-          correctCityList: [],
-          wrongCityList: [],
+        pageCtrl: {
+          currentPage: 0,
+          pageSize: 20,
         },
         cityList: [],
       }
     },
-    onLoad() {
+    mounted() {
       this.init();
+      this.watchChooseDirection();
+      this.watchPlayAgain();
+      // this.watchBackHome();
+    },
+    computed: {
+      anmtCtrl() {
+        return store.state.anmtCtrl;
+      },
+      judgeCtrl() {
+        return store.state.judgeCtrl;
+      },
     },
     methods: {
       async init() {
-        console.log('initing-------------------------')
-        this.showStartPage();
+        // this.showStartPage();
         // this.startTimeLoop();
+        this.cityList = [];
+        this.currentCity = {};
+        this.nextCity = {};
+        this.pageCtrl = {
+          currentPage: 0,
+          pageSize: 20,
+        };
+        store.commit('initAnmtCtrl');
+        store.commit('initJudgeCtrl');
         await this.getCityData();
         this.cityQueuePopOne(true);
         this.cityQueuePopOne(true);
-        this.$refs.flyingEarth.flyFromOneToAnother(
-          0,
-          0,
-          this.currentCity.lat,
-          this.currentCity.lon,
-        );
+        // this.$refs.flyingEarth.flyFromOneToAnother(
+        //   0,
+        //   0,
+        //   this.currentCity.lat,
+        //   this.currentCity.lon,
+        // );
         this.calcAnswer();
         // this.$refs.flyingEarth.allowDrawOrbit();
-        console.log('init fiinised')
       },
       async getCityData() {
         try {
           const colloctionName = DATABASE.QUESTION_COLLECTION_NAME;
-          const { list } = await GameModal.getGameQuestions(colloctionName);
+          const list = await GameModal.getGameQuestions(colloctionName, this.pageCtrl.currentPage, this.pageCtrl.pageSize);
           // const gameId = store.state.selectedGameId;
           // const list = await API.getGameQuestions(gameId);
-          this.cityList = list.sort((a, b) => Number(a.id) - Number(b.id));
+          list
+            .sort((a, b) => Number(a.id) - Number(b.id))
+            .forEach(item => {
+              this.cityList.push(item);
+            });
         } catch (e) {
         }
       },
       checkRestCityDataCapacity() {
         if (this.cityList && this.cityList.length <= 5) {
+          this.pageCtrl.currentPage += 1;
           this.getCityData();
         }
       },
       showStartPage() {
         setTimeout(() => {
-          this.anmtCtrl.gameStartPageVisible = false;
+          store.commit('setAnmtCtrl', {
+            gameStartPageVisible: false,
+          });
           this.startTimeLoop();
         }, 1000);
       },
       gameEnd() {
-        this.anmtCtrl.gameEndPageVisible = true;
+        store.commit('setAnmtCtrl', {
+          gameEndPageVisible: true,
+        });
       },
       startTimeLoop() {
         const clock = setInterval(() => {
           if (this.judgeCtrl.restTime > 0) {
-            this.judgeCtrl.restTime -= 1;
+            store.commit('setJudgeCtrl', {
+              restTime: this.judgeCtrl.restTime - 1,
+            });
           } else if (this.judgeCtrl.restTime <= 0) {
             clearInterval(clock);
             this.gameEnd();
@@ -159,19 +141,25 @@
       calcAnswer() {
         const c = this.currentCity;
         const n = this.nextCity;
-        this.judgeCtrl.distance = calc_shortest_dis(c.lon, c.lat, n.lon, n.lat);
-        this.judgeCtrl.correctDirection = calc_next_direction(c.lon, c.lat, n.lon, n.lat);
-        this.judgeCtrl.correctDeg = calc_azimuth(c.lon, c.lat, n.lon, n.lat);
+        store.commit('setJudgeCtrl', {
+          distance: calc_shortest_dis(c.lon, c.lat, n.lon, n.lat),
+          correctDirection: calc_next_direction(c.lon, c.lat, n.lon, n.lat),
+          correctDeg: calc_azimuth(c.lon, c.lat, n.lon, n.lat),
+        });
         this.allowUserInput();
       },
       allowUserInput() {
         const dir = this.judgeCtrl.correctDirection;
         if (['north', 'east', 'west', 'south'].includes(dir)) {
-          this.anmtCtrl.crossTVisible = true;
-          this.anmtCtrl.crossXVisible = false;
+          store.commit('setAnmtCtrl', {
+            crossTVisible: true,
+            crossXVisible: false,
+          });
         } else if (['northeast', 'southeast', 'northwest', 'southwest'].includes(dir)) {
-          this.anmtCtrl.crossTVisible = false;
-          this.anmtCtrl.crossXVisible = true;
+          store.commit('setAnmtCtrl', {
+            crossTVisible: false,
+            crossXVisible: true,
+          });
         }
       },
       cityQueuePopOne(withoutAnimation = true) {
@@ -180,17 +168,25 @@
           this.nextCity = { ...this.cityList.shift() };
           return;
         }
-        this.anmtCtrl.answerCorrectAnimationStep1 = true;
-        // this.anmtCtrl.operationPanelDisabled = true;
+        store.commit('setAnmtCtrl', {
+          answerCorrectAnimationStep1: true,
+        });
         setTimeout(() => {
           this.anmtCtrl.answerCorrectAnimationStep1 = false;
           this.anmtCtrl.answerCorrectAnimationStep2 = true;
+          
+          store.commit('setAnmtCtrl', {
+            answerCorrectAnimationStep1: false,
+            answerCorrectAnimationStep2: true,
+          });
           this.currentCity = this.nextCity;
           this.nextCity = { ...this.cityList.shift() };
           this.calcAnswer();
         }, 600);
         setTimeout(() => {
-          this.anmtCtrl.answerCorrectAnimationStep2 = false;
+          store.commit('setAnmtCtrl', {
+            answerCorrectAnimationStep2: false,
+          });
         }, 1200);
         
       },
@@ -200,56 +196,78 @@
           this.calcAnswer();
         }, 600);
       },
-      showAllCoverViews() {
-        setTimeout(() => {
-          console.log('showing all cover views !')
-          this.anmtCtrl.showCoverViews = true;
-        }, 1000);
-      },
       async handleUserSelected(selectedDegree) {
-        console.log('handleUserSelected===', selectedDegree)
         if (this.anmtCtrl.operationPanelDisabled) {
           return;
         }
-        this.anmtCtrl.operationPanelDisabled = true;
-        // const userAnswerTime = this.judgeCtrl.startAnswerCurQuestionTime - this.judgeCtrl.restTime;
-        this.anmtCtrl.showingAbstractModal = false;
+        store.commit('setAnmtCtrl', {
+          operationPanelDisabled: true,
+          showingAbstractModal: false,
+        });
         if (isDegreeWithinRange(selectedDegree, this.judgeCtrl.correctDeg)) {
           // 1.两秒防抖
           setTimeout(() => {
-            this.anmtCtrl.operationPanelDisabled = false;
+            store.commit('setAnmtCtrl', {
+              operationPanelDisabled: false,
+            });
           }, this.anmtCtrl.switchCityTime);
           // 2.计算得分
-          this.judgeCtrl.totalMiles += getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
           // 3.计入列表
-          this.judgeCtrl.correctCityList.push(this.nextCity.name_chn);
+          store.commit('setJudgeCtrl', {
+            totalMiles: this.judgeCtrl.totalMiles + getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg),
+            correctCityList: [...this.judgeCtrl.correctCityList, this.nextCity.name_chn],
+          });
           // 4.进行飞翔
-          this.$refs.flyingEarth.flyFromOneToAnother(
-            this.currentCity.lat,
-            this.currentCity.lon,
-            this.nextCity.lat,
-            this.nextCity.lon,
-          )
-          this.anmtCtrl.answerCorrectAnimation = true;
+          const flyConfig = {
+            fromLat: this.currentCity.lat,
+            fromLon: this.currentCity.lon,
+            toLat: this.nextCity.lat,
+            toLon: this.nextCity.lon,
+          };
+          EventBus.$emit(
+            'flyFromOneToAnother',
+            flyConfig,
+          );
+          store.commit('setAnmtCtrl', {
+            answerCorrectAnimation: true,
+          });
           // 5.切换城市
           this.cityQueuePopOne(false);
           this.checkRestCityDataCapacity();
         } else {
           // 1.两秒防抖
           setTimeout(() => {
-            this.anmtCtrl.operationPanelDisabled = false;
+            store.commit('setAnmtCtrl', {
+              operationPanelDisabled: false,
+            });
           }, this.anmtCtrl.switchCityTime);
           // 3.计入列表
-          this.judgeCtrl.wrongCityList.push(this.nextCity.name_chn);
+          store.commit('setJudgeCtrl', {
+            wrongCityList: [...this.judgeCtrl.wrongCityList, this.nextCity.name_chn],
+          });
           this.cityQueueBrokeOne();
           this.gameEnd();
         }
         // 重设开始答题时间，这个还需要调整，引入switch_time之后
-        this.judgeCtrl.restTime = this.judgeCtrl.countdownStartTime;
+        store.commit('setJudgeCtrl', {
+          restTime: this.judgeCtrl.countdownStartTime,
+        });
       },
-      changeAbstractVisibility(target, abstract) {
-        this.anmtCtrl.showingAbstractModal = target;
-        this.anmtCtrl.abstractContent = abstract;
+      watchChooseDirection() {
+        EventBus.$on('onChooseDirection', (deg) => {
+          this.handleUserSelected(deg);
+        });
+      },
+      watchPlayAgain() {
+        EventBus.$on('playAgain', () => {
+          this.init();
+        });
+      },
+      watchBackHome() {
+        EventBus.$on('onBackHome', () => {
+          store.commit('initAnmtCtrl');
+          store.commit('initJudgeCtrl');
+        });
       },
     },
   });
@@ -258,12 +276,12 @@
 <style scoped lang="scss">
 
 $general-paddng: 1rem;
-$section-1-info-height: 35vh;
+$section-1-info-height: 50vh;
 $section-2-earth-height: 60vh;
 $section-3-operation-height: 25vh;
 
 .play_minute_wrapper {
-  background: $dark-mode-bg;
+  // background: $dark-mode-bg;
   width: 100vw;
   height: 100vh;
 }

@@ -1,13 +1,13 @@
 <template>
-  <view
+  <cover-view
     class="info_panel_wrapper"
   >
-    <view class="info_1_scores">
-      <view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</view>
-      <view class="info_resttime">⏰ {{judgeCtrl.restTime}}</view>
-    </view>
-    <view class="info_2_cities">
-      <view class="canvas_cover_cityname" v-if="!anmtCtrl.gameStartPageVisible">
+    <cover-view class="info_1_scores">
+      <cover-view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</cover-view>
+      <cover-view class="info_resttime">⏰ {{judgeCtrl.restTime}}</cover-view>
+    </cover-view>
+    <cover-view class="info_2_cities">
+      <cover-view class="canvas_cover_cityname" v-if="!anmtCtrl.gameStartPageVisible">
         <ticket
           class="cover_ticket cover_ticke_left"
           :class="{
@@ -32,9 +32,9 @@
           reminder="下一站"
           @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
         />
-      </view>
-    </view>
-  </view>
+      </cover-view>
+    </cover-view>
+  </cover-view>
 </template>
 
 <script>
@@ -44,6 +44,7 @@
    * @event {Function} click 点击触发事件
    */
 
+import store from '@/store/index.js';
   import Ticket from '@/components/ticket.vue';
 
   export default {
@@ -60,24 +61,19 @@
         type: Object,
         default: {},
       },
-      anmtCtrl: {
-        type: Object,
-        default: {},
-      },
-      judgeCtrl: {
-        type: Object,
-        default: {},
-      },
     },
     data() {
       return {
       }
     },
-    // computed: {
-    //   isNextCityAbscractVisible() {
-    //     return !this.anmtCtrl.answerCorrectAnimationStep1;
-    //   },
-    // },
+    computed: {
+      anmtCtrl() {
+        return store.state.anmtCtrl;
+      },
+      judgeCtrl() {
+        return store.state.judgeCtrl;
+      },
+    },
     methods: {
       onClickEmit(e) {
         this.$emit('clicked')
@@ -96,7 +92,6 @@
 
 .info_panel_wrapper {
   width: 100%;
-  height: 25vh;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -104,14 +99,10 @@
   color: #fff;
   .info_1_scores {
     width: 100vw;
-    // height: 
     display: flex;
-    // justify-content: ;
-    // background: yellow;
     align-items: flex-end;
     padding: 3vh 0;
-    // line-height: 20vh;
-    height: 15vh;
+    height: 10vh;
     .info_grade {
       margin-left: 5vw;
 
@@ -121,12 +112,8 @@
     }
   }
   .info_2_cities {
-    height: 10vh;
+    height: 30vh;
     .canvas_cover_cityname {
-      // position: fixed;
-      // left: 50%;
-      // transform: translateX(-50%);
-      // bottom: 70vh;
       color: #fff;
       width: 90vw;
       padding: 0 10vw;
@@ -134,8 +121,9 @@
       justify-content: space-between;
       align-items: flex-start;
       .cover_ticket {
-      animation-duration: .8s;
-
+        animation-duration: .8s;
+        background: $general-bright-button-blue;
+        border-radius: 1rem;
       }
     }
   }
