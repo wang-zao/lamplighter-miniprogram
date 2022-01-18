@@ -1,0 +1,85 @@
+<template>
+  <cover-view class="router_wrapper"
+    @touchstart="startRotatingCompass"
+    @touchend="endRotatingCompass"
+  >
+    <home-buttons
+      @routeChange="handleRouteChange"
+      v-if="currentRoute === 'home'"
+    />
+    <play-minute
+      v-if="currentRoute === 'play-minute'"
+    />
+    <ranking
+      @routeChange="handleRouteChange"
+      v-if="currentRoute === 'ranking'"
+    />
+  </cover-view>
+</template>
+
+<script>
+  /**
+   * @description 
+   * @event {Function} click 
+   */
+import PlayMinute from '@/pages/play-minute/play-minute.vue';
+import HomeButtons from './homeButtons.vue';
+import Ranking from '@/pages/ranking/index.vue';
+import { EventBus } from '@/utils/eventBus';
+
+export default {
+  name: 'globalRouter',
+  components: {
+    HomeButtons,
+    PlayMinute,
+    Ranking,
+  },
+  props: {
+    currentRoute: {
+      type: String,
+      default: 'home',
+    },
+  },
+  data() {
+    return {
+    }
+  },
+  created() {
+  },
+  methods: {
+    init() {
+    },
+    handleRouteChange(route) {
+      this.$emit('handleRouteChange', route);
+    },
+    startRotatingCompass() {
+      if (this.currentRoute === 'play-minute') {
+        EventBus.$emit('startRotatingCompass');
+      }
+    },
+    endRotatingCompass() {
+      console.log('endRotatingCompass');
+      if (this.currentRoute === 'play-minute') {
+        EventBus.$emit('endRotatingCompass');
+      }
+    },
+  }
+}
+</script>
+
+<style scoped lang="scss">
+
+.router_wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

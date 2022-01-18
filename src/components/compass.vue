@@ -1,11 +1,9 @@
 <template>
   <view class="compass_wrapper"
-    @touchstart="startRotating"
-    @touchend="endRotating"
   >
     <view class="compass_body_wrapper">
       <view class="compass_item compass_plate">
-        <image
+        <cover-image
           class="compass_background"
           :src="PICTURES_URL.COMPASS"
           mode="heightFix" />
@@ -46,14 +44,11 @@
 import {
   PICTURES_URL,
 } from '@/utils/constants';
+import { EventBus } from '@/utils/eventBus';
 
   export default {
     name: 'Compass',
     props: {
-      // anyprops: {
-      //   type: String,
-      //   default: '',
-      // },
     },
     data() {
       return {
@@ -71,6 +66,8 @@ import {
     },
     methods: {
       init() {
+        this.watchStartRotatingCompass();
+        this.watchEndRotatingCompass();
       },
       startRotating() {
         this.pausingRotation = false;
@@ -85,10 +82,19 @@ import {
           computedStyle: ['transform']
         },(data)=>{
           this.currentDegree = getRotateDegFromMatrix(data.transform)
-          // console.log('currentDegree set===', this.currentDegree)
-          this.$emit('clickedOneDirection', this.currentDegree);
+          EventBus.$emit('onChooseDirection', this.currentDegree);
         }).exec()
-      }
+      },
+      watchStartRotatingCompass() {
+        EventBus.$on('startRotatingCompass', () => {
+          this.startRotating();
+        });
+      },
+      watchEndRotatingCompass() {
+        EventBus.$on('endRotatingCompass', () => {
+          this.endRotating();
+        });
+      },
     }
   }
 </script>
@@ -107,10 +113,11 @@ $needle-radius: 4vw;
 
 .compass_wrapper {
   color: #fff;
-  width: 70vw;
+  width: 100vw;
   height: 100px;
   display: flex;
   justify-content: center;
+  height: 50vh;
 }
 
 .compass_body_wrapper {

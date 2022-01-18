@@ -1,24 +1,19 @@
 
 <template>
-  <view
+  <cover-view
     class="operation_panel_wrapper"
   >
-    <view class="canvas_cover_operation"
-      v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
+    <cover-view class="canvas_cover_operation"
     >
-      <compass
-        @clickedOneDirection="e => clickedOneDirection(e)"
-      />
-      <!-- <fly-control-cross-t
-        v-show="anmtCtrl.crossTVisible"
-        @clickedOneDirection="e => clickedOneDirection(e)"
-      />
-      <fly-control-cross-x
-        v-show="anmtCtrl.crossXVisible"
+      <!-- v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible" -->
+      <cover-view
+        class="canvas_cover_cityname">
+      </cover-view>
+      <!-- <compass
         @clickedOneDirection="e => clickedOneDirection(e)"
       /> -->
-    </view>
-  </view>
+    </cover-view>
+  </cover-view>
 </template>
 
 <script>
@@ -28,15 +23,11 @@
    * @event {Function} click 点击触发事件
    */
 
-  import FlyControlCrossT from '@/components/fly-control-cross-t.vue';
-  import FlyControlCrossX from '@/components/fly-control-cross-x.vue';
   import Compass from '@/components/compass.vue';
 
   export default {
     name: 'OperationPanel',
     components: {
-      FlyControlCrossT,
-      FlyControlCrossX,
       Compass,
     },
     props: {
@@ -75,7 +66,6 @@
     color: #000;
     width: 70vw;
     height: 20vh;
-    // background: red;
   }
 }
 

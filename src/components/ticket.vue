@@ -1,17 +1,17 @@
 <template>
-  <view
+  <cover-view
     class="ticket_wrapper" 
     :class="{ ticket_wrapper_abstracted: showAbstract }"
     @click="changeAbstractVisibility"
   >
-    <view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</view>
-    <view class="ticket_placename" @click="changeAbstractVisibility">
+    <cover-view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</cover-view>
+    <cover-view class="ticket_placename" @click="changeAbstractVisibility">
       {{cityInfo.name_chn}}
-    </view>
-    <view v-if="showAbstract" class="ticket_abstract">
+    </cover-view>
+    <cover-view v-if="showAbstract" class="ticket_abstract">
       {{ abstractContent }}
-    </view>
-  </view>
+    </cover-view>
+  </cover-view>
 </template>
 
 <script>
@@ -72,7 +72,6 @@
   transition: max-height ease-out 0.2s; 
 }
 .ticket_wrapper {
-  background: $general-bright-button-background;
   background: $general-bright-button-blue;
   transition: max-height ease-out 0.2s; 
   border-radius: 1rem;

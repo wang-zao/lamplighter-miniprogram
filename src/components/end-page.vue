@@ -55,6 +55,7 @@
    * @description 
    * @event {Function} click 
    */
+  import { EventBus } from '@/utils/eventBus';
 
   import { calc_fly_rank } from '@/utils/common';
   export default {
@@ -84,21 +85,13 @@
       },
     },
     created() {
-      // this.startTimeLoop();
     },
     methods: {
-      onClick(direction) {
-        // this.$emit('clickedOneDirection', direction)
-      },
       backToHome() {
-        uni.navigateTo({
-          url: '/pages/index/index'
-        });
+        EventBus.$emit('handleRouteChange', 'home');
       },
       playAgain() {
-        uni.navigateTo({
-          url: '/pages/play-minute/play-minute'
-        })
+        EventBus.$emit('playAgain');
       }
     }
   }
