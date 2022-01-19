@@ -292,10 +292,19 @@ export default Vue.extend({
         currentGroundLng += delta_lng;
         count += 1;
       }, f);
+      this.removeFlyRouteLines();
       this.drawLightBall(lat2, lng2);
     },
     allowDrawOrbit() {
       this.allowingDrawOrbit = true;
+    },
+    removeFlyRouteLines() {
+      let obj;
+      while (obj = this.globalScene.getObjectByProperty('type', 'Line')) {
+        this.globalScene.remove(obj);
+        obj.geometry.dispose();
+        obj.material.dispose();
+      }
     },
     drawFlyRouteLine(lat1, lon1, height1, lat2, lon2, height2) {
       if (this.allowingDrawOrbit) {
