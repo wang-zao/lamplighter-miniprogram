@@ -283,10 +283,10 @@ export default Vue.extend({
         this.drawFlyRouteLine(
           currentGroundLat,
           currentGroundLng,
-          this.height_array[count] | this.height_array[-1],
+          this.height_array[count] || this.height_array[-1],
           currentGroundLat + delta_lat,
           currentGroundLng + delta_lng,
-          this.height_array[count + 1] | this.height_array[-1],
+          this.height_array[count + 1] || this.height_array[-1],
         );
         currentGroundLat += delta_lat;
         currentGroundLng += delta_lng;
@@ -300,16 +300,15 @@ export default Vue.extend({
     drawFlyRouteLine(lat1, lon1, height1, lat2, lon2, height2) {
       if (this.allowingDrawOrbit) {
         const p1 = this.convertLatLngToXyz(
-          lat1, lon1, this.earthRadius,
+          lat1, lon1, this.earthRadius + height1 + this.earthSurfaceOffset,
           this.globalTHREE,
         );
         const p2 = this.convertLatLngToXyz(
-          lat2, lon2, this.earthRadius,
-          this.globalTHREE, this.globalScene,
+          lat2, lon2, this.earthRadius + height2 + this.earthSurfaceOffset,
+          this.globalTHREE,
         );
         draw_line(
-          [p1.x, p2.x], [p1.y, p2.y],
-          [p1.z + height1 + this.earthSurfaceOffset, p2.z + height2 + this.earthSurfaceOffset],
+          [p1.x, p2.x], [p1.y, p2.y], [p1.z, p2.z],
           { color: '#4b5aa3' },
           this.globalTHREE, this.globalScene,
         );
