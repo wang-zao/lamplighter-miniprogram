@@ -41,6 +41,20 @@ const store = new Vuex.Store({
           correctCityList: [],
           wrongCityList: [],
         },
+        userProfile: {
+            openid: '',
+            nickName: '0',
+            country: '',
+            province: '',
+            city: '',
+            avatarUrl: '',
+            gender: 0,
+            score: 0,
+            createDate: '',
+            scoreLastUpdateDate: '',
+            notes: '',
+            language: '',
+        },
     },
     mutations: {
         add(state) {
@@ -92,7 +106,10 @@ const store = new Vuex.Store({
         },
         setJudgeCtrl(state, settings) {
             state.judgeCtrl = Object.assign(state.judgeCtrl, settings);
-        }
+        },
+        updateUserProfile(state, profile) {
+            state.userProfile = Object.assign(state.userProfile, profile);
+        },
     }
 });
 export default store;

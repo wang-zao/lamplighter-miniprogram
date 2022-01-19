@@ -28,7 +28,7 @@
  * @event {Function} click 
  */
 import Vue from 'vue';
-import store from '@/store/index.js'    
+import store from '@/store/index.js';
 // import { contry_json, ocean } from '@/utils/data';
 import { get_flight_orbit_height, draw_line } from '@/utils/common';
 import {

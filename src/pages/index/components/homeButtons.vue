@@ -30,8 +30,7 @@
       <cover-view class="btm_infos">
         <cover-view class="btm_report btm_itm">反馈</cover-view>
         <cover-view class="btm_support btm_itm">帮助</cover-view>
-        <cover-view class="btm_support btm_itm" @click="login">登录</cover-view>
-        <cover-view class="btm_support btm_itm" @click="getUserProfile">授权</cover-view>
+        <cover-view class="btm_support btm_itm" @click="getUserProfilePermission">登录</cover-view>
       </cover-view>
     </cover-view>
   </cover-view>
@@ -50,11 +49,13 @@
     name: 'HomeButtons',
     data() {
       return {
+        openid: '',
       }
     },
     created() {
       // this.getUserProfile();
       this.getSystemInfo();
+      this.autoGetUserInfo();
     },
     methods: {
       init() {
@@ -73,14 +74,26 @@
       goToRanking() {
         this.$emit('routeChange', 'ranking');
       },
-      async login() {
-        const userInfo = await UserModel.getUserOpenId();
+      async autoGetUserInfo() {
+        // 1.先获取openid
+        const { result: { openid }} = await UserModel.getUserOpenId();
+        this.openid = openid;
+        // 2.依据openid获取用户信息
+        let profile = await UserModel.getExistingUserProfile(openid);
+        if (!profile) {
+          await UserModel.registerAsTourist(openid)
+          profile = await UserModel.getExistingUserProfile(openid);
+        }
+        store.commit('updateUserProfile', profile);
       },
-      async getUserProfile() {
+      async getUserProfilePermission() {
         const res = await uni.getUserProfile({
           desc: '使用微信名称和头像吗？'
         });
-        console.log('getUserProfile:', res);
+        const { userInfo } = res[1];
+        await UserModel.updateInfo(userInfo);
+        const profile = await UserModel.getExistingUserProfile(this.openid);
+        store.commit('updateUserProfile', profile);
       },
     }
   }
