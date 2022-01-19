@@ -74,7 +74,7 @@ export default Vue.extend({
       height_array: [],
       flyTimeSpan: 1000,
       flyAnimationFreq: 50,
-      allowingDrawOrbit: false,
+      allowingDrawOrbit: true,
       lightBallConfig: {
         ballRadius: 10,
         ballHeight: 50,
@@ -82,6 +82,10 @@ export default Vue.extend({
         lightColor: '#ffffff',
         lightIntencity:  0.2,
         lightDistance:  5000,
+      },
+      orbitArcConfig: {
+        color: '#ffffff',
+        linewidth: 3,
       },
       rotationClockId: -1,
     }
@@ -318,7 +322,7 @@ export default Vue.extend({
         );
         draw_line(
           [p1.x, p2.x], [p1.y, p2.y], [p1.z, p2.z],
-          { color: '#4b5aa3' },
+          this.orbitArcConfig,
           this.globalTHREE, this.globalScene,
         );
       }
