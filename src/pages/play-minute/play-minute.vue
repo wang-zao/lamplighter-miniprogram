@@ -22,7 +22,7 @@
 import Vue from 'vue';
 import store from '@/store/index.js'    
 import API from '@/api/index.ts';
-import { GameModal } from '@/api/index.js';
+import { GameModal, UserModel } from '@/api/index.js';
 import InfoPanel from './components/info-panel.vue';
 import EarthGlobe from '@/components/earth-globe.vue';
 import {
@@ -67,6 +67,9 @@ import { EventBus } from '@/utils/eventBus';
       judgeCtrl() {
         return store.state.judgeCtrl;
       },
+      userProfile() {
+        return store.state.userProfile;
+      },
     },
     methods: {
       async init() {
@@ -97,8 +100,6 @@ import { EventBus } from '@/utils/eventBus';
         try {
           const colloctionName = DATABASE.QUESTION_COLLECTION_NAME;
           const list = await GameModal.getGameQuestions(colloctionName, this.pageCtrl.currentPage, this.pageCtrl.pageSize);
-          // const gameId = store.state.selectedGameId;
-          // const list = await API.getGameQuestions(gameId);
           list
             .sort((a, b) => Number(a.id) - Number(b.id))
             .forEach(item => {
@@ -121,10 +122,15 @@ import { EventBus } from '@/utils/eventBus';
           this.startTimeLoop();
         }, 1000);
       },
-      gameEnd() {
+      async gameEnd() {
         store.commit('setAnmtCtrl', {
           gameEndPageVisible: true,
         });
+        if (this.judgeCtrl.totalMiles > this.userProfile.score) {
+          await UserModel.updateScore(this.judgeCtrl.totalMiles);
+          const profile = await UserModel.getExistingUserProfile(this.openid);
+          store.commit('updateUserProfile', profile);
+        }
       },
       startTimeLoop() {
         const clock = setInterval(() => {

@@ -143,7 +143,6 @@
     color: #fff;
     padding: 0.5rem 0;
     font-size: 1rem;
-
   }
 
   .button_start {

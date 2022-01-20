@@ -64,6 +64,64 @@ class UserModel extends Base {
       avatarUrl, nickName, gender, country, province, city, language,
     } });
   }
+
+  // 5.上传分数
+  updateScore(newScore) {
+    const scoreLastUpdateDate = new Date().toString();
+    return this.model.where({ _openid: '{openid}' }).update({ data: {
+      score: newScore,
+      scoreLastUpdateDate,
+    } });
+  }
+
+  async loadRankings(page, size) {
+    try {
+      const { data } = await this.model.orderBy('score', 'desc')
+        .skip(page * size)
+        .limit(10)
+        .get();
+      console.log('loadRankings', data);
+      return data;
+    } catch (error) {
+      console.log('error!!!', error)
+      throw error
+    }
+  }
+
+  async getAllUserCount() {
+    try {
+      const { total } = await this.model.count();
+      return total;
+    } catch (error) {
+      console.log('error!!!', error)
+      throw error
+    }
+  }
+
+  async binarySearchUserRankingNumber(userScore) {
+    try {
+      const { total } = await this.model.count();
+      let left = 0;
+      let right = total - 1;
+      let mid = 0;
+      while (left <= right) {
+        mid = Math.floor((left + right) / 2);
+        const { data } = await this.model.orderBy('score', 'desc')
+          .skip(mid)
+          .limit(1)
+          .get();
+        if (data[0].score < userScore) {
+          right = mid - 1;
+        } else {
+          left = mid + 1;
+        }
+      }
+      return left;
+    } catch (error) {
+      console.log('error!!!', error)
+      throw error
+    }
+  }
 }
 
 export default new UserModel()

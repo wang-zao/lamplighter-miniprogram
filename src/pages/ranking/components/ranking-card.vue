@@ -3,24 +3,29 @@
     <cover-view class="card_wrapper">
       <cover-view class="card_left">
         <cover-view class="left_ranking_number">
-          1
+          {{ rankingNumber }}
         </cover-view>
         <cover-view class="left_ranking_info">
           <cover-view class="card_avatar">
-            <!-- <image class="avatar_img" src="{{avatar}}"></image> -->
-            <cover-view class="card_avatar_wrapper">
-              avt
+            <cover-image class="avatar_img"
+              v-if="userProfile.avatarUrl"
+              :src="userProfile.avatarUrl">
+            </cover-image>
+            <cover-view
+              class="avatar_img_placeholder"
+              v-else>
+              ?
             </cover-view>
           </cover-view>
           <cover-view class="card_name_wrapper">
-            <cover-view class="card_name">{{ nickName }}</cover-view>
-            <cover-view class="card_name_comefrom">London</cover-view>
+            <cover-view class="card_name">{{ userProfile.nickName }}</cover-view>
+            <cover-view class="card_name_comefrom">{{userProfile.city || ' '}}</cover-view>
           </cover-view>
         </cover-view>
       </cover-view>
       <cover-view class="card_right">
         <cover-view class="right_score">
-          123
+          {{ userProfile.score }}
         </cover-view>
       </cover-view>
     </cover-view>
@@ -35,9 +40,13 @@
 export default {
   name: 'RankingCard',
   props: {
-    nickName: {
+    userProfile: {
+      type: Object,
+      default: {},
+    },
+    rankingNumber: {
       type: String,
-      default: '',
+      default: '-',
     },
   },
   data() {
@@ -89,12 +98,20 @@ $card-height: 4rem;
       border-radius: 50%;
       overflow: hidden;
       margin-right: 0.5rem;
-      .card_avatar_wrapper {
+      border: 1px solid #ffffff;
+      .avatar_img {
         width: 100%;
         height: 100%;
-        background: #ffffff;
-        border-radius: 50%;
-        overflow: hidden;
+      }
+      .avatar_img_placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 2rem;
+        opacity: .3;
       }
     }
     .card_name_wrapper {
