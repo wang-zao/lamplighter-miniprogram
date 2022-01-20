@@ -71,7 +71,6 @@ export default Vue.extend({
       earthColorLighter: '#51adcf',
       earthColorDarker: '#0278ae',
       earthColorBackground: '#0b2353',
-      height_array: [],
       flyTimeSpan: 1000,
       flyAnimationFreq: 50,
       allowingDrawOrbit: true,
@@ -224,37 +223,17 @@ export default Vue.extend({
 
       return { lng: lngTarget, lat: latTarget };
     },
-
-    calcFlightOrbitArray(lat1, lng1, lat2, lng2) {
-      this.height_array = [];
-      const t = this.flyTimeSpan;
-      const f = this.flyAnimationFreq;
-      const delta_lat = (lat2 - lat1) / (t / f);
-      const delta_lng = (lng2 - lng1) / (t / f);
-      let currentGroundLat = lat1;
-      let currentGroundLng = lng1;
-      let count = 0;
-      
-      while (count <= (t/f)) {
-        this.height_array.push(
-          get_flight_orbit_height(
-            lat1, lng1, lat2, lng2, 
-            currentGroundLat, currentGroundLng,
-          ),
-        );
-        currentGroundLat += delta_lat;
-        currentGroundLng += delta_lng;
-        count += 1;
-      }
-    },
     flyFromOneToAnother(lat1, lng1, lat2, lng2) {
-      this.calcFlightOrbitArray(lat1, lng1, lat2, lng2);
       const t = this.flyTimeSpan;
       const f = this.flyAnimationFreq;
       const delta_lat = (lat2 - lat1) / (t / f);
       const delta_lng = (lng2 - lng1) / (t / f);
       let currentGroundLat = lat1;
       let currentGroundLng = lng1;
+      let currentHeight = 0;
+      let prevGroundLat = currentGroundLat;
+      let prevGroundLng = currentGroundLng;
+      let prevHeight = currentHeight;
       let count = 0;
 
       this.anmtCtrl.isPlanePausing = false;
@@ -284,16 +263,23 @@ export default Vue.extend({
         this.camera.up.set( 0, 1, 0 );
         this.camera.position = { ...currentCameraXYZ };
         this.camera.lookAt(currentLookAtXYZ);
+
         this.drawFlyRouteLine(
-          currentGroundLat,
-          currentGroundLng,
-          this.height_array[count] || this.height_array[-1],
-          currentGroundLat + delta_lat,
-          currentGroundLng + delta_lng,
-          this.height_array[count + 1] || this.height_array[-1],
+          prevGroundLat, prevGroundLng, prevHeight,
+          currentGroundLat, currentGroundLng, currentHeight
         );
+
+        prevGroundLat = currentGroundLat;
+        prevGroundLng = currentGroundLng;
+        prevHeight = currentHeight;
+
         currentGroundLat += delta_lat;
         currentGroundLng += delta_lng;
+        currentHeight = get_flight_orbit_height(
+            lat1, lng1, lat2, lng2, 
+            currentGroundLat, currentGroundLng,
+        ),
+
         count += 1;
       }, f);
       this.removeFlyRouteLines();
