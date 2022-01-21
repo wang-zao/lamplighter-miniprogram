@@ -78,7 +78,7 @@ class UserModel extends Base {
     try {
       const { data } = await this.model.orderBy('score', 'desc')
         .skip(page * size)
-        .limit(10)
+        .limit(size)
         .get();
       console.log('loadRankings', data);
       return data;
@@ -104,13 +104,16 @@ class UserModel extends Base {
       let left = 0;
       let right = total - 1;
       let mid = 0;
+      // TODO: there should be a more direct way to get the ranking number, may be some queries like model.where('score' > userScore).count()
       while (left <= right) {
         mid = Math.floor((left + right) / 2);
         const { data } = await this.model.orderBy('score', 'desc')
           .skip(mid)
           .limit(1)
           .get();
-        if (data[0].score < userScore) {
+        if (data[0].score === userScore) {
+          return mid + 1;
+        } else if (data[0].score < userScore) {
           right = mid - 1;
         } else {
           left = mid + 1;

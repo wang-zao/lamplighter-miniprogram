@@ -121,6 +121,7 @@
         return this.currentPage * this.currentSize + index + 1;
       },
       async loadRankings() {
+        // TODO: The ranking list can be cached for better performance.
         const rankingList = await UserModel.loadRankings(
           this.currentPage, this.currentSize,
         );
