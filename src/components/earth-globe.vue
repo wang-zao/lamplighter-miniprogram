@@ -68,25 +68,31 @@ export default Vue.extend({
       globalScene: null,
       earthSurfaceOffset: 10,
       earthCameraHeadOffset: -45,
-      earthColorLighter: '#51adcf',
-      earthColorDarker: '#0278ae',
+      earthColorLighter: '#6683bd',
+      earthColorDarker: '#6683bd',
       earthColorBackground: '#0b2353',
       flyTimeSpan: 1000,
       flyAnimationFreq: 50,
       allowingDrawOrbit: true,
       lightBallConfig: {
-        ballRadius: 10,
-        ballHeight: 50,
+        ballRadius: 5,
+        ballHeight: 30,
         ballColor: '#ffffff',
         lightColor: '#ffffff',
-        lightIntencity:  0.2,
-        lightDistance:  5000,
+        lightIntencity:  0.8,
+        lightDistance:  500,
       },
       orbitArcConfig: {
         color: '#ffffff',
         linewidth: 3,
       },
       rotationClockId: -1,
+      threeConfig: {
+        maxLightBallCount: 10,
+      },
+      threeObjects: {
+        lightBalls: [],
+      }
     }
   },
   components: {
@@ -156,7 +162,7 @@ export default Vue.extend({
       scene.add(light);
 
       // Create a sphere to make visualization easier.
-      const geometry = new THREE.SphereGeometry(this.earthRadius, 100, 100);
+      const geometry = new THREE.SphereGeometry(this.earthRadius, 16, 16 );
       const material = new THREE.MeshPhongMaterial({
           transparent: true,
           opacity: 1,
@@ -180,13 +186,20 @@ export default Vue.extend({
       }
     },
     async drawEarthSurface(THREE, scene ) {
-      const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32);
+      const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32 );
       let texture = new THREE.TextureLoader().load(PICTURES_URL.EARTH);
-      // let texture = new THREE.TextureLoader().load('../static/earth_colorful.jpeg');
+      let bumpTexture = new THREE.TextureLoader().load(PICTURES_URL.EARTH_TOPOLOGY);
 
       texture.minFilter = THREE.LinearFilter;
-      const material  = new THREE.MeshBasicMaterial({
+      bumpTexture.minFilter = THREE.LinearFilter;
+      // const material  = new THREE.MeshBasicMaterial({
+      const material  = new THREE.MeshPhongMaterial({
         map: texture,
+        bumpMap: bumpTexture,
+        bumpScale: 10,
+        color: '#ffffff',
+        emisive: '#000000',
+        shininess: 0,
       });
       const earthMesh = new THREE.Mesh(geometry, material);
       scene.add(earthMesh);
@@ -330,6 +343,16 @@ export default Vue.extend({
       light.position.set(xyz.x, xyz.y, xyz.z);
       this.globalScene.add(ball);
       this.globalScene.add(light);
+      this.threeObjects.lightBalls.push({
+        ball, light,
+      });
+      if (this.threeObjects.lightBalls.length > this.threeConfig.maxLightBallCount) {
+        const { ball, light } = this.threeObjects.lightBalls.shift();
+        ball.geometry.dispose();
+        ball.material.dispose();
+        this.globalScene.remove(ball);
+        this.globalScene.remove(light);
+      }
     },
     testFlyFunction(THREE) {
       let ccount = 0;

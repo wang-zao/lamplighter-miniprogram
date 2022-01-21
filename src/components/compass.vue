@@ -151,7 +151,7 @@ $needle-radius: 4vw;
     .airplane_background {
       width: 2 * $aircraft-radius;
       height: 2 * $aircraft-radius;
-      animation: rotate 2s infinite linear;
+      animation: rotate 1.2s infinite linear;
       animation-play-state: paused;
     }
     .airplane_paused {
