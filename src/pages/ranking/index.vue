@@ -114,12 +114,13 @@
     created() {
       this.init();
     },
-    onShareAppMessage(){
-      console.log('share')
-      return {
-        title:'light'
-      }
-    },
+    // onShareAppMessage(res){
+    //   console.log('share!!!', res)
+    //   console.log('share!!!!!!!!!!!', res.webViewUrl)
+    //   return {
+    //     title: res.webViewUrl
+    //   }
+    // },
     methods: {
       init() {
         this.loadRankings();

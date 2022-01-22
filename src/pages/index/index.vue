@@ -42,10 +42,9 @@ export default Vue.extend({
   onLoad() {
     this.watchRouteChangeFromEventBus();
   },
-  onShareAppMessage(){
-    console.log('share')
+  onShareAppMessage(res){
     return {
-      title:'light'
+      title:'来和我一起点亮星球吗？'
     }
   },
   methods: {
