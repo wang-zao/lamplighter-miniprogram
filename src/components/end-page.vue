@@ -40,9 +40,11 @@
       </cover-view>
     </cover-view>
     <cover-view class="end_panel_operations">
-      <cover-view @click="playAgain">再来一局</cover-view>
-      <cover-view>分享</cover-view>
-      <cover-view @click="backToHome">首页</cover-view>
+      <cover-view class="share_button" @click="playAgain">再来一局</cover-view>
+      <cover-view>
+        <button class="share_button" open-type="share" aria-role="button"> 分享 </button>
+      </cover-view>
+      <cover-view class="share_button" @click="backToHome">首页</cover-view>
     </cover-view>
     <cover-view class="end_panel_footer">
       <cover-view>小程序：东南西北</cover-view>
@@ -205,6 +207,20 @@ $general-panel-width: 60vw;
     display: flex;
     justify-content: space-between;
     width: $general-panel-width;
+    .share_button {
+      height: $operation-panel-height;
+      border: none;
+      background: transparent;
+      padding: none;
+      margin: none;
+      color: #fff;
+      font-size: 1rem;
+      line-height: 1.5rem;
+      ::after {
+        padding: none;
+        border: none;
+      }
+    }
   }
   .end_panel_footer {
     font-size: 1rem;

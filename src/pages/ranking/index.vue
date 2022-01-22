@@ -64,7 +64,9 @@
         class="ranking_bottom_button ranking_bottom_button_share"
         open-type='share'
       >
-      分享
+        <button class="ranking_bottom_button_inner" open-type="share">
+        分享
+        </button>
       </cover-view>
     </cover-view>
   </cover-view>
@@ -255,6 +257,17 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
       padding: 0.5rem 0.7rem;
       margin: 0 0.3rem;
       font-size: 1rem;
+      line-height: 1.2rem;
+      .ranking_bottom_button_inner {
+        background: none;
+        border: none;
+        font-size: 1rem;
+        line-height: 1.2rem;
+        color: #fff;
+        ::after {
+          border: none;
+        }
+      }
     }
     .ranking_bottom_button_share {
       border: 2px #fff solid;
