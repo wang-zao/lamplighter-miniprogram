@@ -2,32 +2,57 @@
   <view class="compass_wrapper"
   >
     <view class="compass_body_wrapper">
+      <view class="compass_item compass_needle">
+        <view class="needle_body"
+          :class="{
+            needle_flashing: showingAddedScore,
+          }"
+        >
+          <image
+            :class="compassNeedleClass"
+            :src="PICTURES_URL.COMPASS_NEEDLE"
+            mode="heightFix"
+          />
+        </view>
+      </view>
       <view class="compass_item compass_plate">
         <cover-image
           class="compass_background"
           :src="PICTURES_URL.COMPASS"
           mode="heightFix" />
       </view>
-      <view class="compass_item compass_aircraft"
-      >
-        <image
-          id="airplane"
-          class="airplane_background"
-          :class="{
-            airplane_paused: pausingRotation,
-            airplane_rotating: !pausingRotation,
-          }"
-          :src="PICTURES_URL.AIRPLANE"
-          mode="heightFix"
-        />
+      <view class="compass_item compass_aircraft">
+        <view class="compass_aircraft_wrapper">
+          <view 
+            class="airplane_wrapper"
+              id="airplane"
+              :class="{
+                airplane_paused: pausingRotation,
+                airplane_rotating: !pausingRotation,
+              }"
+          >
+            <image
+              class="airplane_background"
+            :class="{
+              'airplane_launching': pausingRotation,
+            }"
+              :src="PICTURES_URL.AIRPLANE"
+              mode="heightFix"
+            />
+          </view>
+        </view>
       </view>
       <view class="compass_item compass_text">
         <view class="text_degree">{{currentDegree}}°</view>
         <view class="text_degree">{{calc_next_direction_chn(currentDegree)}}</view>
       </view>
-      <!-- <view class="compass_item compass_needle">
-        <view class="needle_right"></view>
-      </view> -->
+      <view class="compass_item compass_score">
+        <view class="score_body"
+          :class="{
+            'score_showing': showingAddedScore,
+          }"
+        >+{{currentAddingScore}}</view>
+      </view>
     </view>
   </view>
 </template>
@@ -56,6 +81,10 @@ import { EventBus } from '@/utils/eventBus';
         pausingRotation: true,
         calc_next_direction_chn: calc_next_direction_chn,
         PICTURES_URL: PICTURES_URL,
+        showingAddedScore: false,
+        currentAddingScore: 0,
+        compassNeedleClass: 'needle_img needle_img_0',
+        clockId: -1,
       }
     },
     mounted() {
@@ -68,12 +97,17 @@ import { EventBus } from '@/utils/eventBus';
       init() {
         this.watchStartRotatingCompass();
         this.watchEndRotatingCompass();
+        this.watchAddScore();
       },
       startRotating() {
         this.pausingRotation = false;
+        this.clockId = setInterval(() => {
+          this.currentDegree = (this.currentDegree + 12) % 360;
+        }, 40);
       },
       endRotating() {
         this.pausingRotation = true;
+        clearInterval(this.clockId);
         let theNode = uni
           .createSelectorQuery()
           .in(this)
@@ -95,6 +129,18 @@ import { EventBus } from '@/utils/eventBus';
           this.endRotating();
         });
       },
+      watchAddScore() {
+        EventBus.$on('addScore', (payload) => {
+          const { score, deg } = payload;
+          this.showingAddedScore = false;
+          this.compassNeedleClass = `needle_img needle_img_${Math.floor(deg/5) * 5}`;
+          this.currentAddingScore = score;
+          this.showingAddedScore = true;
+          setTimeout(() => {
+            this.showingAddedScore = false;
+          }, 1000);
+        });
+      },
     }
   }
 </script>
@@ -108,7 +154,55 @@ $needle-radius: 4vw;
 
 @keyframes rotate {
   from { transform: rotate(0deg); }
-  to { transform:rotate(360deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes launch {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0;
+    transform: translateY(-4 * $aircraft-radius);
+  }
+  51% {
+    opacity: 0;
+    transform: translateY(4 * $aircraft-radius);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scoreFade {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+   }
+  to {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+}
+
+@keyframes needleFlash {
+  0% { opacity: 1; }
+  10% { opacity: 1; }
+  11% { opacity: 0; }
+  19% { opacity: 0; }
+  20% { opacity: 1; }
+  30% { opacity: 1; }
+  31% { opacity: 0; }
+  39% { opacity: 0; }
+  40% { opacity: 1; }
+  80% { opacity: 1; }
+  81% { opacity: 0; }
+  89% { opacity: 0; }
+  90% { opacity: 1; }
+  99% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .compass_wrapper {
@@ -131,13 +225,11 @@ $needle-radius: 4vw;
     left: -1 * $compass-radius;
     width: 2 * $compass-radius;
     height: 2 * $compass-radius;
-    border: solid 2px #ffffffaa;
     border-radius: $compass-radius;
     opacity: .6;
     .compass_background {
       width: 2 * $compass-radius;
       height: 2 * $compass-radius;
-
     }
   }
   .compass_aircraft {
@@ -148,11 +240,22 @@ $needle-radius: 4vw;
     border: solid 2px #ffffff;
     border-radius: $aircraft-radius;
     background: #ffffff44;
+    overflow: hidden;
+    .compass_aircraft_wrapper {
+      border-radius: $aircraft-radius;
+      overflow: hidden;
+    }
+    .airplane_wrapper {
+      animation: rotate 1.2s infinite linear;
+      animation-play-state: paused;
+      overflow: hidden;
+    }
+    .airplane_launching {
+      animation: launch 1s forwards ease-in-out;
+    }
     .airplane_background {
       width: 2 * $aircraft-radius;
       height: 2 * $aircraft-radius;
-      animation: rotate 1.2s infinite linear;
-      animation-play-state: paused;
     }
     .airplane_paused {
       animation-play-state: paused;
@@ -168,17 +271,43 @@ $needle-radius: 4vw;
     text-align: left;
     width: 30vw;
     height: 10vw;
-
+  }
+  .compass_score {
+    top: -3rem;
+    left: -1rem;
+    .score_body {
+      font-size: 2rem;
+      font-weight: bolder;
+      color: #fff;
+      opacity: 0;
+    }
+    .score_showing {
+      animation: scoreFade 1s forwards ease-in-out;
+    }
   }
   .compass_needle {
-    top: $compass-radius - $aircraft-radius - 2 * $needle-radius;
-    left: -1 * $needle-radius;
-    .needle_right {
-      border-left: $needle-radius solid transparent;
-      border-right: $needle-radius solid transparent;
-      border-top: $needle-radius solid transparent;
-      border-bottom: $needle-radius solid #fff;
-
+    top: 0;
+    left: -1 * $compass-radius;
+    width: 2 * $compass-radius;
+    height: 2 * $compass-radius;
+    border-radius: $compass-radius;
+    opacity: .6;
+    .needle_body {
+      width: 2 * $compass-radius;
+      height: 2 * $compass-radius;
+      opacity: 0;
+    }
+    .needle_img {
+      width: 2 * $compass-radius;
+      height: 2 * $compass-radius;
+    }
+    .needle_flashing {
+      animation: needleFlash 1s forwards linear;
+    }
+    @for $i from 0 through 72 {
+      .needle_img_#{5*$i} {
+        transform: rotate(#{5*$i}deg);
+      }
     }
   }
 }

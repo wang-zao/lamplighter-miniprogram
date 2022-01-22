@@ -218,9 +218,13 @@ import { EventBus } from '@/utils/eventBus';
             });
           }, this.anmtCtrl.switchCityTime);
           // 2.计算得分
+          const score = getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
+          EventBus.$emit('addScore', {
+            score, deg: this.judgeCtrl.correctDeg,
+          });
           // 3.计入列表
           store.commit('setJudgeCtrl', {
-            totalMiles: this.judgeCtrl.totalMiles + getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg),
+            totalMiles: this.judgeCtrl.totalMiles + score,
             correctCityList: [...this.judgeCtrl.correctCityList, this.nextCity.name_chn],
           });
           // 4.进行飞翔
