@@ -47,11 +47,13 @@
         <view class="text_degree">{{calc_next_direction_chn(currentDegree)}}</view>
       </view>
       <view class="compass_item compass_score">
-        <view class="score_body"
-          :class="{
-            'score_showing': showingAddedScore,
-          }"
-        >+{{currentAddingScore}}</view>
+        <view :class="scoreTextClass">
+          <view class="score_body"
+            :class="{
+              'score_showing': showingAddedScore,
+            }"
+          >+{{currentAddingScore}}</view>
+        </view>
       </view>
     </view>
   </view>
@@ -91,7 +93,17 @@ import { EventBus } from '@/utils/eventBus';
       this.init();
     },
     computed: {
-      
+      scoreTextClass() {
+        if (this.currentAddingScore >= 10) {
+          return 'score_text_4';
+        } else if (8 <= this.currentAddingScore && this.currentAddingScore < 10) {
+          return 'score_text_3';
+        } else if (5 <= this.currentAddingScore && this.currentAddingScore < 8) {
+          return 'score_text_2';
+        } else {
+          return 'score_text_0';
+        }
+      },
     },
     methods: {
       init() {
@@ -273,16 +285,27 @@ $needle-radius: 4vw;
     height: 10vw;
   }
   .compass_score {
-    top: -3rem;
-    left: -1rem;
+    top: -5rem;
+    transform: translateX(-50%);
     .score_body {
-      font-size: 2rem;
       font-weight: bolder;
       color: #fff;
       opacity: 0;
     }
     .score_showing {
       animation: scoreFade 1s forwards ease-in-out;
+    }
+    .score_text_4 {
+      font-size: 5rem;
+    }
+    .score_text_3 {
+      font-size: 3rem;
+    }
+    .score_text_2 {
+      font-size: 2rem;
+    }
+    .score_text_1 {
+      font-size: 1rem;
     }
   }
   .compass_needle {
