@@ -42,6 +42,11 @@ export default Vue.extend({
   onLoad() {
     this.watchRouteChangeFromEventBus();
   },
+  onShareAppMessage(res){
+    return {
+      title:'来和我一起点亮星球吗？'
+    }
+  },
   methods: {
     handleRouteChange(route: string) {
       this.currentRoute = route;
