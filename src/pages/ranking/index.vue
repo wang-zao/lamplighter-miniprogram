@@ -60,10 +60,7 @@
           下一页
         </cover-view>
       </cover-view>
-      <cover-view 
-        class="ranking_bottom_button ranking_bottom_button_share"
-        open-type='share'
-      >
+      <cover-view class="ranking_bottom_button ranking_bottom_button_share">
         <button class="ranking_bottom_button_inner" open-type="share">
         分享
         </button>
