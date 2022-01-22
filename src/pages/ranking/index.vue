@@ -62,8 +62,9 @@
       </cover-view>
       <cover-view 
         class="ranking_bottom_button ranking_bottom_button_share"
+        open-type='share'
       >
-        分享
+      分享
       </cover-view>
     </cover-view>
   </cover-view>
@@ -110,6 +111,12 @@
     },
     created() {
       this.init();
+    },
+    onShareAppMessage(){
+      console.log('share')
+      return {
+        title:'light'
+      }
     },
     methods: {
       init() {

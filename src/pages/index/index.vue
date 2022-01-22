@@ -42,6 +42,12 @@ export default Vue.extend({
   onLoad() {
     this.watchRouteChangeFromEventBus();
   },
+  onShareAppMessage(){
+    console.log('share')
+    return {
+      title:'light'
+    }
+  },
   methods: {
     handleRouteChange(route: string) {
       this.currentRoute = route;
