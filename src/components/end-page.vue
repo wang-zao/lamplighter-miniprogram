@@ -57,6 +57,7 @@
    * @description 
    * @event {Function} click 
    */
+  import store from '@/store/index.js'    
   import { EventBus } from '@/utils/eventBus';
 
   import { calc_fly_rank } from '@/utils/common';

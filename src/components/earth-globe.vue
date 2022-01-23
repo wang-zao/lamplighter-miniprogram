@@ -76,10 +76,18 @@ export default Vue.extend({
       allowingDrawOrbit: true,
       lightBallConfig: {
         ballRadius: 5,
-        ballHeight: 30,
+        ballHeight: 20,
         ballColor: '#ffffff',
         lightColor: '#ffffff',
         lightIntencity:  0.8,
+        lightDistance:  500,
+      },
+      failedLightBallConfig: {
+        ballRadius: 5,
+        ballHeight: 15,
+        ballColor: '#f26363',
+        lightColor: '#ff6e6e',
+        lightIntencity:  2,
         lightDistance:  500,
       },
       orbitArcConfig: {
@@ -103,6 +111,8 @@ export default Vue.extend({
   async mounted() {
     this.watchEarthRotation();
     this.watchFlyingEvent();
+    this.watchShowFailedCityEvent();
+    this.watchInitEarthAnimation();
     await this.drawEarth();
   },
   computed: {
@@ -131,7 +141,7 @@ export default Vue.extend({
           canvas.height = this.canvasHeight * 2;
         });
       this.flyFromOneToAnother(
-        40, 179, 40, 116,
+        40, 179, 40, 116, false
       );
     },
     async renderEarth(THREE, canvas) {
@@ -153,8 +163,6 @@ export default Vue.extend({
       this.camera.position = { ...currentCameraXYZ };
       this.camera.lookAt( new THREE.Vector3(0, 0, 0) );
 
-      // this.testFlyFunction(THREE);
-
       //New Renderer
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(this.canvasWidth, this.canvasHeight);
@@ -174,9 +182,9 @@ export default Vue.extend({
 
       //Render the image
       const render = () => {
-          canvas.requestAnimationFrame(render);
-          renderer.setClearColor(this.earthColorBackground, 1);
-          renderer.render(scene, this.camera);
+        canvas.requestAnimationFrame(render);
+        renderer.setClearColor(this.earthColorBackground, 1);
+        renderer.render(scene, this.camera);
       }
       render();
 
@@ -236,7 +244,7 @@ export default Vue.extend({
 
       return { lng: lngTarget, lat: latTarget };
     },
-    flyFromOneToAnother(lat1, lng1, lat2, lng2) {
+    flyFromOneToAnother(lat1, lng1, lat2, lng2, isDrawOrbit) {
       const t = this.flyTimeSpan;
       const f = this.flyAnimationFreq;
       const delta_lat = (lat2 - lat1) / (t / f);
@@ -277,26 +285,28 @@ export default Vue.extend({
         this.camera.position = { ...currentCameraXYZ };
         this.camera.lookAt(currentLookAtXYZ);
 
-        this.drawFlyRouteLine(
-          prevGroundLat, prevGroundLng, prevHeight,
-          currentGroundLat, currentGroundLng, currentHeight
+        if (isDrawOrbit) {
+          this.drawFlyRouteLine(
+            prevGroundLat, prevGroundLng, prevHeight,
+            currentGroundLat, currentGroundLng, currentHeight
+          );
+          prevHeight = currentHeight;
+          currentHeight = get_flight_orbit_height(
+            lat1, lng1, lat2, lng2, 
+            currentGroundLat, currentGroundLng,
         );
+        }
 
         prevGroundLat = currentGroundLat;
         prevGroundLng = currentGroundLng;
-        prevHeight = currentHeight;
 
         currentGroundLat += delta_lat;
         currentGroundLng += delta_lng;
-        currentHeight = get_flight_orbit_height(
-            lat1, lng1, lat2, lng2, 
-            currentGroundLat, currentGroundLng,
-        ),
 
         count += 1;
       }, f);
       this.removeFlyRouteLines();
-      this.drawLightBall(lat2, lng2);
+      this.drawLightBall(lat2, lng2, this.lightBallConfig);
     },
     allowDrawOrbit() {
       this.allowingDrawOrbit = true;
@@ -326,8 +336,7 @@ export default Vue.extend({
         );
       }
     },
-    drawLightBall(lat, lng) {
-      const cfg = this.lightBallConfig;
+    drawLightBall(lat, lng, cfg) {
       const ball = new this.globalTHREE.Mesh(
         new this.globalTHREE.SphereGeometry(cfg.ballRadius, 32, 32), 
         new this.globalTHREE.MeshBasicMaterial({ color: cfg.ballColor }),
@@ -354,28 +363,10 @@ export default Vue.extend({
         this.globalScene.remove(light);
       }
     },
-    testFlyFunction(THREE) {
-      let ccount = 0;
-      let east = true
-      setTimeout(() => {
-        const clockk = setInterval(() => {
-          ccount += 1
-          if (ccount >= 30) {
-            clearInterval(clockk);
-          }
-          if (east) {
-            this.flyFromOneToAnother(20, 90, 40, 116)
-          } else {
-            this.flyFromOneToAnother(40, 116, 20, 90)
-          }
-          east = !east
-        }, 5000)
-      }, 10);
-    },
     watchFlyingEvent() {
       EventBus.$on('flyFromOneToAnother', (flyConfig) => {
-        const { fromLat, fromLon, toLat, toLon } = flyConfig;
-        this.flyFromOneToAnother(fromLat, fromLon, toLat, toLon);
+        const { fromLat, fromLon, toLat, toLon, isDrawOrbit } = flyConfig;
+        this.flyFromOneToAnother(fromLat, fromLon, toLat, toLon, isDrawOrbit);
       });
     },
     watchEarthRotation() {
@@ -390,6 +381,28 @@ export default Vue.extend({
         clearInterval(this.rotationClockId);
         this.rotationClockId = -1;
         this.globalScene.rotation.y = 0;
+      });
+    },
+    watchShowFailedCityEvent() {
+      EventBus.$on('showFailedCityPoint', (cityConfig) => {
+        const { toLat, toLon } = cityConfig;
+        this.drawLightBall(toLat, toLon,
+          this.failedLightBallConfig);
+      });
+    },
+    watchInitEarthAnimation() {
+      EventBus.$on('initEarthAnimation', (cfg) => {
+        // 1. 清除地球上现存的所有光点
+        while (this.threeObjects.lightBalls.length > 0) {
+          const { ball, light } = this.threeObjects.lightBalls.shift();
+          ball.geometry.dispose();
+          ball.material.dispose();
+          this.globalScene.remove(ball);
+          this.globalScene.remove(light);
+        }
+        // 2. 飞向开始的点
+        const { lat, lon } = cfg;
+        this.flyFromOneToAnother(40, 116, lat, lon, false);
       });
     },
   },

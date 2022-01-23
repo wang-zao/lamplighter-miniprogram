@@ -7,7 +7,7 @@
       <cover-view class="info_resttime">⏰ {{judgeCtrl.restTime}}</cover-view>
     </cover-view>
     <cover-view class="info_2_cities">
-      <cover-view class="canvas_cover_cityname" v-if="!anmtCtrl.gameStartPageVisible">
+      <cover-view class="canvas_cover_cityname" v-show="!anmtCtrl.gameStartPageVisible">
         <ticket
           class="cover_ticket cover_ticke_left"
           :class="{
@@ -20,7 +20,7 @@
           @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
         />
         <ticket
-          v-if="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
+          v-show="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
           class="cover_ticket cover_ticke_right"
           :showAbstract="true"
           :class="{
@@ -28,6 +28,7 @@
             fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
           }"
           :cityInfo="nextCity"
+          :name_chn="nextCity.name_chn"
           :anmtCtrl="anmtCtrl"
           reminder="下一站"
           @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
