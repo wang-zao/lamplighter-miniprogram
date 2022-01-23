@@ -59,7 +59,6 @@ export default {
       }
     },
     endRotatingCompass() {
-      console.log('endRotatingCompass');
       if (this.currentRoute === 'play-minute') {
         EventBus.$emit('endRotatingCompass');
       }

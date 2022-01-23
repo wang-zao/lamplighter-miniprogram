@@ -4,10 +4,10 @@
       type="webgl" id="webgl"
       :style="canvasStyle"
     >
-     <start-page
+     <!-- <start-page
         v-if="anmtCtrl.gameStartPageVisible"
         class="canvas_cover_start_panel"
-      />
+      /> -->
       <end-page
         :anmtCtrl="anmtCtrl"
         :judgeCtrl="judgeCtrl"
@@ -17,6 +17,10 @@
       <compass
         v-if="currentRoute === 'play-minute' && !anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
         class="canvas_cover_compass"
+      />
+      <guide-page
+        v-if="currentRoute === 'play-minute' && anmtCtrl.gameGuidePageVisible"
+        class="canvas_cover_guide_panel"
       />
     </canvas>
   </view>
@@ -37,6 +41,7 @@ import {
 import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
+import GuidePage from '@/components/guide-page.vue';
 import EndPage from '@/components/end-page.vue';
 import Compass from '@/components/compass.vue';
 import { EventBus } from '@/utils/eventBus';
@@ -107,6 +112,7 @@ export default Vue.extend({
     StartPage,
     EndPage,
     Compass,
+    GuidePage,
   },
   async mounted() {
     this.watchEarthRotation();
@@ -445,5 +451,10 @@ export default Vue.extend({
   position: fixed;
   left: 0;
   top: 70%;
+}
+.canvas_cover_guide_panel {
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 </style>

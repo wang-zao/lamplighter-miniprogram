@@ -12,3 +12,5 @@ export const PICTURES_URL = {
   EARTH: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/globe-green-tiny.png',
   EARTH_TOPOLOGY: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/globe-topo.png',
 }
+
+export const GUIDE_SHOW_MAX_SCORE = 30;

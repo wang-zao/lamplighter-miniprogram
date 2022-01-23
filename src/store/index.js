@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { GUIDE_SHOW_MAX_SCORE } from '@/utils/constants';
 
 Vue.use(Vuex);
 
@@ -17,6 +18,7 @@ const store = new Vuex.Store({
         anmtCtrl: {
           crossTVisible: false,
           crossXVisible: false,
+          gameGuidePageVisible: true,
           gameEndPageVisible: false,
           gameStartPageVisible: false,
           answerCorrectAnimationStep1: false,
@@ -74,6 +76,7 @@ const store = new Vuex.Store({
             state.anmtCtrl = {
                 crossTVisible: false,
                 crossXVisible: false,
+                gameGuidePageVisible: true,
                 gameEndPageVisible: false,
                 gameStartPageVisible: false,
                 answerCorrectAnimationStep1: false,
@@ -85,6 +88,7 @@ const store = new Vuex.Store({
                 switchCityTime: 700,
                 operationPanelDisabled: false,
             }
+            store.commit('checkWhetherShowGuidePage');
         },
         initJudgeCtrl(state) {
             state.judgeCtrl = {
@@ -109,7 +113,13 @@ const store = new Vuex.Store({
         },
         updateUserProfile(state, profile) {
             state.userProfile = Object.assign(state.userProfile, profile);
+            store.commit('checkWhetherShowGuidePage');
         },
+        checkWhetherShowGuidePage(state) {
+            if (state.userProfile.score >= GUIDE_SHOW_MAX_SCORE) {
+                state.anmtCtrl.gameGuidePageVisible = false;
+            }
+        }
     }
 });
 export default store;
