@@ -6,11 +6,12 @@
   >
     <cover-view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</cover-view>
     <cover-view class="ticket_placename" @click="changeAbstractVisibility">
-      {{cityInfo.name_chn}}
+      {{cityInfo.name_chn || '-'}}
     </cover-view>
     <cover-view v-if="showAbstract" class="ticket_abstract">
-      {{ abstractContent }}
+      {{ abstractContent || '-' }}
     </cover-view>
+    {{showAbstract ? abstractContent: ''}}
   </cover-view>
 </template>
 
@@ -68,7 +69,8 @@
   // width: 50vw;
   height: max-content;
   width: max-content;
-  overflow-y: scroll;
+  overflow: hidden;
+  text-overflow:ellipsis;
   transition: max-height ease-out 0.2s; 
 }
 .ticket_wrapper {
@@ -76,23 +78,32 @@
   transition: max-height ease-out 0.2s; 
   border-radius: 1rem;
   padding: 1rem;
-  max-height: 16vh;
+  max-height: 10vh;
   max-width: 50vw;
   transition: ease .2s;
+  color: transparent;
   .ticket_reminder {
     font-size: 1rem;
+    color: #fff;
+    margin-bottom: 10rpx;
   }
   .ticket_placename {
     font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 10rpx;
   }
   .ticket_abstract {
     // transition: max-height ease-out 0.2s; 
+    max-height: max-content;
     font-size: 1rem;
-    height: max-content;
     word-break: break-all;
     word-wrap:break-word;
     white-space:pre-line;
-    overflow-y: scroll;
+    color: #fff;
+    line-height: 1.6;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
   }
 }
 
