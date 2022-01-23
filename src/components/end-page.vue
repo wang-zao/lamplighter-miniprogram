@@ -91,12 +91,7 @@
     },
     methods: {
       backToHome() {
-        // TODO: 本来可以这样很优雅，但是这样再开始城市只有北京上海，怎么都修不好，所以干脆刷新页面
         EventBus.$emit('handleRouteChange', 'home');
-        // store.commit('initAnmtCtrl');
-        // uni.navigateTo({
-        //   url: '/pages/index/index'
-        // });
       },
       playAgain() {
         EventBus.$emit('playAgain');

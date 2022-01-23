@@ -182,8 +182,6 @@ import { EventBus } from '@/utils/eventBus';
         if (withoutAnimation) {
           this.currentCity = this.nextCity;
           this.nextCity = { ...this.cityList.shift() };
-          // this.nextCity = { ...this.cityList[0] };
-          // store.commit('shiftCityList');
           return;
         }
         store.commit('setAnmtCtrl', {
