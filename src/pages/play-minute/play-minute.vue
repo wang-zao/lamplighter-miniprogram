@@ -5,7 +5,7 @@
       class="content_panel info_panel"
     >
       <info-panel
-        v-if="!anmtCtrl.gameEndPageVisible"
+        v-show="!anmtCtrl.gameEndPageVisible"
         :currentCity="currentCity"
         :nextCity="nextCity"
       />
@@ -82,17 +82,15 @@ import { EventBus } from '@/utils/eventBus';
           currentPage: 0,
           pageSize: 20,
         };
+        EventBus.$emit('initEarthAnimation', {
+          lat: 40,
+          lon: 116,
+        });
         store.commit('initAnmtCtrl');
         store.commit('initJudgeCtrl');
         await this.getCityData();
         this.cityQueuePopOne(true);
         this.cityQueuePopOne(true);
-        // this.$refs.flyingEarth.flyFromOneToAnother(
-        //   0,
-        //   0,
-        //   this.currentCity.lat,
-        //   this.currentCity.lon,
-        // );
         this.calcAnswer();
         // this.$refs.flyingEarth.allowDrawOrbit();
       },
@@ -123,14 +121,26 @@ import { EventBus } from '@/utils/eventBus';
         }, 1000);
       },
       async gameEnd() {
-        store.commit('setAnmtCtrl', {
-          gameEndPageVisible: true,
-        });
-        if (this.judgeCtrl.totalMiles > this.userProfile.score) {
-          await UserModel.updateScore(this.judgeCtrl.totalMiles);
-          const profile = await UserModel.getExistingUserProfile(this.openid);
-          store.commit('updateUserProfile', profile);
-        }
+        // 1. show failed city point
+        const cityConfig = {
+          toLat: this.nextCity.lat,
+          toLon: this.nextCity.lon,
+        };
+        EventBus.$emit(
+          'showFailedCityPoint',
+          cityConfig,
+        );
+        // 2. show game end page
+        setTimeout(async () => {
+          store.commit('setAnmtCtrl', {
+            gameEndPageVisible: true,
+          });
+          if (this.judgeCtrl.totalMiles > this.userProfile.score) {
+            await UserModel.updateScore(this.judgeCtrl.totalMiles);
+            const profile = await UserModel.getExistingUserProfile(this.openid);
+            store.commit('updateUserProfile', profile);
+          }
+        }, 1300);
       },
       startTimeLoop() {
         const clock = setInterval(() => {
@@ -172,6 +182,8 @@ import { EventBus } from '@/utils/eventBus';
         if (withoutAnimation) {
           this.currentCity = this.nextCity;
           this.nextCity = { ...this.cityList.shift() };
+          // this.nextCity = { ...this.cityList[0] };
+          // store.commit('shiftCityList');
           return;
         }
         store.commit('setAnmtCtrl', {
@@ -233,6 +245,7 @@ import { EventBus } from '@/utils/eventBus';
             fromLon: this.currentCity.lon,
             toLat: this.nextCity.lat,
             toLon: this.nextCity.lon,
+            isDrawOrbit: true,
           };
           EventBus.$emit(
             'flyFromOneToAnother',
@@ -255,7 +268,7 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setJudgeCtrl', {
             wrongCityList: [...this.judgeCtrl.wrongCityList, this.nextCity.name_chn],
           });
-          this.cityQueueBrokeOne();
+          // this.cityQueueBrokeOne();
           this.gameEnd();
         }
         // 重设开始答题时间，这个还需要调整，引入switch_time之后
@@ -291,7 +304,6 @@ $section-2-earth-height: 60vh;
 $section-3-operation-height: 25vh;
 
 .play_minute_wrapper {
-  // background: $dark-mode-bg;
   width: 100vw;
   height: 100vh;
 }
