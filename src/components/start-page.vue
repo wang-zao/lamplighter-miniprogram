@@ -28,23 +28,18 @@
     },
     created() {
       this.getRandomTips();
-      this.startTimeLoop();
     },
     mounted() {
-      // this.startTimeLoop();
     },
     methods: {
       onClick(direction) {
-        // this.$emit('clickedOneDirection', direction)
       },
       getRandomTips() {
         const randomIdx = Math.floor(Math.random() * TIPS_OF_PLAYING.length);
         this.currentTip = TIPS_OF_PLAYING[randomIdx];
       },
       startTimeLoop() {
-        console.log('startTimeLooping...')
         const clock = setInterval(() => {
-          console.log('setInterval...', this.countDownTime)
           if (this.countDownTime > 1) {
             this.countDownTime -= 1;
           } else if (this.countDownTime <= 1) {

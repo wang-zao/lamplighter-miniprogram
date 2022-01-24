@@ -12,6 +12,7 @@
           :key="index"
           :userProfile="user"
           :rankingNumber="user.rankingNumber"
+          :isMyCard="false"
           class="ranking_card_list"
         />
       </cover-view>
@@ -20,6 +21,7 @@
           class="ranking_card_yours"
           :userProfile="userProfile"
           :rankingNumber="userRankingNumber"
+          :isMyCard="true"
         />
       </cover-view>
       <cover-view class="ranking_card_all_count">

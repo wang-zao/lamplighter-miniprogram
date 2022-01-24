@@ -1,12 +1,13 @@
 <template>
   <cover-view v-if="anmtCtrl.gameEndPageVisible" class="game_end_wrapper">
     <cover-view class="end_panel_header">
-      <cover-view>小程序：东南西北</cover-view>
+      <cover-view>小程序：星球点灯人</cover-view>
     </cover-view>
     <cover-view class="end_panel_score">
-      <cover-view>avatar</cover-view>
-      <cover-view>王凿</cover-view>
-      <cover-view class="score_number">{{rankScore}} 🌏</cover-view>
+      <!-- <cover-view>avatar</cover-view>
+      <cover-view>王凿</cover-view> -->
+      <cover-view>⭐️</cover-view>
+      <cover-view class="score_number">{{rankScore}}</cover-view>
       <cover-view>飞行评分：{{rankData.rank}}</cover-view>
       <cover-view>称号：{{rankData.text}}</cover-view>
     </cover-view>
@@ -40,14 +41,18 @@
       </cover-view>
     </cover-view>
     <cover-view class="end_panel_operations">
-      <cover-view class="share_button" @click="playAgain">再来一局</cover-view>
+      <cover-view>
+        <button class="share_button" @click="playAgain">再来一局</button>
+      </cover-view>
       <cover-view>
         <button class="share_button" open-type="share" aria-role="button"> 分享 </button>
       </cover-view>
-      <cover-view class="share_button" @click="backToHome">首页</cover-view>
+      <cover-view>
+        <button class="share_button" @click="backToHome">首页</button>
+      </cover-view>
     </cover-view>
     <cover-view class="end_panel_footer">
-      <cover-view>小程序：东南西北</cover-view>
+      <cover-view>小程序：星球点灯人</cover-view>
     </cover-view>
   </cover-view>
 </template>
@@ -121,31 +126,28 @@ $general-panel-width: 60vw;
   color: #fff;
   .end_panel_header {
     font-size: 1rem;
+    opacity: .6;
+    line-height: 2rem;
+    padding-top: 2rem
   }
   .end_panel_score {
     text-align: center;
     height: $score-panel-height;
-    // max-height: $score-panel-height;
     min-height: $score-panel-height;
-    // background: green;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: flex-end;
     .score_number {
-      font-size: 2rem;
+      font-size: 4rem;
+      margin: 0.5rem 2rem;
+      font-weight: bolder;
     }
   }
   .end_panel_details {
-    // // display: flex;
-    // align-items: center;
-    // flex-direction: column;
-    // justify-content: center;
     height: $detail-panel-height;
-    // max-height: $detail-panel-height;
     min-height: $detail-panel-height;
     width: $general-panel-width;
-    // background: $uni-bg-color-mask;
     overflow-y: scroll;
     padding: 0 1rem 1rem 1rem;
     .details_flex {
@@ -155,18 +157,13 @@ $general-panel-width: 60vw;
       height: 100%;
       width: 100%;
       background: $uni-bg-color-mask;
-      // word-break: break-all;
-      // word-wrap:break-word;
-      // white-space:pre-line;
     }
     .detail_title {
       padding: 1rem;
-      // padding: 0 0 1rem;
       background: $uni-bg-color-mask;
       width: $general-panel-width;
       min-width: $general-panel-width;
       max-width: $general-panel-width;
-      // width: 100%;
       border-bottom: 1px solid #fff;
       text-align: center;
     }
@@ -182,12 +179,9 @@ $general-panel-width: 60vw;
       line-height: 2rem;
     }
     .detail_tag_wrap {
-      // height: 100%;
       width: 100%;
-      // background: yellow;
       display: flex;
       flex-wrap: wrap;
-      // justify-content: flex-start;
       align-items: flex-start;
       line-height: 1.6rem;
       .detail_tag {
@@ -209,14 +203,15 @@ $general-panel-width: 60vw;
     justify-content: space-between;
     width: $general-panel-width;
     .share_button {
-      height: $operation-panel-height;
-      border: none;
-      background: transparent;
-      padding: none;
-      margin: none;
+      height: 2rem;
+      background: #ffffff44;
+      text-align: center;
+      border-radius: 1rem;
+      border: 1px #fff solid;
       color: #fff;
+      padding: 0.5rem 0.5rem;
       font-size: 1rem;
-      line-height: 1.5rem;
+      line-height: 1rem;
       ::after {
         padding: none;
         border: none;
@@ -225,10 +220,9 @@ $general-panel-width: 60vw;
   }
   .end_panel_footer {
     font-size: 1rem;
-    color: #84c4a1;
-    color: #437459;
-    color: #e2c7bc;
-    color: #92553c;
+    opacity: .8;
+    line-height: 2rem;
+    padding-bottom: 4rem
   }
 }
 </style>

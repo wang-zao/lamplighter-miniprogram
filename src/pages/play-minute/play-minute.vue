@@ -34,6 +34,8 @@ import {
 } from '@/utils/common';
 import {
   DATABASE,
+  RANDOM_SWAP_P,
+  RANDOM_SHIFT_P,
 } from '@/utils/constants';
 import { EventBus } from '@/utils/eventBus';
 
@@ -42,6 +44,12 @@ import { EventBus } from '@/utils/eventBus';
     components: {
       InfoPanel,
       EarthGlobe,
+    },
+    props: {
+      currentRoute: {
+        type: String,
+        default: 'home',
+      },
     },
     data() {
       return {
@@ -52,12 +60,16 @@ import { EventBus } from '@/utils/eventBus';
           pageSize: 20,
         },
         cityList: [],
+        clocks: {
+          countDown: -1,
+        }
       }
     },
     mounted() {
       this.init();
       this.watchChooseDirection();
       this.watchPlayAgain();
+      this.watchStartGameCountDown();
       // this.watchBackHome();
     },
     computed: {
@@ -73,8 +85,6 @@ import { EventBus } from '@/utils/eventBus';
     },
     methods: {
       async init() {
-        // this.showStartPage();
-        // this.startTimeLoop();
         this.cityList = [];
         this.currentCity = {};
         this.nextCity = {};
@@ -92,7 +102,9 @@ import { EventBus } from '@/utils/eventBus';
         this.cityQueuePopOne(true);
         this.cityQueuePopOne(true);
         this.calcAnswer();
-        // this.$refs.flyingEarth.allowDrawOrbit();
+        if (!this.anmtCtrl.gameGuidePageVisible && this.currentRoute === 'play-minute') {
+          EventBus.$emit('startGameCountDown');
+        }
       },
       async getCityData() {
         try {
@@ -106,6 +118,22 @@ import { EventBus } from '@/utils/eventBus';
         } catch (e) {
         }
       },
+      randomSwitchFirstTwoCities() {
+        if (this.cityList[0].id === 1) {
+          return;
+        }
+        // 1.随机拆掉一个城市
+        if (Math.random() > RANDOM_SHIFT_P) {
+          this.cityList.shift();
+        }
+        // 2.随机交换第一个城市和第二个城市
+        if (Math.random() > RANDOM_SWAP_P) {
+          let tmp1 = this.cityList.shift();
+          let tmp2 = this.cityList.shift();
+          this.cityList.unshift(tmp1);
+          this.cityList.unshift(tmp2);
+        }
+      },
       checkRestCityDataCapacity() {
         if (this.cityList && this.cityList.length <= 5) {
           this.pageCtrl.currentPage += 1;
@@ -117,12 +145,16 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setAnmtCtrl', {
             gameStartPageVisible: false,
           });
-          this.startTimeLoop();
         }, 1000);
       },
       async gameEnd() {
+        if (!this.currentRoute === 'play-minute') {
+          return;
+        }
         // 1. show failed city point
         const cityConfig = {
+          fromLat: this.currentCity.lat,
+          fromLon: this.currentCity.lon,
           toLat: this.nextCity.lat,
           toLon: this.nextCity.lon,
         };
@@ -141,15 +173,18 @@ import { EventBus } from '@/utils/eventBus';
             store.commit('updateUserProfile', profile);
           }
         }, 1300);
+        // 3. freeze the countdown timer
+        clearInterval(this.clocks.countDown);
       },
       startTimeLoop() {
-        const clock = setInterval(() => {
+        clearInterval(this.clocks.countDown);
+        this.clocks.countDown = setInterval(() => {
           if (this.judgeCtrl.restTime > 0) {
             store.commit('setJudgeCtrl', {
               restTime: this.judgeCtrl.restTime - 1,
             });
           } else if (this.judgeCtrl.restTime <= 0) {
-            clearInterval(clock);
+            clearInterval(this.clocks.countDown);
             this.gameEnd();
           }
         }, 1000);
@@ -181,6 +216,7 @@ import { EventBus } from '@/utils/eventBus';
       cityQueuePopOne(withoutAnimation = true) {
         if (withoutAnimation) {
           this.currentCity = this.nextCity;
+          this.randomSwitchFirstTwoCities();
           this.nextCity = { ...this.cityList.shift() };
           return;
         }
@@ -196,6 +232,7 @@ import { EventBus } from '@/utils/eventBus';
             answerCorrectAnimationStep2: true,
           });
           this.currentCity = this.nextCity;
+          this.randomSwitchFirstTwoCities();
           this.nextCity = { ...this.cityList.shift() };
           this.calcAnswer();
         }, 600);
@@ -229,6 +266,7 @@ import { EventBus } from '@/utils/eventBus';
           }, this.anmtCtrl.switchCityTime);
           // 2.计算得分
           const score = getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
+          // 2.展示动画
           EventBus.$emit('addScore', {
             score, deg: this.judgeCtrl.correctDeg,
           });
@@ -244,6 +282,7 @@ import { EventBus } from '@/utils/eventBus';
             toLat: this.nextCity.lat,
             toLon: this.nextCity.lon,
             isDrawOrbit: true,
+            score,
           };
           EventBus.$emit(
             'flyFromOneToAnother',
@@ -255,6 +294,10 @@ import { EventBus } from '@/utils/eventBus';
           // 5.切换城市
           this.cityQueuePopOne(false);
           this.checkRestCityDataCapacity();
+          // 6.重设开始答题时间，这个还需要调整，引入switch_time之后
+          store.commit('setJudgeCtrl', {
+            restTime: this.judgeCtrl.countdownStartTime,
+          });
         } else {
           // 1.两秒防抖
           setTimeout(() => {
@@ -262,6 +305,10 @@ import { EventBus } from '@/utils/eventBus';
               operationPanelDisabled: false,
             });
           }, this.anmtCtrl.switchCityTime);
+          // 2.展示动画
+          EventBus.$emit('addScore', {
+            score: 0, deg: this.judgeCtrl.correctDeg,
+          });
           // 3.计入列表
           store.commit('setJudgeCtrl', {
             wrongCityList: [...this.judgeCtrl.wrongCityList, this.nextCity.name_chn],
@@ -269,10 +316,7 @@ import { EventBus } from '@/utils/eventBus';
           // this.cityQueueBrokeOne();
           this.gameEnd();
         }
-        // 重设开始答题时间，这个还需要调整，引入switch_time之后
-        store.commit('setJudgeCtrl', {
-          restTime: this.judgeCtrl.countdownStartTime,
-        });
+        
       },
       watchChooseDirection() {
         EventBus.$on('onChooseDirection', (deg) => {
@@ -288,6 +332,14 @@ import { EventBus } from '@/utils/eventBus';
         EventBus.$on('onBackHome', () => {
           store.commit('initAnmtCtrl');
           store.commit('initJudgeCtrl');
+        });
+      },
+      watchStartGameCountDown() {
+        EventBus.$on('startGameCountDown', () => {
+          store.commit('setAnmtCtrl', {
+            gameGuidePageVisible: false,
+          });
+          this.startTimeLoop();
         });
       },
     },

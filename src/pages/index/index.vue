@@ -50,7 +50,6 @@ export default Vue.extend({
   methods: {
     handleRouteChange(route: string) {
       this.currentRoute = route;
-      console.log('handleRouteChange`s route: ', route);
       if (route === 'home') {
         EventBus.$emit('enableEarthRotation');
       } else if (route === 'play-minute') {
