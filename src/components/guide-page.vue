@@ -44,7 +44,6 @@
         <cover-view class="box_line_column box_line_column_mid"
           :class="{
             'box_unit_empty': currentStep === 1,
-            'box_unit_full': currentStep === 0,
           }"
         ></cover-view>
         <cover-view class="box_line_column box_line_column_side"></cover-view>
@@ -90,39 +89,34 @@ export default {
   },
   created() {
     this.animateFirstStep();
-    // this.autoClick();
   },
   methods: {
     init() {
     },
     animateFirstStep() {
-      this.anmtCtrl.step1.line1 = true;
       setTimeout(() => {
-        this.anmtCtrl.step1.line2 = true;
+        this.anmtCtrl.step1.line1 = true;
         setTimeout(() => {
-          this.anmtCtrl.step1.line3 = true;
+          this.anmtCtrl.step1.line2 = true;
           setTimeout(() => {
-            this.anmtCtrl.step1.line4 = true;
+            this.anmtCtrl.step1.line3 = true;
+            setTimeout(() => {
+              this.anmtCtrl.step1.line4 = true;
+            }, this.anmtCtrl.duration);
           }, this.anmtCtrl.duration);
         }, this.anmtCtrl.duration);
-      }, this.anmtCtrl.duration);
+      }, this.anmtCtrl.duration * 2);
     },
     animateSecondStep() {
-      this.anmtCtrl.step2.line1 = true;
       setTimeout(() => {
-        this.anmtCtrl.step2.line2 = true;
+        this.anmtCtrl.step2.line1 = true;
         setTimeout(() => {
-          this.anmtCtrl.step2.line3 = true;
+          this.anmtCtrl.step2.line2 = true;
+          setTimeout(() => {
+            this.anmtCtrl.step2.line3 = true;
+          }, this.anmtCtrl.duration);
         }, this.anmtCtrl.duration);
-      }, this.anmtCtrl.duration);
-    },
-    autoClick() {
-      setTimeout(() => {
-        this.nextStep()
-        setTimeout(() => {
-          this.letsStart()
-        }, 4000)
-      }, 4000)
+      }, this.anmtCtrl.duration * 2);
     },
     nextStep() {
       this.currentStep = 1;
@@ -148,12 +142,12 @@ $row-bottom-margin-height: 8vh;
 $guide-bg-color-mask: #00000099;
 
 @keyframes guide-page-fadein {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes guide-page-fadeout {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 
@@ -187,11 +181,12 @@ $guide-bg-color-mask: #00000099;
       width: 100vw;
     }
     .box_unit_empty {
-      background: transparent;
+      animation-delay: .15s;
+      animation: guide-page-fadeout 0.5s ease-in-out forwards;
     }
-    // .box_unit_full {
-    //   background: $guide-bg-color-mask;
-    // }
+    .box_unit_full {
+      animation: guide-page-fadein 0.5s ease-in-out forwards;
+    }
     .guide_content {
       display: flex;
       flex-direction: column;

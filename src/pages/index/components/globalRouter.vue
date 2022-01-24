@@ -5,15 +5,16 @@
   >
     <home-buttons
       @routeChange="handleRouteChange"
-      v-if="currentRoute === 'home'"
+      v-show="currentRoute === 'home'"
     />
     <!-- 注意，cover-view在v-if切换之后，再次显示它的数据会冻死。可能是它的双向绑定有bug，因此下面这个组件需要用v-show -->
     <play-minute
+      :currentRoute="currentRoute"
       v-show="currentRoute === 'play-minute'"
     />
     <ranking
       @routeChange="handleRouteChange"
-      v-if="currentRoute === 'ranking'"
+      v-show="currentRoute === 'ranking'"
     />
   </cover-view>
 </template>

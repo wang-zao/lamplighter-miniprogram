@@ -34,6 +34,8 @@ import {
 } from '@/utils/common';
 import {
   DATABASE,
+  RANDOM_SWAP_P,
+  RANDOM_SHIFT_P,
 } from '@/utils/constants';
 import { EventBus } from '@/utils/eventBus';
 
@@ -42,6 +44,12 @@ import { EventBus } from '@/utils/eventBus';
     components: {
       InfoPanel,
       EarthGlobe,
+    },
+    props: {
+      currentRoute: {
+        type: String,
+        default: 'home',
+      },
     },
     data() {
       return {
@@ -94,7 +102,7 @@ import { EventBus } from '@/utils/eventBus';
         this.cityQueuePopOne(true);
         this.cityQueuePopOne(true);
         this.calcAnswer();
-        if (!this.anmtCtrl.gameGuidePageVisible) {
+        if (!this.anmtCtrl.gameGuidePageVisible && this.currentRoute === 'play-minute') {
           EventBus.$emit('startGameCountDown');
         }
       },
@@ -111,15 +119,19 @@ import { EventBus } from '@/utils/eventBus';
         }
       },
       randomSwitchFirstTwoCities() {
-        const swapFistTwo = () => {
+        if (this.cityList[0].id === 1) {
+          return;
+        }
+        // 1.随机拆掉一个城市
+        if (Math.random() > RANDOM_SHIFT_P) {
+          this.cityList.shift();
+        }
+        // 2.随机交换第一个城市和第二个城市
+        if (Math.random() > RANDOM_SWAP_P) {
           let tmp1 = this.cityList.shift();
           let tmp2 = this.cityList.shift();
           this.cityList.unshift(tmp1);
           this.cityList.unshift(tmp2);
-        }
-        const randomSwapIndex = Math.random();
-        if (randomSwapIndex > 0.7) {
-          swapFistTwo();
         }
       },
       checkRestCityDataCapacity() {
@@ -136,8 +148,13 @@ import { EventBus } from '@/utils/eventBus';
         }, 1000);
       },
       async gameEnd() {
+        if (!this.currentRoute === 'play-minute') {
+          return;
+        }
         // 1. show failed city point
         const cityConfig = {
+          fromLat: this.currentCity.lat,
+          fromLon: this.currentCity.lon,
           toLat: this.nextCity.lat,
           toLon: this.nextCity.lon,
         };
@@ -249,6 +266,7 @@ import { EventBus } from '@/utils/eventBus';
           }, this.anmtCtrl.switchCityTime);
           // 2.计算得分
           const score = getScoreFromDegreeDistance(selectedDegree, this.judgeCtrl.correctDeg);
+          // 2.展示动画
           EventBus.$emit('addScore', {
             score, deg: this.judgeCtrl.correctDeg,
           });
@@ -264,6 +282,7 @@ import { EventBus } from '@/utils/eventBus';
             toLat: this.nextCity.lat,
             toLon: this.nextCity.lon,
             isDrawOrbit: true,
+            score,
           };
           EventBus.$emit(
             'flyFromOneToAnother',
@@ -286,6 +305,10 @@ import { EventBus } from '@/utils/eventBus';
               operationPanelDisabled: false,
             });
           }, this.anmtCtrl.switchCityTime);
+          // 2.展示动画
+          EventBus.$emit('addScore', {
+            score: 0, deg: this.judgeCtrl.correctDeg,
+          });
           // 3.计入列表
           store.commit('setJudgeCtrl', {
             wrongCityList: [...this.judgeCtrl.wrongCityList, this.nextCity.name_chn],

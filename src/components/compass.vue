@@ -55,6 +55,12 @@
           >+{{currentAddingScore}}</view>
         </view>
       </view>
+      <view class="compass_item compass_button">
+        <view class="button_body" :class="{
+            button_body_rotating: !pausingRotation,
+          }">
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -169,6 +175,12 @@ $needle-radius: 4vw;
   to { transform: rotate(360deg); }
 }
 
+@keyframes scale {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.5); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
 @keyframes launch {
   0% {
     opacity: 1;
@@ -201,20 +213,7 @@ $needle-radius: 4vw;
 
 @keyframes needleFlash {
   0% { opacity: 1; }
-  10% { opacity: 1; }
-  11% { opacity: 0; }
-  19% { opacity: 0; }
-  20% { opacity: 1; }
-  30% { opacity: 1; }
-  31% { opacity: 0; }
-  39% { opacity: 0; }
-  40% { opacity: 1; }
-  80% { opacity: 1; }
-  81% { opacity: 0; }
-  89% { opacity: 0; }
-  90% { opacity: 1; }
-  99% { opacity: 1; }
-  100% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .compass_wrapper {
@@ -249,16 +248,16 @@ $needle-radius: 4vw;
     left: -$aircraft-radius;
     width: 2 * $aircraft-radius;
     height: 2 * $aircraft-radius;
-    border: solid 2px #ffffff;
+    border: solid 0.1px #ffffff01;
     border-radius: $aircraft-radius;
-    background: #ffffff44;
+    background: #ffffff01;
     overflow: hidden;
     .compass_aircraft_wrapper {
       border-radius: $aircraft-radius;
       overflow: hidden;
     }
     .airplane_wrapper {
-      animation: rotate 1.2s infinite linear;
+      animation: rotate 2s infinite linear;
       animation-play-state: paused;
       overflow: hidden;
     }
@@ -284,6 +283,31 @@ $needle-radius: 4vw;
     width: 30vw;
     height: 10vw;
   }
+  .compass_button {
+    color: #fff;
+    top: $compass-radius - 8vw;
+    right: -40vw;
+    text-align: right;
+    width: 16vw;
+    height: 16vw;
+    background: #ffffff44;
+    border: solid 1px #ffffff;
+    border-radius: 8vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .button_body {
+      width: 8vw;
+      height: 8vw;
+      border-radius: 4vw;
+      background: #ffffff;
+      animation: scale .3s infinite ease-in-out;
+      animation-play-state: paused;
+    }
+    .button_body_rotating {
+      animation-play-state: running;
+    }
+  }
   .compass_score {
     top: -5rem;
     transform: translateX(-50%);
@@ -293,7 +317,7 @@ $needle-radius: 4vw;
       opacity: 0;
     }
     .score_showing {
-      animation: scoreFade 1s forwards ease-in-out;
+      animation: scoreFade .3s forwards ease-in-out;
     }
     .score_text_4 {
       font-size: 5rem;

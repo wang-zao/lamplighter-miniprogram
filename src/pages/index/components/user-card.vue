@@ -4,9 +4,6 @@
   >
     <cover-view class="card_wrapper">
       <cover-view class="card_left">
-        <cover-view class="left_ranking_number">
-          {{ rankingNumber }}
-        </cover-view>
         <cover-view class="left_ranking_info">
           <cover-view class="card_avatar">
             <cover-image class="avatar_img"
@@ -52,29 +49,21 @@
 import { EventBus } from '@/utils/eventBus';
 
 export default {
-  name: 'RankingCard',
+  name: 'UserCard',
   props: {
     userProfile: {
       type: Object,
       default: {},
     },
-    rankingNumber: {
-      type: String,
-      default: '-',
-    },
-    isMyCard: {
-      type: Boolean,
-      default: false,
+  },
+  computed: {
+    displayLogIn() {
+      return this.userProfile.avatarUrl === '' && this.userProfile.nickName === '游客';
     },
   },
   data() {
     return {
     }
-  },
-  computed: {
-    displayLogIn() {
-      return this.isMyCard && this.userProfile.avatarUrl === '' && this.userProfile.nickName === '游客';
-    },
   },
   created() {
   },
@@ -82,9 +71,6 @@ export default {
     init() {
     },
     getUserProfilePermission() {
-      if (!this.isMyCard) {
-        return;
-      }
       if (this.userProfile.avatarUrl === '' || this.userProfile.nickName === '游客') {
         EventBus.$emit('getUserProfilePermission');
       }
@@ -108,18 +94,12 @@ $card-height: 4rem;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: #ffffff22;
   width: 95%;
 }
 .card_left {
   display: flex;
   align-items: center;
   width: 70%;
-  .left_ranking_number {
-    font-size: 1rem;
-    min-width: 1rem;
-    margin: 0 0.5rem;
-  }
   .left_ranking_info {
     display: flex;
     align-items: center;
@@ -130,6 +110,7 @@ $card-height: 4rem;
       overflow: hidden;
       margin-right: 0.5rem;
       border: 1px solid #ffffff;
+      background: #ffffff66;
       .avatar_img {
         width: 100%;
         height: 100%;
@@ -171,7 +152,7 @@ $card-height: 4rem;
   width: 30%;
   .right_score {
     font-size: 1.3rem;
-    margin-right: 1rem;
+    margin-right: 0;
     font-weight: bold;
   }
 }
