@@ -136,7 +136,7 @@
         this.maxiumPageIndex = Math.ceil(this.allUserCount / this.currentSize) - 1;
       },
       async getUserRankingNumber() {
-        this.userRankingNumber = await UserModel.binarySearchUserRankingNumber(this.userProfile.score);
+        this.userRankingNumber = await UserModel.getUserRankingNumber(this.userProfile.score);
       },
       changeRankingPage(direction) {
         if (direction === -1 && this.currentPage === 0) {

@@ -98,28 +98,10 @@ class UserModel extends Base {
     }
   }
 
-  async binarySearchUserRankingNumber(userScore) {
+  async getUserRankingNumber(userScore) {
     try {
-      const { total } = await this.model.count();
-      let left = 0;
-      let right = total - 1;
-      let mid = 0;
-      // TODO: there should be a more direct way to get the ranking number, may be some queries like model.where('score' > userScore).count()
-      while (left <= right) {
-        mid = Math.floor((left + right) / 2);
-        const { data } = await this.model.orderBy('score', 'desc')
-          .skip(mid)
-          .limit(1)
-          .get();
-        if (data[0].score === userScore) {
-          return mid + 1;
-        } else if (data[0].score < userScore) {
-          right = mid - 1;
-        } else {
-          left = mid + 1;
-        }
-      }
-      return left;
+      const { total } = await this.model.where({ score: this._.gt(userScore) }).count();
+      return total + 1;
     } catch (error) {
       console.log('error!!!', error)
       throw error
