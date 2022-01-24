@@ -443,14 +443,6 @@ export default Vue.extend({
 <style scoped lang="scss">
 @import '../utils/customAnimate.wxss';
 
-.earth_wrapper {
-  // position: fixed;
-  // top: 50%;
-  // left: 50%;
-  // width: 100vw;
-  // height: 100vh;
-  // overflow: hidden;
-}
 .canvas_cover_abstract {
   position: fixed;
   left: 50%;
