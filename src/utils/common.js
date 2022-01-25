@@ -313,3 +313,10 @@ export const isDegreeWithinRange = (selectedDeg, correctDeg) => {
 export const getScoreFromDegreeDistance = (selectedDeg, correctDeg) => {
   return getMinDistance(selectedDeg, correctDeg).score;
 }
+
+export const getAverageBiasFromAverageScore = (averageScore) => {
+  const maxScore = PLAYING_MAX_SCORE_PER_QUESTION;
+  const bias = PLAYING_ALLOWED_AZIMUSH_BIAS;
+  const base = (maxScore - averageScore) % maxScore * (bias / maxScore);
+  return (base + Math.random() * (bias / maxScore) / 2).toFixed(1);
+}

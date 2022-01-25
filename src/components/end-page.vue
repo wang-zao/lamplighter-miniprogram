@@ -1,60 +1,75 @@
 <template>
-  <cover-view v-if="anmtCtrl.gameEndPageVisible" class="game_end_wrapper">
-    <cover-view class="end_panel_header">
-      <cover-view>小程序：星球点灯人</cover-view>
-    </cover-view>
-    <cover-view class="end_panel_score">
-      <!-- <cover-view>avatar</cover-view>
-      <cover-view>王凿</cover-view> -->
-      <cover-view>⭐️</cover-view>
-      <cover-view class="score_number">{{rankScore}}</cover-view>
-      <cover-view>飞行评分：{{rankData.rank}}</cover-view>
-      <cover-view>称号：{{rankData.text}}</cover-view>
-    </cover-view>
-    <cover-view class="end_panel_details">
-      <cover-view class="detail_title">本次战绩</cover-view>
-      <cover-view class="details_flex">
-        <cover-view class="details_left">
-          <cover-view class="details_side_title">成功：</cover-view>
-          <cover-view class="detail_tag_wrap">
-            <cover-view
+  <view v-if="anmtCtrl.gameEndPageVisible" class="game_end_wrapper">
+    <view class="end_panel_header">
+      <view></view>
+    </view>
+    <view class="end_panel_score">
+      <!-- <view>avatar</view>
+      <view>王凿</view> -->
+      <view>⭐️</view>
+      <view class="score_number">{{rankScore}}</view>
+      <view>称号：{{rankData.text}}</view>
+    </view>
+    <view class="end_panel_details">
+      <view class="detail_title">本次战绩</view>
+      <view class="details_flex">
+        <view class="detail_item">
+          <view class="detail_item_title">飞行距离</view>
+          <view class="detail_item_value">{{judgeCtrl.totalDistance.toFixed(0)}}km</view>
+        </view>
+        <view class="detail_item">
+          <view class="detail_item_title">点亮城市个数</view>
+          <view class="detail_item_value">{{judgeCtrl.correctCityList.length}}</view>
+        </view>
+        <view class="detail_item">
+          <view class="detail_item_title">平均方向误差</view>
+          <view class="detail_item_value">{{averageBias}}</view>
+        </view>
+        <view class="detail_item">
+          <view class="detail_item_title">平均单程得分</view>
+          <view class="detail_item_value">{{averageScore}}</view>
+        </view>
+        <view class="detail_item_last">从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}</view>
+        <view class="detail_item_last">应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}</view>
+
+        <!-- <view class="details_left">
+          <view class="details_side_title">成功：</view>
+          <view class="detail_tag_wrap">
+            <view
               class="detail_tag"
               v-for="(city, index) in judgeCtrl.correctCityList"
               :key="index"
             >
               {{city}}
-            </cover-view>
-          </cover-view>
-        </cover-view>
-        <cover-view class="details_right">
-          <cover-view class="details_side_title">失败：</cover-view>
-          <cover-view class="detail_tag_wrap">
-            <cover-view
+            </view>
+          </view>
+        </view>
+        <view class="details_right">
+          <view class="details_side_title">失败：</view>
+          <view class="detail_tag_wrap">
+            <view
               class="detail_tag"
               v-for="(city, index) in judgeCtrl.wrongCityList"
               :key="index"
             >
               {{city}}
-            </cover-view>
-          </cover-view>
-        </cover-view>
-      </cover-view>
-    </cover-view>
-    <cover-view class="end_panel_operations">
-      <cover-view>
+            </view>
+          </view>
+        </view> -->
+      </view>
+    </view>
+    <view class="end_panel_operations">
+      <view>
         <button class="share_button" @click="playAgain">再来一局</button>
-      </cover-view>
-      <cover-view>
+      </view>
+      <view>
         <button class="share_button" open-type="share" aria-role="button"> 分享 </button>
-      </cover-view>
-      <cover-view>
+      </view>
+      <view>
         <button class="share_button" @click="backToHome">首页</button>
-      </cover-view>
-    </cover-view>
-    <cover-view class="end_panel_footer">
-      <cover-view>小程序：星球点灯人</cover-view>
-    </cover-view>
-  </cover-view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -64,8 +79,10 @@
    */
   import store from '@/store/index.js'    
   import { EventBus } from '@/utils/eventBus';
-
-  import { calc_fly_rank } from '@/utils/common';
+  import {
+    calc_fly_rank,
+    getAverageBiasFromAverageScore,
+  } from '@/utils/common';
   export default {
     name: 'EndPage',
     props: {
@@ -90,6 +107,18 @@
       },
       rankData() {
         return calc_fly_rank(this.rankScore);
+      },
+      averageScore() {
+        if (this.judgeCtrl.correctCityList.length === 0) {
+          return 0;
+        }
+        return (this.judgeCtrl.totalMiles / this.judgeCtrl.correctCityList.length).toFixed(1);
+      },
+      averageBias() {
+        if (this.averageScore === 0) {
+          return '-';
+        }
+        return `±${getAverageBiasFromAverageScore(this.averageScore)}°`;
       },
     },
     created() {
@@ -119,6 +148,7 @@ $general-panel-width: 60vw;
   background: $uni-bg-color-mask;
   width: 100vw;
   height: 100vh;
+  z-index: 102;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -149,17 +179,42 @@ $general-panel-width: 60vw;
     min-height: $detail-panel-height;
     width: $general-panel-width;
     overflow-y: scroll;
-    padding: 0 1rem 1rem 1rem;
+    overflow-x: hidden;
+    padding: 0;
     .details_flex {
+      box-sizing: border-box;
       padding: 1rem;
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      flex-direction: column;
       height: 100%;
       width: 100%;
       background: $uni-bg-color-mask;
+      .detail_item {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: top;
+        margin-bottom: 1rem;
+        .detail_item_title {
+          line-height: 1rem;
+          white-space: nowrap;
+          opacity: .7;
+        }
+        .detail_item_value {
+          line-height: 1rem;
+          margin-left: 1rem;
+          font-weight: bolder;
+          white-space: pre-wrap;
+        }
+      }
+      .detail_item_last {
+        background: #ffffff22;
+      }
     }
     .detail_title {
       padding: 1rem;
+      box-sizing: border-box;
       background: $uni-bg-color-mask;
       width: $general-panel-width;
       min-width: $general-panel-width;
@@ -167,33 +222,7 @@ $general-panel-width: 60vw;
       border-bottom: 1px solid #fff;
       text-align: center;
     }
-    .details_left {
-      width: 48%;
-      height: 100%;
-    }
-    .details_right {
-      width: 48%;
-      height: 100%;
-    }
-    .details_side_title {
-      line-height: 2rem;
-    }
-    .detail_tag_wrap {
-      width: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      line-height: 1.6rem;
-      .detail_tag {
-        background: $uni-bg-color-mask;
-        height: 1.4rem;
-        font-size: 1rem;
-        padding: .2rem .5rem;
-        margin-right: .2rem;
-        margin-bottom: .2rem;
-        border-radius: .4rem;
-      }
-    }
+
   }
   .end_panel_operations {
     height: $operation-panel-height;

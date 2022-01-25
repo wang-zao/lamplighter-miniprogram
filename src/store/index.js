@@ -33,8 +33,9 @@ const store = new Vuex.Store({
         judgeCtrl: {
           correctDirection: '',
           correctDeg: 0,
-          distance: '',
+          distance: 0,
           totalMiles: 0,
+          totalDistance: 0,
           restTime: 15,
           countdownStartTime: 15,
           userSelect: '',
@@ -42,6 +43,13 @@ const store = new Vuex.Store({
           isUserSelected: false,
           correctCityList: [],
           wrongCityList: [],
+          scoreList: [],
+          gameEndInfo: {
+            from: '',
+            to: '',
+            correct: '',
+            selected: '',
+          },
         },
         userProfile: {
             openid: '',
@@ -94,15 +102,22 @@ const store = new Vuex.Store({
             state.judgeCtrl = {
                 correctDirection: '',
                 correctDeg: 0,
-                distance: '',
+                distance: 0,
                 totalMiles: 0,
-                restTime: 10,
-                countdownStartTime: 10,
+                totalDistance: 0,
+                restTime: 15,
+                countdownStartTime: 15,
                 userSelect: '',
                 isCorrect: false,
                 isUserSelected: false,
                 correctCityList: [],
                 wrongCityList: [],
+                gameEndInfo: {
+                  from: '',
+                  to: '',
+                  correct: '',
+                  selected: '',
+                },
             }
         },
         setAnmtCtrl(state, settings) {

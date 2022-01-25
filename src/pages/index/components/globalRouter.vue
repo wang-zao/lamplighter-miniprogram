@@ -1,8 +1,5 @@
 <template>
-  <cover-view class="router_wrapper"
-    @touchstart="startRotatingCompass"
-    @touchend="endRotatingCompass"
-  >
+  <view class="router_wrapper">
     <home-buttons
       @routeChange="handleRouteChange"
       v-show="currentRoute === 'home'"
@@ -14,9 +11,9 @@
     />
     <ranking
       @routeChange="handleRouteChange"
-      v-show="currentRoute === 'ranking'"
+      v-if="currentRoute === 'ranking'"
     />
-  </cover-view>
+  </view>
 </template>
 
 <script>
@@ -27,7 +24,6 @@
 import PlayMinute from '@/pages/play-minute/play-minute.vue';
 import HomeButtons from './homeButtons.vue';
 import Ranking from '@/pages/ranking/index.vue';
-import { EventBus } from '@/utils/eventBus';
 
 export default {
   name: 'globalRouter',
@@ -54,16 +50,6 @@ export default {
     handleRouteChange(route) {
       this.$emit('handleRouteChange', route);
     },
-    startRotatingCompass() {
-      if (this.currentRoute === 'play-minute') {
-        EventBus.$emit('startRotatingCompass');
-      }
-    },
-    endRotatingCompass() {
-      if (this.currentRoute === 'play-minute') {
-        EventBus.$emit('endRotatingCompass');
-      }
-    },
   }
 }
 </script>
@@ -82,5 +68,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 }
 </style>

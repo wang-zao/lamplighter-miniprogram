@@ -4,25 +4,24 @@
       type="webgl" id="webgl"
       :style="canvasStyle"
     >
-     <!-- <start-page
-        v-if="anmtCtrl.gameStartPageVisible"
-        class="canvas_cover_start_panel"
-      /> -->
-      <end-page
-        :anmtCtrl="anmtCtrl"
-        :judgeCtrl="judgeCtrl"
-        v-if="anmtCtrl.gameEndPageVisible"
-        class="canvas_cover_end_panel"
-      />
-      <compass
-        v-if="currentRoute === 'play-minute' && !anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
-        class="canvas_cover_compass"
-      />
-      <guide-page
-        v-if="currentRoute === 'play-minute' && anmtCtrl.gameGuidePageVisible"
-        class="canvas_cover_guide_panel"
-      />
     </canvas>
+    <end-page
+      :anmtCtrl="anmtCtrl"
+      :judgeCtrl="judgeCtrl"
+      v-if="anmtCtrl.gameEndPageVisible"
+      class="canvas_cover_end_panel"
+    />
+    <guide-page
+      v-if="currentRoute === 'play-minute' && anmtCtrl.gameGuidePageVisible"
+      class="canvas_cover_guide_panel"
+    />
+    <compass
+      v-if="currentRoute === 'play-minute' && !anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible"
+      class="canvas_cover_compass"
+    />
+    <event-agent
+      v-if="currentRoute === 'play-minute' && !anmtCtrl.gameStartPageVisible && !anmtCtrl.gameEndPageVisible && !anmtCtrl.gameGuidePageVisible"
+    />
   </view>
 </template>
 
@@ -45,6 +44,7 @@ import StartPage from '@/components/start-page.vue';
 import GuidePage from '@/components/guide-page.vue';
 import EndPage from '@/components/end-page.vue';
 import Compass from '@/components/compass.vue';
+import EventAgent from '@/components/event-agent.vue';
 import { EventBus } from '@/utils/eventBus';
 
 export default Vue.extend({
@@ -121,6 +121,7 @@ export default Vue.extend({
     EndPage,
     Compass,
     GuidePage,
+    EventAgent,
   },
   async mounted() {
     this.watchEarthRotation();
@@ -219,6 +220,7 @@ export default Vue.extend({
         );
         setTimeout(() => {
           EventBus.$emit('enableEarthRotation');
+          wx.hideLoading();
         }, this.flyTimeSpan + 10);
       }
     },
@@ -471,15 +473,18 @@ export default Vue.extend({
   position: fixed;
   left: 0;
   top: 0;
+  z-index: 101;
 }
 .canvas_cover_compass {
   position: fixed;
   left: 0;
   top: 70%;
+  z-index: 10;
 }
 .canvas_cover_guide_panel {
   position: fixed;
   left: 0;
   top: 0;
+  z-index: 110;
 }
 </style>

@@ -1,57 +1,57 @@
 <template>
-  <cover-view
+  <view
     class="guide_wrapper"
   >
-    <cover-view>
-      <cover-view
+    <view>
+      <view
       >
-        <cover-view class="box_line box_line_top_margin box_line_allblack">
-        </cover-view>
-        <cover-view class="box_line box_line_top">
-          <cover-view class="box_line_column box_line_column_side"></cover-view>
-          <cover-view class="box_line_column box_line_column_mid"
+        <view class="box_line box_line_top_margin box_line_allblack">
+        </view>
+        <view class="box_line box_line_top">
+          <view class="box_line_column box_line_column_side"></view>
+          <view class="box_line_column box_line_column_mid"
             :class="{
               'box_unit_empty': currentStep === 0,
               'box_unit_full': currentStep === 1,
             }"
-          ></cover-view>
-          <cover-view class="box_line_column box_line_column_side"></cover-view>
-        </cover-view>
-        <cover-view class="box_line box_line_mid box_line_allblack">
-          <cover-view class=" box_line_column_mid_through">
-            <cover-view v-if="currentStep === 0" class="guide_content guide_content_top">
-              <cover-view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">点灯人</cover-view>
-              <cover-view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">从当前站到下一站</cover-view>
-              <cover-view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line3 }">要往哪个方向走？</cover-view>
-              <cover-view
+          ></view>
+          <view class="box_line_column box_line_column_side"></view>
+        </view>
+        <view class="box_line box_line_mid box_line_allblack">
+          <view class=" box_line_column_mid_through">
+            <view v-if="currentStep === 0" class="guide_content guide_content_top">
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">点灯人</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">从当前站到下一站</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line3 }">要往哪个方向走？</view>
+              <view
                 class="guide_button"
                 @click="nextStep" :class="{ guide_text_easein: anmtCtrl.step1.line4 }"
-              >下一步</cover-view>
-            </cover-view>
-            <cover-view v-else class="guide_content guide_content_bottom">
-              <cover-view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step2.line1 }">长按屏幕并释放，操纵罗盘</cover-view>
-              <cover-view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step2.line2 }">依靠方向感点亮 🌏 吧</cover-view>
-              <cover-view
+              >下一步</view>
+            </view>
+            <view v-else class="guide_content guide_content_bottom">
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step2.line1 }">长按屏幕并释放，操纵罗盘</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step2.line2 }">依靠方向感点亮 🌏 吧</view>
+              <view
                 class="guide_button"
                 @click="letsStart" :class="{ guide_text_easein: anmtCtrl.step2.line3 }"
-              >开始</cover-view>
-            </cover-view>
-          </cover-view>
-        </cover-view>
-      </cover-view>
-      <cover-view class="box_line box_line_bottom">
-        <cover-view class="box_line_column box_line_column_side"></cover-view>
-        <cover-view class="box_line_column box_line_column_mid"
+              >开始</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="box_line box_line_bottom">
+        <view class="box_line_column box_line_column_side"></view>
+        <view class="box_line_column box_line_column_mid"
           :class="{
             'box_unit_empty': currentStep === 1,
           }"
-        ></cover-view>
-        <cover-view class="box_line_column box_line_column_side"></cover-view>
-      </cover-view>
-      <cover-view class="box_line box_line_bottom_margin box_line_allblack">
-      </cover-view>
-    </cover-view>
-  </cover-view>
+        ></view>
+        <view class="box_line_column box_line_column_side"></view>
+      </view>
+      <view class="box_line box_line_bottom_margin box_line_allblack">
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -70,7 +70,8 @@ export default {
   },
   data() {
     return {
-      currentStep: 0,
+      currentStep: -1,
+      clickedNextStep: false,
       anmtCtrl: {
         duration: 800,
         step1: {
@@ -88,10 +89,14 @@ export default {
     }
   },
   created() {
+    this.init();
     this.animateFirstStep();
   },
   methods: {
     init() {
+      setTimeout(() => {
+        this.currentStep = 0;
+      }, this.anmtCtrl.duration * 2);
     },
     animateFirstStep() {
       setTimeout(() => {
@@ -105,7 +110,7 @@ export default {
             }, this.anmtCtrl.duration);
           }, this.anmtCtrl.duration);
         }, this.anmtCtrl.duration);
-      }, this.anmtCtrl.duration * 2);
+      }, this.anmtCtrl.duration * 3);
     },
     animateSecondStep() {
       setTimeout(() => {
@@ -119,8 +124,15 @@ export default {
       }, this.anmtCtrl.duration * 2);
     },
     nextStep() {
-      this.currentStep = 1;
-      this.animateSecondStep();
+      if (this.clickedNextStep) {
+        return;
+      }
+      this.clickedNextStep = true;
+      setTimeout(() => {
+        this.currentStep = 1;
+        this.animateSecondStep();
+        this.clickedNextStep = false;
+      }, this.anmtCtrl.duration);
     },
     letsStart() {
       EventBus.$emit('startGameCountDown');
@@ -158,6 +170,7 @@ $guide-bg-color-mask: #00000099;
   left: 0;
   width: 100vw;
   height: 100vh;
+  z-index: 110;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,6 +196,7 @@ $guide-bg-color-mask: #00000099;
     .box_unit_empty {
       animation-delay: .15s;
       animation: guide-page-fadeout 0.5s ease-in-out forwards;
+      border: 3px solid #fff;
     }
     .box_unit_full {
       animation: guide-page-fadein 0.5s ease-in-out forwards;
