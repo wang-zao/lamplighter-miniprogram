@@ -1,44 +1,44 @@
 <template>
-  <cover-view class="card_wrapper_outer"
+  <view class="card_wrapper_outer"
     @click="getUserProfilePermission"
   >
-    <cover-view class="card_wrapper">
-      <cover-view class="card_left">
-        <cover-view class="left_ranking_info">
-          <cover-view class="card_avatar">
-            <cover-image class="avatar_img"
+    <view class="card_wrapper">
+      <view class="card_left">
+        <view class="left_ranking_info">
+          <view class="card_avatar">
+            <image class="avatar_img"
               v-if="userProfile.avatarUrl"
               :src="userProfile.avatarUrl">
-            </cover-image>
-            <cover-view
+            </image>
+            <view
               class="avatar_img_placeholder"
               v-else>
               ?
-            </cover-view>
-          </cover-view>
-          <cover-view class="card_name_wrapper">
-            <cover-view class="card_name">
-              <cover-view class="card_name_body">
+            </view>
+          </view>
+          <view class="card_name_wrapper">
+            <view class="card_name">
+              <view class="card_name_body">
                 {{ userProfile.nickName }}
-              </cover-view>
-              <cover-view 
+              </view>
+              <view 
                 v-if="displayLogIn"
                 class="card_name_login"
               >
                 登录
-              </cover-view>
-            </cover-view>
-            <cover-view class="card_name_comefrom">{{userProfile.city || ' '}}</cover-view>
-          </cover-view>
-        </cover-view>
-      </cover-view>
-      <cover-view class="card_right">
-        <cover-view class="right_score">
+              </view>
+            </view>
+            <view class="card_name_comefrom">{{userProfile.city || ' '}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="card_right">
+        <view class="right_score">
           {{ userProfile.score }}
-        </cover-view>
-      </cover-view>
-    </cover-view>
-  </cover-view>
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>

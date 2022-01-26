@@ -37,7 +37,8 @@ class UserModel extends Base {
   }
 
   // 2.检查一下是不是老用户
-  async getExistingUserProfile(openid) {
+  async getExistingUserProfile() {
+    const { result: { openid }} = await this.getUserOpenId();
     const { data } = await this.model.where({ openid: openid }).limit(1).get();
     if (data.length === 0) {
       return null;
@@ -46,7 +47,8 @@ class UserModel extends Base {
   }
 
   // 3.如果不是老用户，是新用户，自动按照游客注册
-  async registerAsTourist(openid) {
+  async registerAsTourist() {
+    const { result: { openid }} = await this.getUserOpenId();
     const newProfile = this.generateNewUserStruct()
     newProfile.openid = openid;
     return this.model.add({ data: newProfile });

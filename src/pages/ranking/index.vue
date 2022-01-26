@@ -1,12 +1,12 @@
 <template>
-  <cover-view class="ranking_wrapper">
-    <cover-view class="ranking_body">
-      <cover-view class="ranking_title">
-        <cover-view class="ranking_title_text">
+  <view class="ranking_wrapper">
+    <view class="ranking_body">
+      <view class="ranking_title">
+        <view class="ranking_title_text">
           世界排行
-        </cover-view>
-      </cover-view>
-      <cover-view class="ranking_box">
+        </view>
+      </view>
+      <view class="ranking_box">
         <ranking-card
           v-for="(user, index) in rankingList"
           :key="index"
@@ -15,60 +15,60 @@
           :isMyCard="false"
           class="ranking_card_list"
         />
-      </cover-view>
-      <cover-view class="your_box">
+      </view>
+      <view class="your_box">
         <ranking-card
           class="ranking_card_yours"
           :userProfile="userProfile"
           :rankingNumber="userRankingNumber"
           :isMyCard="true"
         />
-      </cover-view>
-      <cover-view class="ranking_card_all_count">
-        <cover-view class="count_line">
-          <cover-view class="count_span">截止</cover-view>
-          <cover-view class="count_span_highlight">{{ dateYear }}年{{ dateMonth }}月{{ dateDay }}日</cover-view>
-        </cover-view>
-        <cover-view class="count_line">
-          <cover-view class="count_span">已有</cover-view>
-          <cover-view class="count_span_highlight">{{ allUserCount }}</cover-view>
-          <cover-view class="count_span">名点灯人在这里飞驰</cover-view>
-        </cover-view>
-        <cover-view class="count_line">
-          <cover-view class="count_span">努力点亮更远的远方</cover-view>
-        </cover-view>
-      </cover-view>
-    </cover-view>
-    <cover-view class="ranking_bottom">
-      <cover-view 
+      </view>
+      <view class="ranking_card_all_count">
+        <view class="count_line">
+          <view class="count_span">截止</view>
+          <view class="count_span_highlight">{{ dateYear }}年{{ dateMonth }}月{{ dateDay }}日</view>
+        </view>
+        <view class="count_line">
+          <view class="count_span">已有</view>
+          <view class="count_span_highlight">{{ allUserCount }}</view>
+          <view class="count_span">名点灯人在这里飞驰</view>
+        </view>
+        <view class="count_line">
+          <view class="count_span">努力点亮更远的远方</view>
+        </view>
+      </view>
+    </view>
+    <view class="ranking_bottom">
+      <view 
         class="ranking_bottom_button"
         @click="emitRouteChange('home')"
       >
         返回
-      </cover-view>
-      <cover-view 
+      </view>
+      <view 
         class="center_group"
       >
-        <cover-view 
+        <view 
           class="ranking_bottom_button"
           @click="changeRankingPage(-1)"
         >
           上一页
-        </cover-view>
-        <cover-view 
+        </view>
+        <view 
           class="ranking_bottom_button"
           @click="changeRankingPage(1)"
         >
           下一页
-        </cover-view>
-      </cover-view>
-      <cover-view class="ranking_bottom_button ranking_bottom_button_share">
+        </view>
+      </view>
+      <view class="ranking_bottom_button ranking_bottom_button_share">
         <button class="ranking_bottom_button_inner" open-type="share">
         分享
         </button>
-      </cover-view>
-    </cover-view>
-  </cover-view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>

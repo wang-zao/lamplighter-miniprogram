@@ -170,7 +170,7 @@ import { EventBus } from '@/utils/eventBus';
           });
           if (this.judgeCtrl.totalMiles > this.userProfile.score) {
             await UserModel.updateScore(this.judgeCtrl.totalMiles);
-            const profile = await UserModel.getExistingUserProfile(this.openid);
+            const profile = await UserModel.getExistingUserProfile();
             store.commit('updateUserProfile', profile);
           }
         }, 1300);
