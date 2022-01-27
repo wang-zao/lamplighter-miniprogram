@@ -20,8 +20,8 @@
         <view class="box_line box_line_mid box_line_allblack">
           <view class=" box_line_column_mid_through">
             <view v-if="currentStep === 0" class="guide_content guide_content_top">
-              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">点灯人</view>
-              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">从当前站到下一站</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">想通过点灯人考试？</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">题目是：从当前站到下一站</view>
               <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line3 }">要往哪个方向走？</view>
               <view
                 class="guide_button"
@@ -30,7 +30,7 @@
             </view>
             <view v-else class="guide_content guide_content_bottom">
               <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step2.line1 }">长按屏幕并释放，操纵罗盘</view>
-              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step2.line2 }">依靠方向感点亮 🌏 吧</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step2.line2 }">依靠地理知识和方向感答题吧</view>
               <view
                 class="guide_button"
                 @click="letsStart" :class="{ guide_text_easein: anmtCtrl.step2.line3 }"

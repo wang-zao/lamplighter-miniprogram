@@ -11,7 +11,7 @@
       <view>称号：{{rankData.text}}</view>
     </view>
     <view class="end_panel_details">
-      <view class="detail_title">本次战绩</view>
+      <view class="detail_title">本次考试成绩</view>
       <view class="details_flex">
         <view class="detail_item">
           <view class="detail_item_title">飞行距离</view>
@@ -60,7 +60,7 @@
     </view>
     <view class="end_panel_operations">
       <view>
-        <button class="share_button" @click="playAgain">再来一局</button>
+        <button class="share_button" @click="playAgain">再考一次</button>
       </view>
       <view>
         <button class="share_button" open-type="share" aria-role="button"> 分享 </button>

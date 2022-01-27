@@ -32,7 +32,7 @@
         <view class="count_line">
           <view class="count_span">已有</view>
           <view class="count_span_highlight">{{ allUserCount }}</view>
-          <view class="count_span">名点灯人在这里飞驰</view>
+          <view class="count_span">名点灯人在这里学习</view>
         </view>
         <view class="count_line">
           <view class="count_span">努力点亮更远的远方</view>

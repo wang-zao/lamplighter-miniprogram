@@ -5,6 +5,9 @@
       <view class="info_content">
         <view class="top_line top_line_1">星球</view>
         <view class="top_line top_line_2">点灯人</view>
+        <view class="top_line_notes top_line_notes_line1">世界地理知识</view>
+        <view class="top_line_notes">可视化学习与测验平台</view>
+        <view class="top_line_notes">🌍 ⭐️ 📚 📝</view>
       </view>
     </view>
     <view class="bottom_info">
@@ -15,13 +18,13 @@
           @click="getUserProfilePermission"
         />
         <view class="buttons_line_2 buttons_line">
-          <view class="button_start button_general" @click="startGeneral">开始</view>
+          <view class="button_start button_general" @click="startGeneral">开始考试</view>
         </view>
         <view class="buttons_line_3 buttons_line">
-          <view class="button_train button_general" @click="stillDeveloping">(开发中...)</view>
+          <view class="button_train button_general" @click="stillDeveloping">知识卡片</view>
           <view class="button_rank button_general"
             @click="goToRanking"
-          >排行</view>
+          >成绩单</view>
         </view>
       </view>
       <view class="btm_infos">
@@ -113,7 +116,7 @@
           cancelText: '返回',
           confirmText: '提交',
           editable: true,
-          placeholderText: '如果有任何优化建议、玩法创意或者遇到了bug，请在这里描述问题并提交给我们。',
+          placeholderText: '如果有任何优化建议、知识指正或者遇到了bug，请在这里描述问题并提交给我们。',
           async success (res) {
             if (res.confirm && res.content.length > 0) {
               wx.showLoading({
@@ -203,7 +206,7 @@
 }
 
 .top_info {
-  height: 6rem;
+  height: 12rem;
   width: 80vw;
   display: flex;
   align-items: center;
@@ -219,6 +222,15 @@
   .info_content {
     .top_line {
       padding-left: 0.8rem;
+    }
+    .top_line_notes_line1 {
+      margin-top: 0.5rem;
+    }
+    .top_line_notes {
+      padding-left: 0.8rem;
+      font-size: 1rem;
+      line-height: 1.5rem;
+      color: #ffffff99;
     }
   }
 }
