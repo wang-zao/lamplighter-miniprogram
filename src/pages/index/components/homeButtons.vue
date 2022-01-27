@@ -31,9 +31,9 @@
         <view class="btm_report btm_itm"
           @click="goToFeedback"
         >反馈</view>
-        <view class="btm_support btm_itm"
+        <!-- <view class="btm_support btm_itm"
           @click="goToReload"
-        >刷新</view>
+        >刷新</view> -->
         <!-- 
         <view class="btm_support btm_itm" @click="getUserProfilePermission">登录</view> -->
       </view>
@@ -120,18 +120,28 @@
                 title: '提交中...',
                 mask: true,
               });
-              const feedback = {
-                systemInfo: store.state.systemInfo,
-                userInfo: store.state.userProfile,
-                content: res.content,
-              };
-              await FeedBackModal.addNewFeedBack(feedback);
-              wx.hideLoading();
-              wx.showToast({
-                title: '提交成功！',
-                icon: 'success',
-                duration: 2000,
-              })
+              try {
+                const feedback = {
+                  systemInfo: store.state.systemInfo || {},
+                  userInfo: store.state.userProfile || {},
+                  content: res.content,
+                };
+                await FeedBackModal.addNewFeedBack(feedback);
+                wx.hideLoading();
+                wx.showToast({
+                  title: '提交成功！',
+                  icon: 'success',
+                  duration: 2000,
+                })
+              } catch (error) {
+                wx.hideLoading();
+                wx.showToast({
+                  title: '提交失败',
+                  icon: 'error',
+                  duration: 2000,
+                });
+              }
+                
             } else if (res.cancel) {
             }
           }

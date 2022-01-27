@@ -123,7 +123,7 @@ import { EventBus } from '@/utils/eventBus';
       },
       startRotating() {
         const f = 100;
-        const v = 360 / (1000 / f);
+        const v = 360 / (2000 / f);
         this.pausingRotation = false;
         if (this.isIOS) {
           // android手机加上下面这段会没法玩
