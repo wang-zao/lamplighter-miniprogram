@@ -19,28 +19,29 @@ export const PICTURES_URL = {
 export const GUIDE_SHOW_MAX_SCORE = 15;
 
 export const LIGHTBALL_COLORS = [
-  '#ffdd99',
-  '#ffee99',
-  '#ffff99',
-  '#eeff99',
-  '#ddff99',
-  '#ccff99',
-  '#99ffa2',
-  '#99ffdd',
+  '#99aaff',
+  '#99ccff',
   '#99e6ff',
-  '#e5f2ff',
-  '#ffffff',
+  '#99ffdd',
+  '#99ffa2',
+  '#ccff99',
+  '#ddff99',
+  '#eeff99',
+  '#ffff99',
+  '#ffee99',
+  '#ffdd99',
 ];
 
 // 注意：下面这些部分是调整上面的基础，不要轻易删除
-// $color: hsl(40, 100%, 80%);
-// $color: hsl(50, 100%, 80%);
-// $color: hsl(60, 100%, 80%);
-// $color: hsl(70, 100%, 80%);
-// $color: hsl(80, 100%, 80%);
-// $color: hsl(90, 100%, 80%);
-// $color: hsl(125, 100%, 80%);
-// $color: hsl(160, 100%, 80%);
+
 // $color: hsl(195, 100%, 80%);
-// $color: hsl(210, 100%, 95%);
-// $color: hsl(230, 100%, 100%);
+// $color: hsl(160, 100%, 80%);
+// $color: hsl(125, 100%, 80%);
+// $color: hsl(90, 100%, 80%);
+// $color: hsl(80, 100%, 80%);
+// $color: hsl(70, 100%, 80%);
+// $color: hsl(60, 100%, 80%);
+// $color: hsl(50, 100%, 80%);
+// $color: hsl(40, 100%, 80%);
+// $color: hsl(40, 100%, 85%);
+// $color: hsl(40, 100%, 90%);

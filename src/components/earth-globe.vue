@@ -77,6 +77,7 @@ export default Vue.extend({
       earthColorLighter: '#6683bd',
       earthColorDarker: '#6683bd',
       earthColorBackground: '#041536',
+      earthGlobalLightIntencity: 0.5,
       flyTimeSpan: 1000,
       flyAnimationFreq: 50,
       allowingDrawOrbit: true,
@@ -87,12 +88,12 @@ export default Vue.extend({
           color = LIGHTBALL_COLORS[score];
         }
         return {
-          ballRadius: 5 + increment,
-          ballHeight: 20 + increment,
+          ballRadius: 2 + increment / 4,
+          ballHeight: 15 + increment / 4,
           ballColor: color,
           lightColor: color,
-          lightIntencity:  0.8 + increment / 10,
-          lightDistance:  500 + 100 * increment,
+          lightIntencity:  0.2 + increment / 30,
+          lightDistance:  100 + 100 * increment,
         }
       },
       failedLightBallConfig: {
@@ -105,11 +106,11 @@ export default Vue.extend({
       },
       orbitArcConfig: {
         color: '#ffffff',
-        linewidth: 3,
+        linewidth: 1,
       },
       rotationClockId: -1,
       threeConfig: {
-        maxLightBallCount: 10,
+        maxLightBallCount: 15,
       },
       threeObjects: {
         lightBalls: [],
@@ -191,7 +192,7 @@ export default Vue.extend({
       //New Renderer
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(this.canvasWidth, this.canvasHeight);
-      const light = new THREE.HemisphereLight(this.earthColorLighter, this.earthColorDarker, 1);
+      const light = new THREE.HemisphereLight(this.earthColorLighter, this.earthColorDarker, this.earthGlobalLightIntencity);
       scene.add(light);
 
       // Create a sphere to make visualization easier.
@@ -235,9 +236,9 @@ export default Vue.extend({
       const material  = new THREE.MeshPhongMaterial({
         map: texture,
         bumpMap: bumpTexture,
-        bumpScale: 10,
+        bumpScale: 3,
         color: '#ffffff',
-        emisive: '#000000',
+        emisive: '#041536',
         shininess: 0,
       });
       const earthMesh = new THREE.Mesh(geometry, material);

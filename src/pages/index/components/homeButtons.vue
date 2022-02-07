@@ -5,9 +5,8 @@
       <view class="info_content">
         <view class="top_line top_line_1">星球</view>
         <view class="top_line top_line_2">点灯人</view>
-        <view class="top_line_notes top_line_notes_line1">世界地理知识</view>
-        <view class="top_line_notes">可视化学习与测验平台</view>
-        <view class="top_line_notes">🌍 ⭐️ 📚 📝</view>
+        <view class="top_line_notes top_line_notes_line1">世界地名知识库</view>
+        <view class="top_line_notes">方向感训练器</view>
       </view>
     </view>
     <view class="bottom_info">
@@ -18,13 +17,13 @@
           @click="getUserProfilePermission"
         />
         <view class="buttons_line_2 buttons_line">
-          <view class="button_start button_general" @click="startGeneral">开始考试</view>
+          <view class="button_start button_general" @click="startGeneral">开始练习</view>
         </view>
         <view class="buttons_line_3 buttons_line">
           <view class="button_train button_general" @click="stillDeveloping">知识卡片</view>
           <view class="button_rank button_general"
             @click="goToRanking"
-          >成绩单</view>
+          >排行</view>
         </view>
       </view>
       <view class="btm_infos">
@@ -195,6 +194,8 @@
 
 <style scoped lang="scss">
 
+$globe-radius: 11rem;
+
 .section_wraps {
   height: 90vh;
   width: 100vw;
@@ -206,20 +207,28 @@
 }
 
 .top_info {
-  height: 12rem;
+  height: 1rem;
   width: 80vw;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   font-size: 2.5rem;
   margin-top: 5vh;
   padding-left: 0.2rem;
+  position: relative;
   .info_border {
-    width: 3px;
-    height: 100%;
-    background: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: $globe-radius / 2;
+    height: $globe-radius;
+    border-radius: 0 $globe-radius/2 $globe-radius/2 0;
+    background: 
+      linear-gradient(120deg, #ffffffff 0%, #ffff99ff 10%, #ffff9900 40%),
+      linear-gradient(217deg, #99ffdd99, #99ccff00 60.71%),
+      linear-gradient(336deg, #007aff66, #007aff00 30.71%);
   }
   .info_content {
+    position: absolute;
+    top: 0;
+    left: 1rem;
     .top_line {
       padding-left: 0.8rem;
     }

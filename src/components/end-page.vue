@@ -11,7 +11,7 @@
       <view>称号：{{rankData.text}}</view>
     </view>
     <view class="end_panel_details">
-      <view class="detail_title">本次考试成绩</view>
+      <view class="detail_title">本次练习成绩</view>
       <view class="details_flex">
         <view class="detail_item">
           <view class="detail_item_title">飞行距离</view>
@@ -29,8 +29,15 @@
           <view class="detail_item_title">平均单程得分</view>
           <view class="detail_item_value">{{averageScore}}</view>
         </view>
-        <view class="detail_item_last">从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}</view>
-        <view class="detail_item_last">应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}</view>
+        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+          从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}
+        </view>
+        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+          应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}
+        </view>
+        <view class="detail_item_last" v-else >
+          时间到！注意左上角倒计时哦
+        </view>
 
         <!-- <view class="details_left">
           <view class="details_side_title">成功：</view>
