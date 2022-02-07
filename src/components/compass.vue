@@ -16,7 +16,7 @@
         </view>
       </view>
       <view class="compass_item compass_plate">
-        <cover-image
+        <image
           class="compass_background"
           :src="PICTURES_URL.COMPASS"
           mode="heightFix" />
@@ -70,10 +70,11 @@
    * @description 
    * @event {Function} click 
    */
-  import {
-    getRotateDegFromMatrix,
-    calc_next_direction_chn
-  } from '@/utils/common';
+import store from '@/store/index.js';
+import {
+  getRotateDegFromMatrix,
+  calc_next_direction_chn
+} from '@/utils/common';
 import {
   PICTURES_URL,
 } from '@/utils/constants';
@@ -110,6 +111,9 @@ import { EventBus } from '@/utils/eventBus';
           return 'score_text_0';
         }
       },
+      isIOS() {
+        return store.state.systemInfo.system.slice(0,3) === 'iOS';
+      },
     },
     methods: {
       init() {
@@ -118,10 +122,15 @@ import { EventBus } from '@/utils/eventBus';
         this.watchAddScore();
       },
       startRotating() {
+        const f = 100;
+        const v = 360 / (2000 / f);
         this.pausingRotation = false;
-        this.clockId = setInterval(() => {
-          this.currentDegree = (this.currentDegree + 12) % 360;
-        }, 40);
+        if (this.isIOS) {
+          // android手机加上下面这段会没法玩
+          this.clockId = setInterval(() => {
+            this.currentDegree = (this.currentDegree + v) % 360;
+          }, f);
+        }
       },
       endRotating() {
         this.pausingRotation = true;

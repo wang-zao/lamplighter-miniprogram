@@ -40,7 +40,9 @@ export default Vue.extend({
     },
   },
   onLoad() {
+    this.showLoading();
     this.watchRouteChangeFromEventBus();
+
   },
   onShareAppMessage(res){
     return {
@@ -48,6 +50,12 @@ export default Vue.extend({
     }
   },
   methods: {
+    showLoading() {
+      wx.showLoading({
+        title: '加载中',
+        mask: true,
+      })
+    },
     handleRouteChange(route: string) {
       this.currentRoute = route;
       if (route === 'home') {

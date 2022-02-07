@@ -1,7 +1,7 @@
 <template>
-<cover-view class="play_minute_wrapper">
-  <cover-view class="play_minute_content">
-    <cover-view
+<view class="play_minute_wrapper">
+  <view class="play_minute_content">
+    <view
       class="content_panel info_panel"
     >
       <info-panel
@@ -9,13 +9,13 @@
         :currentCity="currentCity"
         :nextCity="nextCity"
       />
-    </cover-view>
-    <cover-view
+    </view>
+    <view
       class="content_panel operation_panel"
     >
-    </cover-view>
-  </cover-view>
-</cover-view>
+    </view>
+  </view>
+</view>
 </template>
 
 <script>
@@ -28,6 +28,7 @@ import EarthGlobe from '@/components/earth-globe.vue';
 import {
   calc_shortest_dis,
   calc_next_direction,
+  calc_next_direction_chn,
   calc_azimuth,
   getScoreFromDegreeDistance,
   isDegreeWithinRange,
@@ -169,7 +170,7 @@ import { EventBus } from '@/utils/eventBus';
           });
           if (this.judgeCtrl.totalMiles > this.userProfile.score) {
             await UserModel.updateScore(this.judgeCtrl.totalMiles);
-            const profile = await UserModel.getExistingUserProfile(this.openid);
+            const profile = await UserModel.getExistingUserProfile();
             store.commit('updateUserProfile', profile);
           }
         }, 1300);
@@ -273,6 +274,7 @@ import { EventBus } from '@/utils/eventBus';
           // 3.计入列表
           store.commit('setJudgeCtrl', {
             totalMiles: this.judgeCtrl.totalMiles + score,
+            totalDistance: this.judgeCtrl.totalDistance + this.judgeCtrl.distance,
             correctCityList: [...this.judgeCtrl.correctCityList, this.nextCity.name_chn],
           });
           // 4.进行飞翔
@@ -312,6 +314,12 @@ import { EventBus } from '@/utils/eventBus';
           // 3.计入列表
           store.commit('setJudgeCtrl', {
             wrongCityList: [...this.judgeCtrl.wrongCityList, this.nextCity.name_chn],
+            gameEndInfo: {
+              from: this.currentCity.name_chn,
+              to: this.nextCity.name_chn,
+              correct: calc_next_direction_chn(this.judgeCtrl.correctDeg),
+              selected: calc_next_direction_chn(selectedDegree),
+            },
           });
           // this.cityQueueBrokeOne();
           this.gameEnd();

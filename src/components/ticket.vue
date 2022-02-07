@@ -1,18 +1,17 @@
 <template>
-  <cover-view
+  <view
     class="ticket_wrapper" 
     :class="{ ticket_wrapper_abstracted: showAbstract }"
     @click="changeAbstractVisibility"
   >
-    <cover-view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</cover-view>
-    <cover-view class="ticket_placename" @click="changeAbstractVisibility">
-      {{cityInfo.name_chn || '-'}}
-    </cover-view>
-    <cover-view v-if="showAbstract" class="ticket_abstract">
-      {{ abstractContent || '-' }}
-    </cover-view>
-    {{showAbstract ? abstractContent: ''}}
-  </cover-view>
+    <view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</view>
+    <view class="ticket_placename" @click="changeAbstractVisibility">
+      {{ cityInfo.name_chn || '-' }}
+    </view>
+    <view v-if="showAbstract" class="ticket_abstract">
+      {{ cityInfo.abs_chn || '-' }}
+    </view>
+  </view>
 </template>
 
 <script>
@@ -45,12 +44,6 @@
       }
     },
     computed: {
-      abstractContent() {
-        if (this.anmtCtrl.answerCorrectAnimationStep1) {
-          return '';
-        }
-        return this.cityInfo.abs_chn;
-      }
     },
     created() {
     },
@@ -63,6 +56,8 @@
 </script>
 
 <style scoped lang="scss">
+
+$ticket-max-height: 15vh;
 
 .ticket_wrapper_abstracted {
   // height: 20vh;
@@ -78,8 +73,8 @@
   transition: max-height ease-out 0.2s; 
   border-radius: 1rem;
   padding: 1rem;
-  max-height: 10vh;
-  max-width: 50vw;
+  max-height: $ticket-max-height;
+  max-width: 40vw;
   transition: ease .2s;
   color: transparent;
   .ticket_reminder {
@@ -94,16 +89,15 @@
   }
   .ticket_abstract {
     // transition: max-height ease-out 0.2s; 
-    max-height: max-content;
-    font-size: 1rem;
+    max-height: 3rem;
+    font-size: .7rem;
     word-break: break-all;
-    word-wrap:break-word;
-    white-space:pre-line;
+    word-wrap: break-word;
+    white-space: pre-line;
     color: #fff;
     line-height: 1.6;
-    overflow:hidden;
-    text-overflow: ellipsis;
-    white-space:nowrap;
+    overflow: scroll;
+    white-space: wrap;
   }
 }
 

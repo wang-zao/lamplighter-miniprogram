@@ -1,17 +1,18 @@
 <template>
-  <cover-view
+  <view
     class="info_panel_wrapper"
   >
-    <cover-view class="info_1_scores">
-      <cover-view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</cover-view>
-      <cover-view class="info_resttime">⏰ {{judgeCtrl.restTime}}</cover-view>
-    </cover-view>
-    <cover-view class="info_2_cities">
-      <cover-view class="canvas_cover_cityname" v-show="!anmtCtrl.gameStartPageVisible">
+    <view class="info_1_scores">
+      <view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</view>
+      <view class="info_resttime">⏰ {{judgeCtrl.restTime}}</view>
+    </view>
+    <view class="info_2_cities">
+      <view class="canvas_cover_cityname" v-show="!anmtCtrl.gameStartPageVisible">
         <ticket
           class="cover_ticket cover_ticke_left"
           :class="{
             fadeOutLeft: anmtCtrl.answerCorrectAnimationStep1,
+            fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
           }"
           :showAbstract="false"
           :cityInfo="currentCity"
@@ -33,9 +34,9 @@
           reminder="下一站"
           @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
         />
-      </cover-view>
-    </cover-view>
-  </cover-view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -122,7 +123,8 @@ import store from '@/store/index.js';
       justify-content: space-between;
       align-items: flex-start;
       .cover_ticket {
-        animation-duration: .8s;
+        animation-duration: .61s;
+        animation-timing-function: linear;
         background: $general-bright-button-blue;
         border-radius: 1rem;
       }
