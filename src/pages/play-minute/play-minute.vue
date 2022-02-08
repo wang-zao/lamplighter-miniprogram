@@ -20,7 +20,7 @@
 
 <script>
 import Vue from 'vue';
-import store from '@/store/index.js'    
+import store from '@/store/index.js';
 import API from '@/api/index.ts';
 import { GameModal, UserModel } from '@/api/index.js';
 import InfoPanel from './components/info-panel.vue';
@@ -83,6 +83,9 @@ import { EventBus } from '@/utils/eventBus';
       userProfile() {
         return store.state.userProfile;
       },
+      constants() {
+        return store.state.constants;
+      },
     },
     methods: {
       async init() {
@@ -100,8 +103,8 @@ import { EventBus } from '@/utils/eventBus';
         store.commit('initAnmtCtrl');
         store.commit('initJudgeCtrl');
         await this.getCityData();
-        this.cityQueuePopOne(true);
-        this.cityQueuePopOne(true);
+        await this.cityQueuePopOne(true);
+        await this.cityQueuePopOne(true);
         this.calcAnswer();
         if (!this.anmtCtrl.gameGuidePageVisible && this.currentRoute === 'play-minute') {
           EventBus.$emit('startGameCountDown');
@@ -110,7 +113,11 @@ import { EventBus } from '@/utils/eventBus';
       async getCityData() {
         try {
           const colloctionName = DATABASE.QUESTION_COLLECTION_NAME;
-          const list = await GameModal.getGameQuestions(colloctionName, this.pageCtrl.currentPage, this.pageCtrl.pageSize);
+          let list = await GameModal.getGameQuestions(colloctionName, this.pageCtrl.currentPage, this.pageCtrl.pageSize);
+          if (list.length === 0) {
+            this.pageCtrl.currentPage = 0;
+            list = await GameModal.getGameQuestions(colloctionName, this.pageCtrl.currentPage, this.pageCtrl.pageSize);
+          }
           list
             .sort((a, b) => Number(a.id) - Number(b.id))
             .forEach(item => {
@@ -119,15 +126,22 @@ import { EventBus } from '@/utils/eventBus';
         } catch (e) {
         }
       },
-      randomSwitchFirstTwoCities() {
-        if (this.cityList[0].id === 1) {
+      randomJumpSomeCities() {
+        // 依据用户选择的难度难度，随机拆掉n个城市
+        if (this.cityList[0] && this.cityList[0].id === 1) {
           return;
         }
-        // 1.随机拆掉一个城市
-        if (Math.random() > RANDOM_SHIFT_P) {
+        const { jumpBase, jumpWeight } = this.constants.gameCurrentSettings;
+        const jumpNum = jumpBase + Math.round((0.5 - Math.random()) * jumpWeight);
+        for (let i = 0; i < jumpNum; i++) {
           this.cityList.shift();
         }
-        // 2.随机交换第一个城市和第二个城市
+      },
+      randomSwitchFirstTwoCities() {
+        // 随机交换第一个城市和第二个城市
+        if (this.cityList[0] && this.cityList[0].id === 1) {
+          return;
+        }
         if (Math.random() > RANDOM_SWAP_P) {
           let tmp1 = this.cityList.shift();
           let tmp2 = this.cityList.shift();
@@ -135,10 +149,14 @@ import { EventBus } from '@/utils/eventBus';
           this.cityList.unshift(tmp2);
         }
       },
-      checkRestCityDataCapacity() {
-        if (this.cityList && this.cityList.length <= 5) {
+      async checkRestCityDataCapacity() {
+        if (!this.cityList) {
+          this.pageCtrl.currentPage = 0;
+          await this.getCityData();
+        }
+        if (this.cityList && this.cityList.length <= 20) {
           this.pageCtrl.currentPage += 1;
-          this.getCityData();
+          await this.getCityData();
         }
       },
       showStartPage() {
@@ -186,6 +204,14 @@ import { EventBus } from '@/utils/eventBus';
             });
           } else if (this.judgeCtrl.restTime <= 0) {
             clearInterval(this.clocks.countDown);
+            store.commit('setJudgeCtrl', {
+              gameEndInfo: {
+                from: this.currentCity.name_chn,
+                to: this.nextCity.name_chn,
+                toAbs: this.nextCity.abs_chn,
+                correct: '',
+                selected: '',
+              } });
             this.gameEnd();
           }
         }, 1000);
@@ -214,11 +240,14 @@ import { EventBus } from '@/utils/eventBus';
           });
         }
       },
-      cityQueuePopOne(withoutAnimation = true) {
+      async cityQueuePopOne(withoutAnimation = true) {
+        await this.checkRestCityDataCapacity();
         if (withoutAnimation) {
-          this.currentCity = this.nextCity;
+          this.currentCity = { ...this.nextCity };
+          this.randomJumpSomeCities();
           this.randomSwitchFirstTwoCities();
           this.nextCity = { ...this.cityList.shift() };
+          this.checkRestCityDataCapacity();
           return;
         }
         store.commit('setAnmtCtrl', {
@@ -232,7 +261,8 @@ import { EventBus } from '@/utils/eventBus';
             answerCorrectAnimationStep1: false,
             answerCorrectAnimationStep2: true,
           });
-          this.currentCity = this.nextCity;
+          this.currentCity = { ...this.nextCity };
+          this.randomJumpSomeCities();
           this.randomSwitchFirstTwoCities();
           this.nextCity = { ...this.cityList.shift() };
           this.calcAnswer();
@@ -242,7 +272,7 @@ import { EventBus } from '@/utils/eventBus';
             answerCorrectAnimationStep2: false,
           });
         }, 1200);
-        
+        this.checkRestCityDataCapacity();
       },
       cityQueueBrokeOne() {
         setTimeout(() => {
@@ -294,8 +324,7 @@ import { EventBus } from '@/utils/eventBus';
             answerCorrectAnimation: true,
           });
           // 5.切换城市
-          this.cityQueuePopOne(false);
-          this.checkRestCityDataCapacity();
+          await this.cityQueuePopOne(false);
           // 6.重设开始答题时间，这个还需要调整，引入switch_time之后
           store.commit('setJudgeCtrl', {
             restTime: this.judgeCtrl.countdownStartTime,
@@ -317,6 +346,7 @@ import { EventBus } from '@/utils/eventBus';
             gameEndInfo: {
               from: this.currentCity.name_chn,
               to: this.nextCity.name_chn,
+              toAbs: this.nextCity.abs_chn,
               correct: calc_next_direction_chn(this.judgeCtrl.correctDeg),
               selected: calc_next_direction_chn(selectedDegree),
             },

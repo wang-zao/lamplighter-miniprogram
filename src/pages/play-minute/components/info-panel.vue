@@ -4,7 +4,10 @@
   >
     <view class="info_1_scores">
       <view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</view>
-      <view class="info_resttime">⏰ {{judgeCtrl.restTime}}</view>
+      <view class="info_resttime" :class="{
+        'info_resttime_redlight': judgeCtrl.restTime <= 3,
+        'info_resttime_yellowlight': judgeCtrl.restTime <= 6 && judgeCtrl.restTime > 3,
+      }">⏰ {{judgeCtrl.restTime}}</view>
     </view>
     <view class="info_2_cities">
       <view class="canvas_cover_cityname" v-show="!anmtCtrl.gameStartPageVisible">
@@ -92,6 +95,17 @@ import store from '@/store/index.js';
 <style scoped lang="scss">
 @import '@/utils/customAnimate.wxss';
 
+@keyframes flashingRedFontColor {
+  0% { color: #fff; }
+  50% { color: #dd524d; }
+  100% { color: #fff; }
+}
+@keyframes flashingYellowFontColor {
+  0% { color: #fff; }
+  50% { color: #f0ad4e; }
+  100% { color: #fff; }
+}
+  
 .info_panel_wrapper {
   width: 100%;
   display: flex;
@@ -111,6 +125,12 @@ import store from '@/store/index.js';
     }
     .info_resttime {
       margin-left: 2rem;
+    }
+    .info_resttime_redlight {
+      animation: flashingRedFontColor .5s infinite;
+    }
+    .info_resttime_yellowlight {
+      animation: flashingYellowFontColor 1s infinite;
     }
   }
   .info_2_cities {

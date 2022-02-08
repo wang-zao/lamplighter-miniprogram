@@ -92,8 +92,8 @@ export default Vue.extend({
           ballHeight: 15 + increment / 4,
           ballColor: color,
           lightColor: color,
-          lightIntencity:  0.2 + increment / 30,
-          lightDistance:  100 + 100 * increment,
+          lightIntencity:  0.5 + increment / 20,
+          lightDistance:  500 + 100 * increment,
         }
       },
       failedLightBallConfig: {
@@ -110,7 +110,7 @@ export default Vue.extend({
       },
       rotationClockId: -1,
       threeConfig: {
-        maxLightBallCount: 15,
+        maxLightBallCount: 10,
       },
       threeObjects: {
         lightBalls: [],
@@ -152,22 +152,36 @@ export default Vue.extend({
   },
   methods: {
     drawEarth() {
+      console.log('drawEarth');
       uni.createSelectorQuery()
         .in(this)
         .select('#webgl')
         .node()
         .exec((res) => {
-          const canvas = res[0].node
-          const THREE = createScopedThreejs(canvas)
+
+          const canvas = res[0].node;
+          const ctx = canvas.getContext('webgl');
+          const THREE = createScopedThreejs(canvas);
           this.globalTHREE = THREE;
-          this.renderEarth(THREE, canvas)
+          this.renderEarth(THREE, canvas);
+
+          console.log('this is canvas', canvas);
+          console.log('this is ctx', ctx);
           if (this.isIOS) {
-            canvas.width = this.canvasWidth * 2;
-            canvas.height = this.canvasHeight * 2;
+            this.threeConfig.maxLightBallCount = 10;
+            // canvas.width = this.canvasWidth * 2;
+            // canvas.height = this.canvasHeight * 2;
           } else {
-            canvas.width = this.canvasWidth;
-            canvas.height = this.canvasHeight;
+            this.threeConfig.maxLightBallCount = 3;
+            // const dpr = wx.getSystemInfoSync().pixelRatio;
+            // ctx.canvas.width = this.canvasWidth * dpr;
+            // ctx.canvas.height = this.canvasHeight * dpr;
+            // ctx.viewport(0, 0, this.canvasWidth * dpr, this.canvasHeight * dpr);
           }
+          const dpr = wx.getSystemInfoSync().pixelRatio;
+          ctx.canvas.width = this.canvasWidth * dpr;
+          ctx.canvas.height = this.canvasHeight * dpr;
+          ctx.viewport(0, 0, this.canvasWidth * dpr, this.canvasHeight * dpr);
         });
     },
     async renderEarth(THREE, canvas) {
@@ -236,10 +250,9 @@ export default Vue.extend({
       const material  = new THREE.MeshPhongMaterial({
         map: texture,
         bumpMap: bumpTexture,
-        bumpScale: 3,
+        bumpScale: 2,
         color: '#ffffff',
-        emisive: '#041536',
-        shininess: 0,
+        shininess: 50,
       });
       const earthMesh = new THREE.Mesh(geometry, material);
       scene.add(earthMesh);
@@ -370,7 +383,7 @@ export default Vue.extend({
     },
     drawLightBall(lat, lng, cfg) {
       const ball = new this.globalTHREE.Mesh(
-        new this.globalTHREE.SphereGeometry(cfg.ballRadius, 32, 32), 
+        new this.globalTHREE.SphereGeometry(cfg.ballRadius, 8, 8), 
         new this.globalTHREE.MeshBasicMaterial({ color: cfg.ballColor }),
       );
       const light = new this.globalTHREE.PointLight(cfg.lightColor, cfg.lightIntencity, cfg.lightDistance );

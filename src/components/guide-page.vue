@@ -23,8 +23,8 @@
         <view class="box_line box_line_mid box_line_allblack">
           <view class=" box_line_column_mid_through">
             <view v-if="currentStep === 0" class="guide_content guide_content_top">
-              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">想通过点灯人练习？</view>
-              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">题目是：从当前站到下一站</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">想学习成为点灯人？</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">仔细思考：从当前站到下一站</view>
               <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line3 }">要往哪个方向走？</view>
               <view
                 class="guide_button"

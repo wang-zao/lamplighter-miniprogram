@@ -5,8 +5,8 @@
       <view class="info_content">
         <view class="top_line top_line_1">星球</view>
         <view class="top_line top_line_2">点灯人</view>
-        <view class="top_line_notes top_line_notes_line1">世界地名知识库</view>
-        <view class="top_line_notes">方向感训练器</view>
+        <view class="top_line_notes top_line_notes_line1">方向感训练营</view>
+        <view class="top_line_notes">世界地名知识库</view>
       </view>
     </view>
     <view class="bottom_info">
@@ -16,8 +16,9 @@
           :userProfile="userProfile"
           @click="getUserProfilePermission"
         />
+        <level-select />
         <view class="buttons_line_2 buttons_line">
-          <view class="button_start button_general" @click="startGeneral">开始练习</view>
+          <view class="button_start button_general" @click="startGeneral">开始学习</view>
         </view>
         <view class="buttons_line_3 buttons_line">
           <view class="button_train button_general" @click="stillDeveloping">知识卡片</view>
@@ -33,9 +34,9 @@
         <view class="btm_report btm_itm"
           @click="goToFeedback"
         >反馈</view>
-        <!-- <view class="btm_support btm_itm"
+        <view class="btm_support btm_itm"
           @click="goToReload"
-        >刷新</view> -->
+        >刷新</view>
         <!-- 
         <view class="btm_support btm_itm" @click="getUserProfilePermission">登录</view> -->
       </view>
@@ -52,12 +53,14 @@
   import API from '@/api/index.ts';
   import store from '@/store/index.js'
   import UserCard from './user-card.vue';
+  import LevelSelect from './level-select.vue';
   import { EventBus } from '@/utils/eventBus';
 
   export default {
     name: 'HomeButtons',
     components: {
       UserCard,
+      LevelSelect,
     },
     data() {
       return {
@@ -97,8 +100,11 @@
         this.$emit('routeChange', 'ranking');
       },
       goToReload() {
-        uni.navigateTo({
-          url: '/pages/index/index'
+        wx.showModal({
+          title: '如何刷新',
+          content: '如遇异常，点击右上角的•••按钮，选择“重新进入小程序”，即可重新加载页面',
+          cancelText: '返回',
+          confirmText: '知道了',
         });
       },
       goToCommunity() {
