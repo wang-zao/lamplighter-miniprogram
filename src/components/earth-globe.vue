@@ -38,7 +38,6 @@ import {
   PICTURES_URL,
   LIGHTBALL_COLORS,
 } from '@/utils/constants';
-import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
 import GuidePage from '@/components/guide-page.vue';
@@ -169,14 +168,8 @@ export default Vue.extend({
           console.log('this is ctx', ctx);
           if (this.isIOS) {
             this.threeConfig.maxLightBallCount = 10;
-            // canvas.width = this.canvasWidth * 2;
-            // canvas.height = this.canvasHeight * 2;
           } else {
             this.threeConfig.maxLightBallCount = 3;
-            // const dpr = wx.getSystemInfoSync().pixelRatio;
-            // ctx.canvas.width = this.canvasWidth * dpr;
-            // ctx.canvas.height = this.canvasHeight * dpr;
-            // ctx.viewport(0, 0, this.canvasWidth * dpr, this.canvasHeight * dpr);
           }
           const dpr = wx.getSystemInfoSync().pixelRatio;
           ctx.canvas.width = this.canvasWidth * dpr;

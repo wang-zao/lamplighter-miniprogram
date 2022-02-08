@@ -5,8 +5,8 @@
       <view class="info_content">
         <view class="top_line top_line_1">星球</view>
         <view class="top_line top_line_2">点灯人</view>
-        <view class="top_line_notes top_line_notes_line1">方向感训练营</view>
-        <view class="top_line_notes">世界地名知识库</view>
+        <view class="top_line_notes top_line_notes_line1">{{ note1 }}</view>
+        <view class="top_line_notes">{{ note2 }}</view>
       </view>
     </view>
     <view class="bottom_info">
@@ -24,21 +24,22 @@
           <view class="button_train button_general" @click="stillDeveloping">知识卡片</view>
           <view class="button_rank button_general"
             @click="goToRanking"
-          >排行</view>
+          >学习排行</view>
         </view>
       </view>
       <view class="btm_infos">
         <view class="btm_report btm_itm"
           @click="goToCommunity"
-        >社区</view>
+        >关于</view>
         <view class="btm_report btm_itm"
           @click="goToFeedback"
         >反馈</view>
         <view class="btm_support btm_itm"
           @click="goToReload"
         >刷新</view>
-        <!-- 
-        <view class="btm_support btm_itm" @click="getUserProfilePermission">登录</view> -->
+        <!-- <view class="btm_support btm_itm"
+          @click="goToReload"
+        >设置</view> -->
       </view>
     </view>
   </view>
@@ -49,7 +50,7 @@
    * @description 
    * @event {Function} click 
    */
-  import { FeedBackModal, UserModel } from '@/api/index.js';
+  import { FeedBackModal, UserModel, SettingsModal } from '@/api/index.js';
   import API from '@/api/index.ts';
   import store from '@/store/index.js'
   import UserCard from './user-card.vue';
@@ -65,6 +66,8 @@
     data() {
       return {
         isGettingUserProfile: false,
+        note1: '',
+        note2: '',
       }
     },
     computed: {
@@ -74,12 +77,18 @@
     },
     created() {
       // this.getUserProfile();
+      this.getSettings();
       this.getSystemInfo();
       this.autoGetUserInfo();
       this.watchGetUserProfilePermission();
     },
     methods: {
       init() {
+      },
+      async getSettings() {
+        const { data: [ settings ] } = await SettingsModal.getAllSettings();
+        this.note1 = settings.indexText.note1;
+        this.note2 = settings.indexText.note2;
       },
       getSystemInfo() {
         const res = wx.getSystemInfoSync();
