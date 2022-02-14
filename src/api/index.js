@@ -3,6 +3,7 @@ import UserModel from './user';
 import ThemeModal from './theme';
 import GameModal from './game';
 import FeedBackModal from './feedback';
+import SettingsModal from './settings';
 
 export {
   TestModal,
@@ -10,4 +11,5 @@ export {
   ThemeModal,
   GameModal,
   FeedBackModal,
+  SettingsModal,
 }

@@ -38,7 +38,6 @@ import {
   PICTURES_URL,
   LIGHTBALL_COLORS,
 } from '@/utils/constants';
-import { drawThreeGeo } from '@/utils/threeGeoJSON';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
 import GuidePage from '@/components/guide-page.vue';
@@ -77,6 +76,7 @@ export default Vue.extend({
       earthColorLighter: '#6683bd',
       earthColorDarker: '#6683bd',
       earthColorBackground: '#041536',
+      earthGlobalLightIntencity: 0.5,
       flyTimeSpan: 1000,
       flyAnimationFreq: 50,
       allowingDrawOrbit: true,
@@ -87,11 +87,11 @@ export default Vue.extend({
           color = LIGHTBALL_COLORS[score];
         }
         return {
-          ballRadius: 5 + increment,
-          ballHeight: 20 + increment,
+          ballRadius: 2 + increment / 4,
+          ballHeight: 15 + increment / 4,
           ballColor: color,
           lightColor: color,
-          lightIntencity:  0.8 + increment / 10,
+          lightIntencity:  0.5 + increment / 20,
           lightDistance:  500 + 100 * increment,
         }
       },
@@ -105,7 +105,7 @@ export default Vue.extend({
       },
       orbitArcConfig: {
         color: '#ffffff',
-        linewidth: 3,
+        linewidth: 1,
       },
       rotationClockId: -1,
       threeConfig: {
@@ -151,22 +151,30 @@ export default Vue.extend({
   },
   methods: {
     drawEarth() {
+      console.log('drawEarth');
       uni.createSelectorQuery()
         .in(this)
         .select('#webgl')
         .node()
         .exec((res) => {
-          const canvas = res[0].node
-          const THREE = createScopedThreejs(canvas)
+
+          const canvas = res[0].node;
+          const ctx = canvas.getContext('webgl');
+          const THREE = createScopedThreejs(canvas);
           this.globalTHREE = THREE;
-          this.renderEarth(THREE, canvas)
+          this.renderEarth(THREE, canvas);
+
+          console.log('this is canvas', canvas);
+          console.log('this is ctx', ctx);
           if (this.isIOS) {
-            canvas.width = this.canvasWidth * 2;
-            canvas.height = this.canvasHeight * 2;
+            this.threeConfig.maxLightBallCount = 10;
           } else {
-            canvas.width = this.canvasWidth;
-            canvas.height = this.canvasHeight;
+            this.threeConfig.maxLightBallCount = 3;
           }
+          const dpr = wx.getSystemInfoSync().pixelRatio;
+          ctx.canvas.width = this.canvasWidth * dpr;
+          ctx.canvas.height = this.canvasHeight * dpr;
+          ctx.viewport(0, 0, this.canvasWidth * dpr, this.canvasHeight * dpr);
         });
     },
     async renderEarth(THREE, canvas) {
@@ -191,7 +199,7 @@ export default Vue.extend({
       //New Renderer
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(this.canvasWidth, this.canvasHeight);
-      const light = new THREE.HemisphereLight(this.earthColorLighter, this.earthColorDarker, 1);
+      const light = new THREE.HemisphereLight(this.earthColorLighter, this.earthColorDarker, this.earthGlobalLightIntencity);
       scene.add(light);
 
       // Create a sphere to make visualization easier.
@@ -235,10 +243,9 @@ export default Vue.extend({
       const material  = new THREE.MeshPhongMaterial({
         map: texture,
         bumpMap: bumpTexture,
-        bumpScale: 10,
+        bumpScale: 2,
         color: '#ffffff',
-        emisive: '#000000',
-        shininess: 0,
+        shininess: 50,
       });
       const earthMesh = new THREE.Mesh(geometry, material);
       scene.add(earthMesh);
@@ -369,7 +376,7 @@ export default Vue.extend({
     },
     drawLightBall(lat, lng, cfg) {
       const ball = new this.globalTHREE.Mesh(
-        new this.globalTHREE.SphereGeometry(cfg.ballRadius, 32, 32), 
+        new this.globalTHREE.SphereGeometry(cfg.ballRadius, 8, 8), 
         new this.globalTHREE.MeshBasicMaterial({ color: cfg.ballColor }),
       );
       const light = new this.globalTHREE.PointLight(cfg.lightColor, cfg.lightIntencity, cfg.lightDistance );

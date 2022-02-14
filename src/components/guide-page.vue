@@ -5,7 +5,10 @@
     <view>
       <view
       >
-        <view class="box_line box_line_top_margin box_line_allblack">
+        <view class="box_line box_line_top_margin box_line_allblack box_line_jumpout">
+          <view class="jumpout_button" @click="jumpOutGuide">
+            跳过引导
+          </view>
         </view>
         <view class="box_line box_line_top">
           <view class="box_line_column box_line_column_side"></view>
@@ -20,8 +23,8 @@
         <view class="box_line box_line_mid box_line_allblack">
           <view class=" box_line_column_mid_through">
             <view v-if="currentStep === 0" class="guide_content guide_content_top">
-              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">想通过点灯人考试？</view>
-              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">题目是：从当前站到下一站</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line1 }">想学习成为点灯人？</view>
+              <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line2 }">仔细思考：从当前站到下一站</view>
               <view class="guide_text" :class="{ guide_text_easein: anmtCtrl.step1.line3 }">要往哪个方向走？</view>
               <view
                 class="guide_button"
@@ -137,6 +140,9 @@ export default {
     letsStart() {
       EventBus.$emit('startGameCountDown');
     },
+    jumpOutGuide() {
+      EventBus.$emit('startGameCountDown');
+    }
   }
 }
 </script>
@@ -217,7 +223,6 @@ $guide-bg-color-mask: #00000099;
         background: #ffffff44;
         border-radius: 1.5rem;
         padding: 1rem 2rem;
-        width: min-content;
         opacity: 0;
       }
       .guide_text_easein {
@@ -233,6 +238,16 @@ $guide-bg-color-mask: #00000099;
   }
   .box_line_allblack {
     background: $guide-bg-color-mask;
+  }
+  .box_line_jumpout {
+    color: #fff;
+    padding-left: 5vw;
+    box-sizing: border-box;
+    .jumpout_button {
+      background: #ffffff44;
+      border-radius: 1rem;
+      padding: 0.5rem 1rem;
+    }
   }
   .box_line_top_margin {
     height: $row-top-margin-height;

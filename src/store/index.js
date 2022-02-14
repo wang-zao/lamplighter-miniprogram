@@ -47,6 +47,7 @@ const store = new Vuex.Store({
           gameEndInfo: {
             from: '',
             to: '',
+            toAbs: '',
             correct: '',
             selected: '',
           },
@@ -64,6 +65,38 @@ const store = new Vuex.Store({
             scoreLastUpdateDate: '',
             notes: '',
             language: '',
+        },
+        constants: {
+            gameCurrentSettings: {
+                id: '0',
+                name: '初中生',
+                jumpBase: 0.5,
+                jumpWeight: 1,
+                timeLimit: 15,
+            },
+            gameHardLevel: [
+                {
+                    id: '0',
+                    name: '初中生',
+                    jumpBase: 0.5,
+                    jumpWeight: 1,
+                    timeLimit: 15,
+                },
+                {
+                    id: '1',
+                    name: '大学生',
+                    jumpBase: 4,
+                    jumpWeight: 4,
+                    timeLimit: 15,
+                },
+                {
+                    id: '2',
+                    name: '博士生导师',
+                    jumpBase: 9,
+                    jumpWeight: 8,
+                    timeLimit: 10,
+                },
+            ]
         },
     },
     mutations: {
@@ -105,8 +138,8 @@ const store = new Vuex.Store({
                 distance: 0,
                 totalMiles: 0,
                 totalDistance: 0,
-                restTime: 15,
-                countdownStartTime: 15,
+                restTime: state.constants.gameCurrentSettings.timeLimit,
+                countdownStartTime: state.constants.gameCurrentSettings.timeLimit,
                 userSelect: '',
                 isCorrect: false,
                 isUserSelected: false,
@@ -115,6 +148,7 @@ const store = new Vuex.Store({
                 gameEndInfo: {
                   from: '',
                   to: '',
+                  toAbs: '',
                   correct: '',
                   selected: '',
                 },
@@ -134,6 +168,13 @@ const store = new Vuex.Store({
             if (state.userProfile.score >= GUIDE_SHOW_MAX_SCORE) {
                 state.anmtCtrl.gameGuidePageVisible = false;
             }
+        },
+        setCurrentLevel(state, level) {
+            state.constants.gameCurrentSettings = Object.assign(
+                state.constants.gameCurrentSettings,
+                state.constants.gameHardLevel[level],
+            );
+            store.commit('initJudgeCtrl');
         }
     }
 });

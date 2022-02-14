@@ -78,7 +78,7 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 
-$earth-top-margin: 40vh;
+$earth-top-margin: 50vh;
 
 .content {
   display: flex;

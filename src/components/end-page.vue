@@ -11,7 +11,7 @@
       <view>称号：{{rankData.text}}</view>
     </view>
     <view class="end_panel_details">
-      <view class="detail_title">本次考试成绩</view>
+      <view class="detail_title">本次学习成绩</view>
       <view class="details_flex">
         <view class="detail_item">
           <view class="detail_item_title">飞行距离</view>
@@ -29,8 +29,18 @@
           <view class="detail_item_title">平均单程得分</view>
           <view class="detail_item_value">{{averageScore}}</view>
         </view>
-        <view class="detail_item_last">从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}</view>
-        <view class="detail_item_last">应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}</view>
+        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+          从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}
+        </view>
+        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+          应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}
+        </view>
+        <view class="detail_item_last" v-else >
+          时间到！注意左上角倒计时哦
+        </view>
+        <view class="detail_item_abs" >
+          {{judgeCtrl.gameEndInfo.toAbs}}
+        </view>
 
         <!-- <view class="details_left">
           <view class="details_side_title">成功：</view>
@@ -60,7 +70,7 @@
     </view>
     <view class="end_panel_operations">
       <view>
-        <button class="share_button" @click="playAgain">再考一次</button>
+        <button class="share_button" @click="playAgain">再学一次</button>
       </view>
       <view>
         <button class="share_button" open-type="share" aria-role="button"> 分享 </button>
@@ -210,6 +220,13 @@ $general-panel-width: 60vw;
       }
       .detail_item_last {
         background: #ffffff22;
+      }
+      .detail_item_abs {
+        margin-top: 1rem;
+        white-space: pre-wrap;
+        font-size: .7rem;
+        line-height: 1.6;
+
       }
     }
     .detail_title {
