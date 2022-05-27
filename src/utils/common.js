@@ -301,7 +301,8 @@ const getMinDistance = (selectedDeg, correctDeg) => {
   );
   return {
     isDegreeWithinRange: minDistance <= bias,
-    score: base - Math.round(minDistance / bias * (base - 1)),
+    // adjustable fomula below
+    score: Math.ceil((bias - minDistance) * (bias - minDistance) / (bias * bias) * (base)),
   }
 }
 

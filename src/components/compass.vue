@@ -77,6 +77,7 @@ import {
 } from '@/utils/common';
 import {
   PICTURES_URL,
+  PLAYING_ADDED_SCORE_SHOWING_TIME,
 } from '@/utils/constants';
 import { EventBus } from '@/utils/eventBus';
 
@@ -165,7 +166,8 @@ import { EventBus } from '@/utils/eventBus';
           this.showingAddedScore = true;
           setTimeout(() => {
             this.showingAddedScore = false;
-          }, 1000);
+            // css timing change also needed for the PLAYING_ADDED_SCORE_SHOWING_TIME
+          }, PLAYING_ADDED_SCORE_SHOWING_TIME);
         });
       },
     }
@@ -216,12 +218,12 @@ $needle-radius: 4vw;
    }
   to {
     opacity: 0;
-    transform: translateY(-1rem);
+    transform: translateY(-200%);
   }
 }
 
 @keyframes needleFlash {
-  0% { opacity: 1; }
+  0% { opacity: 0; }
   100% { opacity: 1; }
 }
 
@@ -326,16 +328,16 @@ $needle-radius: 4vw;
       opacity: 0;
     }
     .score_showing {
-      animation: scoreFade .3s forwards ease-in-out;
+      animation: scoreFade 1s forwards ease-in-out;
     }
     .score_text_4 {
-      font-size: 5rem;
-    }
-    .score_text_3 {
       font-size: 3rem;
     }
-    .score_text_2 {
+    .score_text_3 {
       font-size: 2rem;
+    }
+    .score_text_2 {
+      font-size: 1.5rem;
     }
     .score_text_1 {
       font-size: 1rem;
@@ -358,7 +360,7 @@ $needle-radius: 4vw;
       height: 2 * $compass-radius;
     }
     .needle_flashing {
-      animation: needleFlash 1s forwards linear;
+      animation: needleFlash .3s forwards linear;
     }
     @for $i from 0 through 72 {
       .needle_img_#{5*$i} {

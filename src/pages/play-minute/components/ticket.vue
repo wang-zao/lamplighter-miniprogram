@@ -2,15 +2,18 @@
   <view
     class="ticket_wrapper" 
     :class="{ ticket_wrapper_abstracted: showAbstract }"
+    :style="{
+      background: CITY_COLOR_HASHMAP[ cityInfo.id % 10],
+    }"
     @click="changeAbstractVisibility"
   >
     <view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</view>
     <view class="ticket_placename" @click="changeAbstractVisibility">
       {{ cityInfo.name_chn || '-' }}
     </view>
-    <view v-if="showAbstract" class="ticket_abstract">
+    <!-- <view v-if="showAbstract" class="ticket_abstract">
       {{ cityInfo.abs_chn || '-' }}
-    </view>
+    </view> -->
   </view>
 </template>
 
@@ -19,7 +22,10 @@
    * @description 
    * @event {Function} click 
    */
-  export default {
+import { CITY_COLOR_HASHMAP } from '@/utils/constants';
+import Vue from 'vue';
+
+export default Vue.extend({
     name: 'Ticket',
     props: {
       cityInfo: {
@@ -41,6 +47,7 @@
     },
     data() {
       return {
+        CITY_COLOR_HASHMAP: CITY_COLOR_HASHMAP,
       }
     },
     computed: {
@@ -50,9 +57,9 @@
     methods: {
       changeAbstractVisibility() {
         this.$emit('changeAbstractVisibility', this.cityInfo)
-      }
+      },
     }
-  }
+})
 </script>
 
 <style scoped lang="scss">

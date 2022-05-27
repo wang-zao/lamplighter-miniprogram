@@ -30,6 +30,10 @@ class GameModal {
         .skip(page * size)
         .limit(size)
         .get()
+      data.forEach((i) => {
+        i.separated_abs_chn = i.abs_chn.split('。')
+      })
+      console.log('getGameQuestions getGameQuestions', data)
       return data
     } catch (error) {
       console.log('error!!!', error)
