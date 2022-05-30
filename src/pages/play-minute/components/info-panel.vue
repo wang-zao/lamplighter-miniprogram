@@ -39,6 +39,10 @@
         />
       </view>
     </view>
+    <pop-up-abstracts
+      class="pop_up_abstracts"
+      :cityInfo="nextCity"
+    />
   </view>
 </template>
 
@@ -50,12 +54,14 @@
    */
 
 import store from '@/store/index.js';
-  import Ticket from '@/components/ticket.vue';
+import Ticket from './ticket.vue';
+import PopUpAbstracts from './pop-up-abstracts.vue';
 
   export default {
     name: 'InfoPanel',
     components: {
       Ticket,
+      PopUpAbstracts,
     },
     props: {
       currentCity: {
@@ -149,6 +155,13 @@ import store from '@/store/index.js';
         border-radius: 1rem;
       }
     }
+  }
+  .pop_up_abstracts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 1px;
   }
 }
 

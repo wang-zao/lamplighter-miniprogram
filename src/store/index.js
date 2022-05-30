@@ -72,7 +72,7 @@ const store = new Vuex.Store({
                 name: '初中生',
                 jumpBase: 0.5,
                 jumpWeight: 1,
-                timeLimit: 15,
+                timeLimit: 30,
             },
             gameHardLevel: [
                 {
@@ -80,7 +80,7 @@ const store = new Vuex.Store({
                     name: '初中生',
                     jumpBase: 0.5,
                     jumpWeight: 1,
-                    timeLimit: 15,
+                    timeLimit: 20,
                 },
                 {
                     id: '1',

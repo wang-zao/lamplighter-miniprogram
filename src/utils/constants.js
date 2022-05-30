@@ -1,5 +1,7 @@
 export const PLAYING_ALLOWED_AZIMUSH_BIAS = 90;
-export const PLAYING_MAX_SCORE_PER_QUESTION = 10;
+export const PLAYING_MAX_SCORE_PER_QUESTION = 20;
+// css timing change also needed for the PLAYING_ADDED_SCORE_SHOWING_TIME
+export const PLAYING_ADDED_SCORE_SHOWING_TIME = 2000;
 export const RANDOM_SWAP_P = 0.7;
 export const RANDOM_SHIFT_P = 0.5;
 
@@ -30,6 +32,19 @@ export const LIGHTBALL_COLORS = [
   '#ffff99',
   '#ffee99',
   '#ffdd99',
+];
+
+export const CITY_COLOR_HASHMAP = [
+  '#ff525244',
+  '#ffa85244',
+  '#ffff5244',
+  '#a8ff5244',
+  '#52ff5244',
+  '#52ffa844',
+  '#52ffff44',
+  '#52a8ff44',
+  '#5252ff44',
+  '#a852ff44',
 ];
 
 // 注意：下面这些部分是调整上面的基础，不要轻易删除

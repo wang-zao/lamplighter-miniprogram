@@ -37,6 +37,7 @@ import { get_flight_orbit_height, draw_line } from '@/utils/common';
 import {
   PICTURES_URL,
   LIGHTBALL_COLORS,
+  PLAYING_MAX_SCORE_PER_QUESTION,
 } from '@/utils/constants';
 import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
@@ -81,10 +82,11 @@ export default Vue.extend({
       flyAnimationFreq: 50,
       allowingDrawOrbit: true,
       lightBallConfig: (score) => {
-        const increment = Math.max(0, (score-4)*2);
+        const increment = Math.max(0, score - 4);
+        const idx = Math.floor((score - 0.01) / PLAYING_MAX_SCORE_PER_QUESTION * 10)
         let color = LIGHTBALL_COLORS[0];
-        if (score >= 0 && score < LIGHTBALL_COLORS.length) {
-          color = LIGHTBALL_COLORS[score];
+        if (idx >= 0 && idx < LIGHTBALL_COLORS.length) {
+          color = LIGHTBALL_COLORS[idx];
         }
         return {
           ballRadius: 2 + increment / 4,
