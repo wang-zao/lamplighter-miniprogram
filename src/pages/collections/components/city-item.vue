@@ -1,0 +1,179 @@
+<template>
+  <view class="city_wrapper"
+    @click="gotoDetail"
+  >
+    <view v-if="city.is_placeholder"></view>
+    <view class="city_unlocked" v-else-if="unlocked">
+      <view class="city_unlocked_image_wrapper">
+        <!-- <image
+          :src="`cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/city_images/recast_300/pic_${city.id}_resize_300.jpg`"
+          class="city_unlocked_image"
+        /> -->
+        <view class="city_unlocked_image_text" :style="textStyle">
+          {{ city.abs_chn }}
+        </view>
+      </view>
+      <view class="city_unlocked_mask_wrapper">
+        <view class="city_unlocked_image_mask" :style="maskStyle">
+        </view>
+      </view>
+      <view class="city_unlocked_title">
+        <view class="city_unlocked_title_text">
+          {{ city.name_chn }}
+        </view>
+        <view class="city_unlocked_title_text_sub">
+          {{ city.name }}
+        </view>
+      </view>
+    </view>
+    <view class="city_locked" v-else>
+      <view class="city_locked_mark">?</view>
+    </view>
+  </view>
+</template>
+
+<script>
+/**
+ * @description 
+ * @event {Function} click 
+ */
+import Vue from 'vue';
+import store from '@/store/index.js';
+import { CITY_COLOR_HASHMAP_NOOPACITY } from '@/utils/constants';
+export default Vue.extend({
+  name: 'cityItem',
+  props: {
+    city: {
+      type: Object,
+      default: '',
+    },
+  },
+  data() {
+    return {
+    }
+  },
+  computed: {
+    unlocked() {
+      const previousUnlockedCities = JSON.parse(store.state.userProfile.unlockedCities);
+      if (!previousUnlockedCities || previousUnlockedCities === '') {
+        return false;
+      }
+      return this.city.id in previousUnlockedCities;
+    },
+    commonColor() {
+      return CITY_COLOR_HASHMAP_NOOPACITY[this.city.id  % 10];
+    },
+    textStyle() {
+      return `color: ${this.commonColor};`;
+    },
+    maskStyle() {
+      return `background: radial-gradient(${this.commonColor}33 30%, ${this.commonColor}50 70%);`;
+    },
+    // unlocked() {
+    //   return Math.random() < 0.5;
+    // },
+  },
+  created() {
+  },
+  methods: {
+    init() {
+    },
+    gotoDetail() {
+      this.$emit('gotoDetail', this.city);
+    },
+  }
+})
+</script>
+
+<style scoped lang="scss">
+
+.city_wrapper {
+  // background: #ffffff44;
+  height: 100%;
+  width: 100%;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  .city_unlocked {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid #e5e5e5;
+    border-radius: 1rem;
+    box-sizing: border-box;
+    .city_unlocked_image_wrapper {
+      border-radius: 1rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -50%);
+      overflow: hidden;
+      z-index: 3;
+      .city_unlocked_image {
+        border-radius: 1rem;
+        width: 100%;
+        height: 100%;
+        opacity: .6;
+      }
+      .city_unlocked_image_text {
+        font-size: .6rem;
+        opacity: .3;
+      }
+    }
+    .city_unlocked_mask_wrapper {
+      position: absolute;
+      border-radius: 1rem;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 4;
+      overflow: hidden;
+      .city_unlocked_image_mask {
+        width: 140%;
+        height: 140%;
+      }
+    }
+    .city_unlocked_title {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 5;
+      text-shadow: 0 0 10px #ffffff;
+      .city_unlocked_title_text {
+        font-size: .9rem;
+        white-space: nowrap;
+        width: 100%;
+      }
+      .city_unlocked_title_text_sub {
+        font-size: .4rem;
+        white-space: nowrap;
+        width: 100%;
+      }
+    }
+  }
+  .city_locked {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    background: #010715;
+    border-radius: 1rem;
+    border: 1px solid #e5e5e533;
+    .city_locked_mark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 3rem;
+      opacity: .2;
+      z-index: 5;
+    }
+  }
+}
+</style>

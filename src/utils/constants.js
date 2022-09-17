@@ -47,6 +47,19 @@ export const CITY_COLOR_HASHMAP = [
   '#a852ff44',
 ];
 
+export const CITY_COLOR_HASHMAP_NOOPACITY = [
+  '#ff5252',
+  '#ffa852',
+  '#ffff52',
+  '#a8ff52',
+  '#52ff52',
+  '#52ffa8',
+  '#52ffff',
+  '#52a8ff',
+  '#5252ff',
+  '#a852ff',
+];
+
 // 注意：下面这些部分是调整上面的基础，不要轻易删除
 
 // $color: hsl(195, 100%, 80%);

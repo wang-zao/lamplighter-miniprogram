@@ -21,7 +21,7 @@
           <view class="button_start button_general" @click="startGeneral">开始学习</view>
         </view>
         <view class="buttons_line_3 buttons_line">
-          <view class="button_train button_general" @click="stillDeveloping">知识卡片</view>
+          <view class="button_train button_general" @click="goToCollection">我的足迹</view>
           <view class="button_rank button_general"
             @click="goToRanking"
           >学习排行</view>
@@ -107,6 +107,9 @@
       },
       goToRanking() {
         this.$emit('routeChange', 'ranking');
+      },
+      goToCollection() {
+        this.$emit('routeChange', 'collection');
       },
       goToReload() {
         wx.showModal({

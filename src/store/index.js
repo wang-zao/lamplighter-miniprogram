@@ -43,6 +43,9 @@ const store = new Vuex.Store({
           isUserSelected: false,
           correctCityList: [],
           wrongCityList: [],
+          newlyUnlockedCityList: [],
+          unlockedCitiesParam: '',
+          isUnlockedNew: false,
           scoreList: [],
           gameEndInfo: {
             from: '',
@@ -65,13 +68,14 @@ const store = new Vuex.Store({
             scoreLastUpdateDate: '',
             notes: '',
             language: '',
+            unlockedCities: '',
         },
         constants: {
             gameCurrentSettings: {
                 id: '0',
                 name: '初中生',
                 jumpBase: 0.5,
-                jumpWeight: 1,
+                jumpWeight: 2,
                 timeLimit: 30,
             },
             gameHardLevel: [
@@ -79,7 +83,7 @@ const store = new Vuex.Store({
                     id: '0',
                     name: '初中生',
                     jumpBase: 0.5,
-                    jumpWeight: 1,
+                    jumpWeight: 2,
                     timeLimit: 20,
                 },
                 {
@@ -145,6 +149,9 @@ const store = new Vuex.Store({
                 isUserSelected: false,
                 correctCityList: [],
                 wrongCityList: [],
+                newlyUnlockedCityList: [],
+                unlockedCitiesParam: '',
+                isUnlockedNew: false,
                 gameEndInfo: {
                   from: '',
                   to: '',
@@ -168,6 +175,31 @@ const store = new Vuex.Store({
             if (state.userProfile.score >= GUIDE_SHOW_MAX_SCORE) {
                 state.anmtCtrl.gameGuidePageVisible = false;
             }
+        },
+        async getUnlockedCities(state) {
+            let previousUnlockedCities = {}
+            if (state.userProfile.unlockedCities) {
+                previousUnlockedCities = JSON.parse(state.userProfile.unlockedCities);
+            }
+            let currentUnlockedCities = state.judgeCtrl.correctCityList;
+            let newlyUnlockedCityList = [];
+            let newlyUnlockedCityIdDict = {};
+            currentUnlockedCities.forEach(city => {
+                if (!(city.id in previousUnlockedCities)) {
+                    newlyUnlockedCityList.push(city);
+                    newlyUnlockedCityIdDict[city.id] = city.name_chn;
+                }
+            });
+            console.log('newlyUnlockedCityIdDict', newlyUnlockedCityIdDict)
+            console.log('previousUnlockedCities', previousUnlockedCities)
+            store.commit('setJudgeCtrl', { 
+                newlyUnlockedCityList,
+                unlockedCitiesParam: {
+                    ...newlyUnlockedCityIdDict,
+                    ...previousUnlockedCities,
+                },
+                isUnlockedNew: newlyUnlockedCityList.length > 0,
+            });
         },
         setCurrentLevel(state, level) {
             state.constants.gameCurrentSettings = Object.assign(

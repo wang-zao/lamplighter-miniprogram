@@ -133,6 +133,8 @@ import { EventBus } from '@/utils/eventBus';
         }
         const { jumpBase, jumpWeight } = this.constants.gameCurrentSettings;
         const jumpNum = jumpBase + Math.round((0.5 - Math.random()) * jumpWeight);
+        console.log('jumpNum', jumpNum)
+
         for (let i = 0; i < jumpNum; i++) {
           this.cityList.shift();
         }
@@ -186,8 +188,19 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setAnmtCtrl', {
             gameEndPageVisible: true,
           });
+          // update unlocked cities
+          store.commit('getUnlockedCities');
+          let update = false;
+          if (this.judgeCtrl.isUnlockedNew) {
+            await UserModel.updateUnlockedCities(this.judgeCtrl.unlockedCitiesParam);
+            update = true;
+          }
+          // update total miles
           if (this.judgeCtrl.totalMiles > this.userProfile.score) {
             await UserModel.updateScore(this.judgeCtrl.totalMiles);
+            update = true;
+          }
+          if (update) {
             const profile = await UserModel.getExistingUserProfile();
             store.commit('updateUserProfile', profile);
           }
@@ -244,6 +257,11 @@ import { EventBus } from '@/utils/eventBus';
         await this.checkRestCityDataCapacity();
         if (withoutAnimation) {
           this.currentCity = { ...this.nextCity };
+          if (this.currentCity.id === 1) {
+            store.commit('setJudgeCtrl', {
+              correctCityList: [...this.judgeCtrl.correctCityList, this.currentCity],
+            });
+          }
           this.randomJumpSomeCities();
           this.randomSwitchFirstTwoCities();
           this.nextCity = { ...this.cityList.shift() };
@@ -305,7 +323,7 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setJudgeCtrl', {
             totalMiles: this.judgeCtrl.totalMiles + score,
             totalDistance: this.judgeCtrl.totalDistance + this.judgeCtrl.distance,
-            correctCityList: [...this.judgeCtrl.correctCityList, this.nextCity.name_chn],
+            correctCityList: [...this.judgeCtrl.correctCityList, this.nextCity],
           });
           // 4.进行飞翔
           const flyConfig = {

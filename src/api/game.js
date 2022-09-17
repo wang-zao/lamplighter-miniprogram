@@ -40,6 +40,16 @@ class GameModal {
       throw error
     }
   }
+
+  async getAllQuestionCount() {
+    try {
+      const { total } = await this.model.count();
+      return total;
+    } catch (error) {
+      console.log('error!!!', error)
+      throw error
+    }
+  }
 }
 
 export default new GameModal()

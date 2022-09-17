@@ -11,24 +11,39 @@
       <view>称号：{{rankData.text}}</view>
     </view>
     <view class="end_panel_details">
-      <view class="detail_title">本次学习成绩</view>
+      <!-- <view class="detail_title">本次学习成绩</view> -->
       <view class="details_flex">
-        <view class="detail_item">
+        <!-- <view class="detail_item">
           <view class="detail_item_title">飞行距离</view>
           <view class="detail_item_value">{{judgeCtrl.totalDistance.toFixed(0)}}km</view>
-        </view>
+        </view> -->
         <view class="detail_item">
           <view class="detail_item_title">点亮城市个数</view>
           <view class="detail_item_value">{{judgeCtrl.correctCityList.length}}</view>
         </view>
         <view class="detail_item">
+          <view class="detail_item_title">新解锁城市</view>
+          <view v-if="judgeCtrl.newlyUnlockedCityList.length === 0"  class="detail_item_value">无</view>
+        </view>
+        <view v-if="judgeCtrl.newlyUnlockedCityList.length > 0" class="detail_item_tag_wrap">
+          <view class="detail_item_value_tag_item"
+            v-for="(i, key) in judgeCtrl.newlyUnlockedCityList"
+            :key="key"
+            :style="{
+              background: CITY_COLOR_HASHMAP[ i.id % 10],
+            }"
+          >
+            {{i.name_chn}}
+          </view>
+        </view>
+        <!-- <view class="detail_item">
           <view class="detail_item_title">平均方向误差</view>
           <view class="detail_item_value">{{averageBias}}</view>
         </view>
         <view class="detail_item">
           <view class="detail_item_title">平均单程得分</view>
           <view class="detail_item_value">{{averageScore}}</view>
-        </view>
+        </view> -->
         <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
           从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}
         </view>
@@ -93,6 +108,7 @@
     calc_fly_rank,
     getAverageBiasFromAverageScore,
   } from '@/utils/common';
+  import { CITY_COLOR_HASHMAP } from '@/utils/constants';
   export default {
     name: 'EndPage',
     props: {
@@ -109,6 +125,7 @@
       return {
         countDownTime: 3,
         showingNumbers: true,
+        CITY_COLOR_HASHMAP: CITY_COLOR_HASHMAP,
       }
     },
     computed: {
@@ -205,7 +222,7 @@ $general-panel-width: 60vw;
         width: 100%;
         justify-content: space-between;
         align-items: top;
-        margin-bottom: 1rem;
+        margin-bottom: 10px;
         .detail_item_title {
           line-height: 1rem;
           white-space: nowrap;
@@ -216,6 +233,17 @@ $general-panel-width: 60vw;
           margin-left: 1rem;
           font-weight: bolder;
           white-space: pre-wrap;
+        }
+      }
+      .detail_item_tag_wrap {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        margin-bottom: 1.5rem;
+        .detail_item_value_tag_item {
+          border-radius: 5px;
+          margin: 5px 0 0 5px;
+          padding: 0 5px;
         }
       }
       .detail_item_last {
