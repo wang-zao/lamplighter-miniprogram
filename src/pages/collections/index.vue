@@ -6,21 +6,44 @@
       @closeCityDetail="closeCityDetail"
     />
     <view class="collection_body">
+      <view class="overview_wrapper"
+        :class="{
+          'fadeInEnSmaller': enableOverview,
+          'fadeOutEnlarge': !enableOverview,
+        }">
+        <view class="overview_city_item" 
+          :class="{
+            'overview_city_item_enlightened': i,
+          }"
+          v-for="(i, key) in overviewList"
+          :key="key"
+        >
+        </view>
+      </view>
       <view class="collection_title">
         <view class="collection_title_text">
           我的足迹
         </view>
         <view class="collection_unlock_count">
-          <span class="collection_unlock_count_text">
-            {{ unlockCount }}/{{ unlockTotal }}
-          </span>
+          <view class="collection_unlock_count_text" @click="switchViewChange">
+            <!-- {{ unlockCount }}/{{ unlockTotal }}  -->
+            <view class="collection_unlock_count_text_left">详细视图</view>
+            <view class="collection_unlock_count_text_right">缩略视图</view>
+            <view class="collection_unlock_count_text_switch"
+              :class="{ 'collection_unlock_count_text_switch_on': enableOverview }"
+            ></view>
+          </view>
         </view>
       </view>
-      <view class="collection_mask_wrapper">
+      <!-- <view class="collection_mask_wrapper">
         <view class="collection_mask" />
-      </view>
+      </view> -->
       <scroll-view
         class="collection_box"
+        :class="{
+          'fadeInEnlarge': !enableOverview,
+          'fadeOutEnSmaller': enableOverview,
+        }"
         scroll-y="true"
         @scrolltolower="changePageMultipleTimes(1, 2)"
       >
@@ -73,6 +96,7 @@
 <script>
 
 import Vue from 'vue';
+import store from '@/store/index.js';
 import {
   DATABASE,
 } from '@/utils/constants';
@@ -90,7 +114,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      unlockCount: 0,
       unlockTotal: 0,
       currentPage: 0,
       pageSize: 20,
@@ -101,7 +124,32 @@ export default Vue.extend({
       selectedCity: {},
       itemCountPerRow: 6,
       loadingList: false,
+      enableOverview: false,
+      overviewList: [],
     }
+  },
+  computed: {
+    previousUnlockedCitiesDict() {
+      const previousUnlockedCities = JSON.parse(store.state.userProfile.unlockedCities);
+      if (!previousUnlockedCities || previousUnlockedCities === '') {
+        return {};
+      }
+      return previousUnlockedCities;
+    },
+    unlockCount() {
+      return Object.keys(this.previousUnlockedCitiesDict).length;;
+    },
+    // overviewList() {
+    //   const overviewList = []
+    //   for (let i = 1; i <= this.unlockTotal; i ++) {
+    //     if (i in this.previousUnlockedCitiesDict) {
+    //       overviewList.push(true);
+    //     } else {
+    //       overviewList.push(false);
+    //     }
+    //   }
+    //   return overviewList;
+    // },
   },
   created() {
     this.init();
@@ -125,6 +173,9 @@ export default Vue.extend({
       this.loadingList = false;
       // console.log('collectionList', list);
       return true;
+    },
+    switchViewChange() {
+      this.enableOverview = !this.enableOverview;
     },
     async updateCollectionList(list) {
       let newList = [
@@ -151,6 +202,18 @@ export default Vue.extend({
       this.unlockTotal = count;
       this.maxiumPageIndex = Math.ceil(count / this.pageSize) - 1;
       // console.log('unlockTotal', count);
+      this.getOverviewList();
+    },
+    getOverviewList() {
+      const overviewList = []
+      for (let i = 1; i <= this.unlockTotal; i ++) {
+        if (i in this.previousUnlockedCitiesDict) {
+          overviewList.push(true);
+        } else {
+          overviewList.push(false);
+        }
+      }
+      this.overviewList = overviewList;
     },
     async changeCollectionPage(direction) {
         if (direction === -1 && this.currentPage === 0) {
@@ -200,32 +263,109 @@ $collection-box-inner-height: $collection-item-inner-height * 6 + $collection-it
 $collection-box-inner-padding: 0.5rem;
 
 
+@keyframes fadeInEnlarge {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.fadeInEnlarge { animation: fadeInEnlarge .4s ease-in-out forwards; }
+
+@keyframes fadeInEnSmaller {
+  from {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.fadeInEnSmaller { animation: fadeInEnSmaller .4s ease-in-out forwards; }
+
+@keyframes fadeOutEnlarge {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+.fadeOutEnlarge { animation: fadeOutEnlarge .4s ease-in-out forwards; }
+
+@keyframes fadeOutEnSmaller {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+.fadeOutEnSmaller { animation: fadeOutEnSmaller .4s ease-in-out forwards; }
+
 .collection_wrapper {
+  position: relative;
   width: 90vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  // justify-content: space-between;
   align-items: center;
   text-align: center;
   .collection_body {
+    position: relative;
     width: 100%;
     height: $collection-body-height;
     margin-top: $collection-margin-top;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    // justify-content: center;
     .collection_title_text {
       font-size: 1.5rem;
-      padding: 1rem 0;
+      padding: 0 0 0.5rem;
+      margin-top: 10vh;
     }
     .collection_unlock_count {
-      margin-top: $collection-item-inner-padding;
+      // margin-top: $collection-item-inner-padding / 2;
       display: flex;
       justify-content: center;
-      margin-top: $collection-item-inner-padding;
       .collection_unlock_count_text {
         opacity: 0.5;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        width: 10rem;
+        height: 2rem;
+        .collection_unlock_count_text_left {
+          position: absolute;
+          left: 0.5rem;
+        }
+        .collection_unlock_count_text_right {
+          position: absolute;
+          right: 0.5rem;
+        }
+        .collection_unlock_count_text_switch {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 5rem;
+          height: 1.5rem;
+          border-radius: 1rem;
+          background: #ffffff55;
+          margin-left: 0;
+          transition: .3s ease;
+        }
+        .collection_unlock_count_text_switch_on {
+          margin-left: 5rem;
+        }
       }
     }
     .collection_mask_wrapper {
@@ -268,6 +408,30 @@ $collection-box-inner-padding: 0.5rem;
         margin-bottom: 5vw;
       }
     }
+    .overview_wrapper {
+      position: absolute;
+      left: 0;
+      top: 18vh;
+      width: 100%;
+      height: $collection-box-height;
+      display: flex;
+      flex-wrap: wrap;
+      overflow-y: scroll;
+      padding: 1rem 0.5rem;
+      // justify-content: space-around;
+      // background: yellow;
+      .overview_city_item {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        background: #ffffff22;
+        margin: 3px;
+      }
+      .overview_city_item_enlightened {
+        background: #ffffff99;
+        box-shadow: 0 0 5px #ffffff;
+      }
+    }
   }
   .collection_pagination {
     width: 100%;
@@ -289,10 +453,16 @@ $collection-box-inner-padding: 0.5rem;
     }
   }
   .collection_bottom_buttons {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
     height: $collection-bottom-height;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     text-align: center;
     .collection_bottom_button_item {

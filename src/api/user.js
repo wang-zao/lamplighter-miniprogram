@@ -69,7 +69,6 @@ class UserModel extends Base {
 
   updateUnlockedCities(unlockedCities) {
     const unlockedString = JSON.stringify(unlockedCities);
-    console.log('updateUnlockedCities', unlockedString);
     return this.model.where({ _openid: '{openid}' }).update({ data: {
       unlockedCities: unlockedString,
     } });
@@ -90,7 +89,6 @@ class UserModel extends Base {
         .skip(page * size)
         .limit(size)
         .get();
-      console.log('loadRankings', data);
       return data;
     } catch (error) {
       console.log('error!!!', error)

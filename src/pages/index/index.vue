@@ -94,4 +94,5 @@ $earth-top-margin: 50vh;
 .earth_panel_index {
   margin-top: $earth-top-margin;
 }
+
 </style>

@@ -193,6 +193,7 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
     .ranking_box {
       height: $ranking-box-height;
       background: #ffffff11;
+      border-radius: 2rem;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -205,6 +206,7 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
     .your_box {
       margin-top: 5%;
       height: $ranking-item-height;
+      border-radius: 2rem;
       background: #ffffff11;
       display: flex;
       .ranking_card_yours {

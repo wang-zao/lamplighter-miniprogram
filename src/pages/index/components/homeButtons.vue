@@ -1,13 +1,16 @@
 <template>
   <view class="section_wraps">
     <view class="top_info">
-      <view class="info_border"></view>
+      <view class="info_img">
+        <image class="info_img_content" src="@/static/title-miniprogram-s.png" />
+      </view>
+      <!-- <view class="info_border"></view>
       <view class="info_content">
         <view class="top_line top_line_1">星球</view>
         <view class="top_line top_line_2">点灯人</view>
         <view class="top_line_notes top_line_notes_line1">{{ note1 }}</view>
         <view class="top_line_notes">{{ note2 }}</view>
-      </view>
+      </view> -->
     </view>
     <view class="bottom_info">
       <view class="mid_buttons">
@@ -24,7 +27,7 @@
           <view class="button_train button_general" @click="goToCollection">我的足迹</view>
           <view class="button_rank button_general"
             @click="goToRanking"
-          >学习排行</view>
+          >排行</view>
         </view>
       </view>
       <view class="btm_infos">
@@ -56,6 +59,7 @@
   import UserCard from './user-card.vue';
   import LevelSelect from './level-select.vue';
   import { EventBus } from '@/utils/eventBus';
+  import { FONT_URL } from '@/utils/constants';
 
   export default {
     name: 'HomeButtons',
@@ -231,6 +235,18 @@ $globe-radius: 11rem;
   margin-top: 5vh;
   padding-left: 0.2rem;
   position: relative;
+  .info_img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    .info_img_content {
+      width: 90vw;
+      // width * 0.74
+      height: 69vw;
+    }
+
+  }
   .info_border {
     position: absolute;
     top: 0;
@@ -271,26 +287,32 @@ $globe-radius: 11rem;
   }
 
   .button_general {
-    background: #ffffff44;
+    // background: #ffffff44;
     text-align: center;
     border-radius: 2rem;
-    border: 2px #fff solid;
+    // border: 1px #fff solid;
     color: #fff;
     padding: 0.5rem 0;
     font-size: 1rem;
+    // text-shadow: 0 0 10px #ffffff;
+    font-weight: bold;
+    box-shadow: 0 0 25px #ffffff33 inset;
   }
 
   .button_start {
     width: 100%;
     padding: 0.8rem 0;
+    background: #52a8ff44;
   }
 
   .button_train {
     width: 60%;
+    background: #52ffff44;
   }
 
   .button_rank {
     width: 30%;
+    background: #52ffa844;
   }
 }
 

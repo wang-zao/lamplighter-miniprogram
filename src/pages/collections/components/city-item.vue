@@ -1,9 +1,10 @@
 <template>
   <view class="city_wrapper"
-    @click="gotoDetail"
+    @click="gotoDetail()"
   >
     <view v-if="city.is_placeholder"></view>
     <view class="city_unlocked" v-else-if="unlocked">
+      <view class="city_unlocked_unread" v-if="isNotViewed">new</view>
       <view class="city_unlocked_image_wrapper">
         <!-- <image
           :src="`cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/city_images/recast_300/pic_${city.id}_resize_300.jpg`"
@@ -40,6 +41,7 @@
 import Vue from 'vue';
 import store from '@/store/index.js';
 import { CITY_COLOR_HASHMAP_NOOPACITY } from '@/utils/constants';
+import { UserModel } from '@/api/index.js';
 export default Vue.extend({
   name: 'cityItem',
   props: {
@@ -60,6 +62,19 @@ export default Vue.extend({
       }
       return this.city.id in previousUnlockedCities;
     },
+    isNotViewed() {
+      const previousUnlockedCities = JSON.parse(store.state.userProfile.unlockedCities);
+      if (!previousUnlockedCities || previousUnlockedCities === '') {
+        return false;
+      }
+      if (!(this.city.id in previousUnlockedCities)) {
+        return false;
+      }
+      return !previousUnlockedCities[this.city.id].userViewed;
+    },
+    userProfile() {
+      return store.state.userProfile;
+    },
     commonColor() {
       return CITY_COLOR_HASHMAP_NOOPACITY[this.city.id  % 10];
     },
@@ -78,8 +93,27 @@ export default Vue.extend({
   methods: {
     init() {
     },
-    gotoDetail() {
+    async gotoDetail() {
+      if (!this.unlocked) {
+        return;
+      }
       this.$emit('gotoDetail', this.city);
+      this.markDetailViewed();
+    },
+    async markDetailViewed() {
+      const previousUnlockedCities = JSON.parse(store.state.userProfile.unlockedCities);
+      previousUnlockedCities[this.city.id].userViewed = true;
+      await UserModel.updateUnlockedCities(previousUnlockedCities);
+      this.autoGetUserInfo();
+
+    },
+    async autoGetUserInfo() {
+      let profile = await UserModel.getExistingUserProfile();
+      if (!profile) {
+        await UserModel.registerAsTourist()
+        profile = await UserModel.getExistingUserProfile();
+      }
+      store.commit('updateUserProfile', profile);
     },
   }
 })
@@ -96,11 +130,24 @@ export default Vue.extend({
   .city_unlocked {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow: show;
     position: relative;
-    border: 2px solid #e5e5e5;
+    // border: 2px solid #e5e5e5;
     border-radius: 1rem;
+    box-shadow: 0 0 1rem #fff inset;
     box-sizing: border-box;
+    .city_unlocked_unread {
+      position: absolute;
+      top: -0.5rem;
+      right: 0rem;
+      font-size: 8px;
+      color: #fff;
+      background: #fd7878;
+      border-radius: 6px;
+      padding: 0 3px;
+      transform: rotate(20deg);
+      z-index: 6;
+    }
     .city_unlocked_image_wrapper {
       border-radius: 1rem;
       position: absolute;
@@ -118,8 +165,9 @@ export default Vue.extend({
         opacity: .6;
       }
       .city_unlocked_image_text {
-        font-size: .6rem;
-        opacity: .3;
+        font-size: .2rem;
+        line-height: .6rem;
+        opacity: .5;
       }
     }
     .city_unlocked_mask_wrapper {
@@ -142,8 +190,15 @@ export default Vue.extend({
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       z-index: 5;
       text-shadow: 0 0 10px #ffffff;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       .city_unlocked_title_text {
         font-size: .9rem;
         white-space: nowrap;

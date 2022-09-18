@@ -18,6 +18,16 @@
           />
           <view class="detail_image_cover"></view>
           <view class="detail_image_nothing"></view>
+          <view class="detail_unlock_stamp">
+            <view class="detail_unlock_stamp_inner">
+              <view class="detail_unlock_stamp_inner_item detail_unlock_stamp_circle_1"></view>
+              <view class="detail_unlock_stamp_inner_item detail_unlock_stamp_circle_2"></view>
+              <view class="detail_unlock_stamp_inner_item detail_unlock_stamp_title">
+                <view class="">已来过</view>
+                <view class="detail_unlock_stamp_title_sub">{{unlockDate}}</view>
+              </view>
+            </view>
+          </view>
         </view>
         <view class="detail_text_wrapper">
           <view class="detail_text_wrapper_scroll">
@@ -47,6 +57,7 @@
  * @event {Function} click 
  */
 import Vue from 'vue';
+import store from '@/store/index.js';
 export default Vue.extend({
   name: 'cityDetail',
   props: {
@@ -69,17 +80,25 @@ export default Vue.extend({
         return '';
       }
       return `width: 80vw; height: ${80 * this.heightToWidthRatio}vw;`;
-    }
+    },
+    unlockDate() {
+      const previousUnlockedCities = JSON.parse(store.state.userProfile.unlockedCities);
+      if (!previousUnlockedCities || previousUnlockedCities === '') {
+        return '----';
+      }
+      if (!(this.city.id in previousUnlockedCities)) {
+        return '----';
+      }
+      return previousUnlockedCities[this.city.id].unlockDate;
+    },
   },
   methods: {
     init() {
     },
     closeCityDetail() {
-      console.log('closing')
       this.$emit('closeCityDetail');
     },
     onImgLoad(e) {
-      console.log('img loaded!', e)
       try {
         const { detail: { width, height } } = e;
         this.heightToWidthRatio = height / width;
@@ -97,6 +116,7 @@ export default Vue.extend({
 $visible-image-height: 30vh;
 $word-top-height: 20vh;
 $pop-up-background: #041536;
+$golden-unlock-stamp: #fffb00;
 
 @keyframes FadeInPic {
   from { opacity: 0; }
@@ -162,6 +182,42 @@ $pop-up-background: #041536;
         width: 100%;
         height: 60vh;
         background: #041536;
+      }
+      .detail_unlock_stamp {
+        position: absolute;
+        top: 4rem;
+        right: 4rem;
+        transform: rotate(30deg);
+        color: $golden-unlock-stamp;
+        .detail_unlock_stamp_inner {
+          position: relative;
+          opacity: .75;
+          .detail_unlock_stamp_inner_item {
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform: translate(-50%, -50%);
+          }
+          .detail_unlock_stamp_circle_1 {
+            border: 2px solid $golden-unlock-stamp;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 2rem;
+          }
+          .detail_unlock_stamp_circle_2 {
+            border: 1px dashed $golden-unlock-stamp;
+            width: 5rem;
+            height: 5rem;
+            border-radius: 2.5rem;
+          }
+          .detail_unlock_stamp_title {
+            width: 5rem;
+            white-space: nowrap;
+            .detail_unlock_stamp_title_sub {
+              font-size: 8px;
+            }
+          }
+        }
       }
     }
     .detail_text_wrapper {

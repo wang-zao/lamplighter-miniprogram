@@ -186,8 +186,13 @@ const store = new Vuex.Store({
             let newlyUnlockedCityIdDict = {};
             currentUnlockedCities.forEach(city => {
                 if (!(city.id in previousUnlockedCities)) {
+                    const today = new Date();
                     newlyUnlockedCityList.push(city);
-                    newlyUnlockedCityIdDict[city.id] = city.name_chn;
+                    newlyUnlockedCityIdDict[city.id] = {
+                        name: city.name_chn,
+                        userViewed: false,
+                        unlockDate: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
+                    };
                 }
             });
             console.log('newlyUnlockedCityIdDict', newlyUnlockedCityIdDict)
