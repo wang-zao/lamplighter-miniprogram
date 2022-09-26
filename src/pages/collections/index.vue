@@ -78,17 +78,18 @@
       </view> -->
     </view>
     <view class="collection_bottom_buttons">
-      <view 
+      <button 
         class="collection_bottom_button_item"
         @click="emitRouteChange('home')"
       >
         返回
-      </view>
-      <view 
+      </button>
+      <button 
         class="collection_bottom_button_item"
+        open-type="share" 
       >
         分享
-      </view>
+      </button>
     </view>
   </view>
 </template>

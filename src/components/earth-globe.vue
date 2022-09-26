@@ -216,6 +216,7 @@ export default Vue.extend({
       await this.drawEarthSurface(THREE, scene);
 
       //Render the image
+      renderer.setPixelRatio(2)
       const render = () => {
         canvas.requestAnimationFrame(render);
         renderer.setClearColor(this.earthColorBackground, 1);
@@ -230,14 +231,16 @@ export default Vue.extend({
         );
         setTimeout(() => {
           EventBus.$emit('enableEarthRotation');
-          wx.hideLoading();
         }, this.flyTimeSpan + 10);
       }
     },
     async drawEarthSurface(THREE, scene ) {
       const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32 );
-      let texture = new THREE.TextureLoader().load(PICTURES_URL.EARTH);
+      let texture = new THREE.TextureLoader().load(
+        PICTURES_URL.EARTH, () => wx.hideLoading(),
+      );
       let bumpTexture = new THREE.TextureLoader().load(PICTURES_URL.EARTH_TOPOLOGY);
+
 
       texture.minFilter = THREE.LinearFilter;
       bumpTexture.minFilter = THREE.LinearFilter;

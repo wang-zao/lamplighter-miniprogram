@@ -29,6 +29,7 @@ import PlayMinute from '@/pages/play-minute/play-minute.vue';
 import HomeButtons from './homeButtons.vue';
 import Ranking from '@/pages/ranking/index.vue';
 import Collections from '@/pages/collections/index.vue';
+import { EventBus } from '@/utils/eventBus';
 
 export default {
   name: 'globalRouter',
@@ -55,6 +56,7 @@ export default {
     },
     handleRouteChange(route) {
       this.$emit('handleRouteChange', route);
+      EventBus.$emit('playAudio', 'buttonPress');
     },
   }
 }

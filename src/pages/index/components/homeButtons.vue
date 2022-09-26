@@ -4,13 +4,12 @@
       <view class="info_img">
         <image class="info_img_content" src="@/static/title-miniprogram-s.png" />
       </view>
-      <!-- <view class="info_border"></view>
+      <!-- <view class="info_border"></view> -->
       <view class="info_content">
-        <view class="top_line top_line_1">星球</view>
-        <view class="top_line top_line_2">点灯人</view>
         <view class="top_line_notes top_line_notes_line1">{{ note1 }}</view>
         <view class="top_line_notes">{{ note2 }}</view>
-      </view> -->
+        <view class="top_line_notes">{{ note3 }}</view>
+      </view>
     </view>
     <view class="bottom_info">
       <view class="mid_buttons">
@@ -21,7 +20,7 @@
         />
         <level-select />
         <view class="buttons_line_2 buttons_line">
-          <view class="button_start button_general" @click="startGeneral">开始学习</view>
+          <view class="button_start button_general" @click="startGeneral">开始点灯</view>
         </view>
         <view class="buttons_line_3 buttons_line">
           <view class="button_train button_general" @click="goToCollection">我的足迹</view>
@@ -72,6 +71,7 @@
         isGettingUserProfile: false,
         note1: '',
         note2: '',
+        note3: '',
       }
     },
     computed: {
@@ -93,6 +93,7 @@
         const { data: [ settings ] } = await SettingsModal.getAllSettings();
         this.note1 = settings.indexText.note1;
         this.note2 = settings.indexText.note2;
+        this.note3 = settings.indexText.note3;
       },
       getSystemInfo() {
         const res = wx.getSystemInfoSync();
@@ -241,9 +242,9 @@ $globe-radius: 11rem;
     left: 50%;
     transform: translateX(-50%);
     .info_img_content {
-      width: 90vw;
+      width: 80vw;
       // width * 0.74
-      height: 69vw;
+      height: 59vw;
     }
 
   }
@@ -261,18 +262,23 @@ $globe-radius: 11rem;
   }
   .info_content {
     position: absolute;
-    top: 0;
-    left: 1rem;
+    top: 65vw;
+    width: 70vw;
+    left: 50%;
+    transform: translateX(-50%);
     .top_line {
-      padding-left: 0.8rem;
+      margin-top: 0.8rem;
+
     }
     .top_line_notes_line1 {
       margin-top: 0.5rem;
     }
     .top_line_notes {
-      padding-left: 0.8rem;
-      font-size: 1rem;
-      line-height: 1.5rem;
+      margin-top: 0.3rem;
+      font-size: 0.5rem;
+      letter-spacing: 0.1rem;
+      // padding: 0 0.8rem;
+      line-height: 0.7rem;
       color: #ffffff99;
     }
   }

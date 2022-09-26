@@ -109,6 +109,7 @@ import { EventBus } from '@/utils/eventBus';
         if (!this.anmtCtrl.gameGuidePageVisible && this.currentRoute === 'play-minute') {
           EventBus.$emit('startGameCountDown');
         }
+        EventBus.$emit('playAudio', 'atmosphere');
       },
       async getCityData() {
         try {
@@ -347,6 +348,8 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setJudgeCtrl', {
             restTime: this.judgeCtrl.countdownStartTime,
           });
+          // 7.播放音效
+          EventBus.$emit('playAudio', 'audioJumpSuccess');
         } else {
           // 1.两秒防抖
           setTimeout(() => {
@@ -369,6 +372,8 @@ import { EventBus } from '@/utils/eventBus';
               selected: calc_next_direction_chn(selectedDegree),
             },
           });
+          // 4.播放音效
+          EventBus.$emit('playAudio', 'audioJumpFail');
           // this.cityQueueBrokeOne();
           this.gameEnd();
         }

@@ -18,6 +18,9 @@
           />
           <view class="detail_image_cover"></view>
           <view class="detail_image_nothing"></view>
+          <view class="detail_unlock_number">
+            No.{{ city.id }}
+          </view>
           <view class="detail_unlock_stamp">
             <view class="detail_unlock_stamp_inner">
               <view class="detail_unlock_stamp_inner_item detail_unlock_stamp_circle_1"></view>
@@ -182,6 +185,14 @@ $golden-unlock-stamp: #fffb00;
         width: 100%;
         height: 60vh;
         background: #041536;
+      }
+      .detail_unlock_number {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        opacity: .6;
       }
       .detail_unlock_stamp {
         position: absolute;

@@ -1,6 +1,6 @@
 <template>
   <view class="select_wrap" @click="gotoNextLevel">
-    <view class="select_item">学习难度：</view>
+    <view class="select_item">城市难度：</view>
     <view class="select_item select_item_button">{{gameCurrentSettings.name}}</view>
   </view>
 </template>
