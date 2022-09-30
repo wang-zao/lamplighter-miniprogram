@@ -3,7 +3,8 @@
     <view class="ranking_body">
       <view class="ranking_title">
         <view class="ranking_title_text">
-          世界排行
+          <icon-font iconName="rank" iconSize="2rem" iconMargin="5px"/>
+          <icon-font iconName="paiming_rank" iconSize="2rem" iconMargin="5px"/>
         </view>
       </view>
       <view class="ranking_box">
@@ -44,7 +45,7 @@
         class="ranking_bottom_button"
         @click="emitRouteChange('home')"
       >
-        返回
+        <icon-font iconName="return" iconSize="1.3rem"/>
       </view>
       <view 
         class="center_group"
@@ -53,18 +54,18 @@
           class="ranking_bottom_button"
           @click="changeRankingPage(-1)"
         >
-          上一页
+          <icon-font iconName="jiantou_shangyiye" iconSize="1.3rem"/>
         </view>
         <view 
           class="ranking_bottom_button"
           @click="changeRankingPage(1)"
         >
-          下一页
+          <icon-font iconName="jiantou_xiayiye" iconSize="1.3rem"/>
         </view>
       </view>
       <view class="ranking_bottom_button ranking_bottom_button_share">
         <button class="ranking_bottom_button_inner" open-type="share">
-        分享
+          <icon-font iconName="share" iconSize="1.3rem"/>
         </button>
       </view>
     </view>
@@ -74,6 +75,7 @@
 <script>
   import { UserModel } from '@/api/index.js';
   import RankingCard from './components/ranking-card.vue';
+  import IconFont from '@/components/iconFont.vue';
   import store from '@/store/index.js';
   /**
    * @description 
@@ -85,6 +87,7 @@
     },
     components: {
       RankingCard,
+      IconFont,
     },
     data() {
       return {
@@ -189,6 +192,9 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
     .ranking_title_text {
       font-size: 1.5rem;
       padding: 1rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .ranking_box {
       height: $ranking-box-height;

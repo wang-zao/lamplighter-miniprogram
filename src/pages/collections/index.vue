@@ -22,13 +22,18 @@
       </view>
       <view class="collection_title">
         <view class="collection_title_text">
-          我的足迹
+          <icon-font iconName="city_fill" iconSize="2rem" iconMargin="5px"/>
+          <icon-font iconName="book-city-fill" iconSize="2rem"  iconMargin="5px"/>
         </view>
         <view class="collection_unlock_count">
           <view class="collection_unlock_count_text" @click="switchViewChange">
             <!-- {{ unlockCount }}/{{ unlockTotal }}  -->
-            <view class="collection_unlock_count_text_left">详细视图</view>
-            <view class="collection_unlock_count_text_right">缩略视图</view>
+            <view class="collection_unlock_count_text_left">
+              <icon-font iconName="dasuolvetuliebiao" iconSize="1.4rem" iconMargin="1.4rem"/>
+            </view>
+            <view class="collection_unlock_count_text_right">
+              <icon-font iconName="xiaosuolvetu" iconSize="1.4rem" iconMargin="1.4rem"/>
+            </view>
             <view class="collection_unlock_count_text_switch"
               :class="{ 'collection_unlock_count_text_switch_on': enableOverview }"
             ></view>
@@ -49,12 +54,15 @@
       >
         <view class="collection_box_inner">
           <city-item
-            v-for="(city, index) in collectionList"
+            v-for="(city, index) in collectionListFinal"
             :key="index"
             :city="city"
-            class="collection_card_item"
+            class="collection_card_item fadeIn"
             @gotoDetail="e => gotoDetail(e)"
           />
+        </view>
+        <view class="collection_box_spinner_wrap" v-if="!reachedFinalPage">
+          <image class="collection_box_spinner" src="@/static/spinner-solid.svg"></image>
         </view>
       </scroll-view>
       <!-- <view class="collection_pagination">
@@ -82,13 +90,13 @@
         class="collection_bottom_button_item"
         @click="emitRouteChange('home')"
       >
-        返回
+        <icon-font iconName="return" iconSize="1.3rem"/>
       </button>
       <button 
         class="collection_bottom_button_item"
         open-type="share" 
       >
-        分享
+        <icon-font iconName="share" iconSize="1.3rem"/>
       </button>
     </view>
   </view>
@@ -102,6 +110,7 @@ import {
   DATABASE,
 } from '@/utils/constants';
 import { GameModal, UserModel } from '@/api/index.js';
+import IconFont from '@/components/iconFont.vue';
 import cityItem from './components/city-item.vue'
 import cityDetail from './components/city-detail.vue';
 
@@ -110,6 +119,7 @@ export default Vue.extend({
   props: {
   },
   components: {
+    IconFont,
     cityItem,
     cityDetail,
   },
@@ -118,7 +128,9 @@ export default Vue.extend({
       unlockTotal: 0,
       currentPage: 0,
       pageSize: 20,
+      pageLoading: false,
       collectionList: [],
+      collectionListFinal: [],
       tempList: [],
       maxiumPageIndex: 10,
       showCityDetail: false,
@@ -127,6 +139,7 @@ export default Vue.extend({
       loadingList: false,
       enableOverview: false,
       overviewList: [],
+      reachedFinalPage: false,
     }
   },
   computed: {
@@ -220,6 +233,7 @@ export default Vue.extend({
         if (direction === -1 && this.currentPage === 0) {
           return;
         } else if (direction === 1 && this.currentPage === this.maxiumPageIndex) {
+          this.reachedFinalPage = true;
           return;
         }
         this.currentPage += direction;
@@ -229,9 +243,12 @@ export default Vue.extend({
         }
     },
     async changePageMultipleTimes(direction, times) {
+      this.pageLoading = true;
       for (let i = 0; i < times; i++) {
         await this.changeCollectionPage(direction);
       }
+      this.collectionListFinal = [...this.collectionList];
+      this.pageLoading = false;
     },
     gotoDetail(city) {
       // console.log('gotoDetail', city);
@@ -263,6 +280,16 @@ $collection-item-height: $collection-item-inner-height + $collection-item-inner-
 $collection-box-inner-height: $collection-item-inner-height * 6 + $collection-item-inner-padding * 4;
 $collection-box-inner-padding: 0.5rem;
 
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fadeIn { animation: fadeIn .4s ease-in-out forwards; }
 
 @keyframes fadeInEnlarge {
   from {
@@ -312,6 +339,11 @@ $collection-box-inner-padding: 0.5rem;
 }
 .fadeOutEnSmaller { animation: fadeOutEnSmaller .4s ease-in-out forwards; }
 
+@keyframes rotate{
+  from{transform: rotate(0deg)}
+  to{transform: rotate(359deg)}
+}
+
 .collection_wrapper {
   position: relative;
   width: 90vw;
@@ -333,6 +365,8 @@ $collection-box-inner-padding: 0.5rem;
       font-size: 1.5rem;
       padding: 0 0 0.5rem;
       margin-top: 10vh;
+      display: flex;
+      justify-content: center;
     }
     .collection_unlock_count {
       // margin-top: $collection-item-inner-padding / 2;
@@ -394,6 +428,17 @@ $collection-box-inner-padding: 0.5rem;
       overflow-y: scroll;
       overflow-x: hidden;
       // border-bottom: 2px solid #e5e5e5;
+      .collection_box_spinner_wrap {
+        width: 100%;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        .collection_box_spinner {
+          width: 1.5rem;
+          height: 1.5rem;
+          animation: rotate 3s linear infinite;
+        }
+      }
       .collection_box_inner {
         padding-top: 5vw;
         display: flex;
@@ -424,7 +469,7 @@ $collection-box-inner-padding: 0.5rem;
       .overview_city_item {
         width: 10px;
         height: 10px;
-        border-radius: 3px;
+        border-radius: 5px;
         background: #ffffff22;
         margin: 3px;
       }

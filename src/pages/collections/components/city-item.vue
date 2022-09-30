@@ -10,25 +10,32 @@
           :src="`cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/city_images/recast_300/pic_${city.id}_resize_300.jpg`"
           class="city_unlocked_image"
         /> -->
-        <view class="city_unlocked_image_text" :style="textStyle">
+        <!-- <view class="city_unlocked_image_text" :style="textStyle">
           {{ city.abs_chn }}
-        </view>
+        </view> -->
       </view>
       <view class="city_unlocked_mask_wrapper">
         <view class="city_unlocked_image_mask" :style="maskStyle">
         </view>
       </view>
       <view class="city_unlocked_title">
-        <view class="city_unlocked_title_text">
+        <view class="city_unlocked_title_text" :class="{
+          'city_unlocked_title_text_smaller': city.name_chn.length >= 4,
+        }">
           {{ city.name_chn }}
         </view>
-        <view class="city_unlocked_title_text_sub">
+        <!-- <view class="city_unlocked_title_text_sub">
           {{ city.name }}
-        </view>
+        </view> -->
       </view>
     </view>
     <view class="city_locked" v-else>
-      <view class="city_locked_mark">?</view>
+      <view class="city_locked_image_text">
+        {{ city.name_chn }}
+      </view>
+      <image class="city_locked_mark" src="@/static/locked.svg"></image>
+      <view class="city_locked_mask"></view>
+      <view class="city_locked_mask"></view>
     </view>
   </view>
 </template>
@@ -125,7 +132,7 @@ export default Vue.extend({
   // background: #ffffff44;
   height: 100%;
   width: 100%;
-  border-radius: 1rem;
+  border-radius: 2rem;
   box-sizing: border-box;
   .city_unlocked {
     height: 100%;
@@ -133,12 +140,12 @@ export default Vue.extend({
     overflow: show;
     position: relative;
     // border: 2px solid #e5e5e5;
-    border-radius: 1rem;
-    box-shadow: 0 0 1rem #fff inset;
+    border-radius: 2rem;
+    box-shadow: 0.3rem 0.4rem 1rem #fff inset;
     box-sizing: border-box;
     .city_unlocked_unread {
       position: absolute;
-      top: -0.5rem;
+      top: -0.1rem;
       right: 0rem;
       font-size: 8px;
       color: #fff;
@@ -149,7 +156,7 @@ export default Vue.extend({
       z-index: 6;
     }
     .city_unlocked_image_wrapper {
-      border-radius: 1rem;
+      border-radius: 2rem;
       position: absolute;
       top: 50%;
       left: 50%;
@@ -158,6 +165,7 @@ export default Vue.extend({
       transform: translate(-50%, -50%);
       overflow: hidden;
       z-index: 3;
+      // padding: 0.8rem;
       .city_unlocked_image {
         border-radius: 1rem;
         width: 100%;
@@ -165,14 +173,15 @@ export default Vue.extend({
         opacity: .6;
       }
       .city_unlocked_image_text {
-        font-size: .2rem;
+        margin: 1rem 1rem auto;
+        font-size: .4rem;
         line-height: .6rem;
         opacity: .5;
       }
     }
     .city_unlocked_mask_wrapper {
       position: absolute;
-      border-radius: 1rem;
+      border-radius: 2rem;
       top: 0;
       left: 0;
       width: 100%;
@@ -195,17 +204,21 @@ export default Vue.extend({
       align-items: center;
       justify-content: center;
       z-index: 5;
-      text-shadow: 0 0 10px #ffffff;
+      text-shadow: 0 0 15px #ffffff;
       width: 100%;
       height: 100%;
       overflow: hidden;
       .city_unlocked_title_text {
-        font-size: .9rem;
+        font-size: 1rem;
         white-space: nowrap;
         width: 100%;
+        opacity: .7;
+      }
+      .city_unlocked_title_text_smaller {
+        font-size: .7rem;
       }
       .city_unlocked_title_text_sub {
-        font-size: .4rem;
+        font-size: 10px;
         white-space: nowrap;
         width: 100%;
       }
@@ -216,18 +229,43 @@ export default Vue.extend({
     width: 100%;
     overflow: hidden;
     position: relative;
-    background: #010715;
-    border-radius: 1rem;
+    background: #01071544;
+    border-radius: 2rem;
     border: 1px solid #e5e5e533;
+    .city_locked_image_text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 80%;
+      font-size: 1.2rem;
+      line-height: 1.5rem;
+      opacity: .2;
+    }
     .city_locked_mark {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      font-size: 3rem;
-      opacity: .2;
+      font-size: 2.5rem;
       z-index: 5;
+      width: 1.5rem;
+      height: 1.5rem;
+      opacity: .5;
+    }
+    .city_locked_mask {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      background: transparent;
+      box-shadow: 0 0 1rem #000 inset;
+      z-index: 4;
     }
   }
 }

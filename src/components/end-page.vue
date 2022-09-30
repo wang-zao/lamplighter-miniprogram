@@ -8,7 +8,7 @@
       <view>王凿</view> -->
       <view>⭐️</view>
       <view class="score_number">{{rankScore}}</view>
-      <view>称号：{{rankData.text}}</view>
+      <!-- <view>称号：{{rankData.text}}</view> -->
     </view>
     <view class="end_panel_details">
       <!-- <view class="detail_title">本次学习成绩</view> -->
@@ -17,13 +17,32 @@
           <view class="detail_item_title">飞行距离</view>
           <view class="detail_item_value">{{judgeCtrl.totalDistance.toFixed(0)}}km</view>
         </view> -->
+        <view class="detail_item_last_wrap">
+          <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+            <icon-font iconName="plane-departure" iconSize="1rem" iconMargin="5px"/>
+            <view>{{judgeCtrl.gameEndInfo.from}}</view>
+            <icon-font iconName="arrow-right" iconSize="1rem" iconMargin="5px"/>
+            <icon-font iconName="plane-arrival" iconSize="1rem" iconMargin="5px"/>
+            <view>{{judgeCtrl.gameEndInfo.to}}</view>
+          </view>
+          <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+            应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}
+          </view>
+          <view class="detail_item_last" v-else >
+            时间到！注意左上角倒计时哦
+          </view>
+        </view>
         <view class="detail_item">
-          <view class="detail_item_title">点亮城市个数</view>
+          <view class="detail_item_title">
+            <icon-font iconName="city_fill" iconSize="1rem"/>
+          </view>
           <view class="detail_item_value">{{judgeCtrl.correctCityList.length}}</view>
         </view>
         <view class="detail_item">
-          <view class="detail_item_title">新解锁城市</view>
-          <view v-if="judgeCtrl.newlyUnlockedCityList.length === 0"  class="detail_item_value">无</view>
+          <view class="detail_item_title">
+            <icon-font iconName="book-city-fill" iconSize="1rem"/>
+          </view>
+          <view v-if="judgeCtrl.newlyUnlockedCityList.length === 0"  class="detail_item_value">0</view>
         </view>
         <view v-if="judgeCtrl.newlyUnlockedCityList.length > 0" class="detail_item_tag_wrap">
           <view class="detail_item_value_tag_item"
@@ -44,15 +63,6 @@
           <view class="detail_item_title">平均单程得分</view>
           <view class="detail_item_value">{{averageScore}}</view>
         </view> -->
-        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
-          从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}
-        </view>
-        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
-          应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}
-        </view>
-        <view class="detail_item_last" v-else >
-          时间到！注意左上角倒计时哦
-        </view>
         <view class="detail_item_abs" >
           {{judgeCtrl.gameEndInfo.toAbs}}
         </view>
@@ -85,13 +95,19 @@
     </view>
     <view class="end_panel_operations">
       <view>
-        <button class="share_button" @click="playAgain">再学一次</button>
+        <button class="share_button" @click="playAgain">
+          <icon-font iconName="redo" iconSize="1.3rem"/>
+        </button>
       </view>
       <view>
-        <button class="share_button" open-type="share" aria-role="button"> 分享 </button>
+        <button class="share_button" open-type="share" aria-role="button">
+          <icon-font iconName="share" iconSize="1.3rem"/>
+        </button>
       </view>
       <view>
-        <button class="share_button" @click="backToHome">首页</button>
+        <button class="share_button" @click="backToHome">
+          <icon-font iconName="home" iconSize="1.3rem"/>
+        </button>
       </view>
     </view>
   </view>
@@ -103,6 +119,7 @@
    * @event {Function} click 
    */
   import store from '@/store/index.js'    
+  import IconFont from '@/components/iconFont.vue';
   import { EventBus } from '@/utils/eventBus';
   import {
     calc_fly_rank,
@@ -111,6 +128,9 @@
   import { CITY_COLOR_HASHMAP } from '@/utils/constants';
   export default {
     name: 'EndPage',
+    components: {
+      IconFont,
+    },
     props: {
       anmtCtrl: {
         type: Object,
@@ -217,6 +237,7 @@ $general-panel-width: 60vw;
       height: 100%;
       width: 100%;
       background: $uni-bg-color-mask;
+      border-radius: 1rem;
       .detail_item {
         display: flex;
         width: 100%;
@@ -246,8 +267,18 @@ $general-panel-width: 60vw;
           padding: 0 5px;
         }
       }
-      .detail_item_last {
+      .detail_item_last_wrap {
+        width: 95%;
         background: #ffffff22;
+        border-radius: 1rem;
+        padding: 0.5rem 0.2rem;
+        margin: 0 0 0.5rem;
+        .detail_item_last {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
       }
       .detail_item_abs {
         margin-top: 1rem;

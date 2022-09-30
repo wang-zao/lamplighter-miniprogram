@@ -37,6 +37,7 @@ import {
   DATABASE,
   RANDOM_SWAP_P,
   RANDOM_SHIFT_P,
+  PLAYING_MAX_SCORE_PER_QUESTION,
 } from '@/utils/constants';
 import { EventBus } from '@/utils/eventBus';
 
@@ -349,7 +350,7 @@ import { EventBus } from '@/utils/eventBus';
             restTime: this.judgeCtrl.countdownStartTime,
           });
           // 7.播放音效
-          EventBus.$emit('playAudio', 'audioJumpSuccess');
+          EventBus.$emit('playAudio', `audioJumpSuccess${Math.floor((score - 0.01) / PLAYING_MAX_SCORE_PER_QUESTION * 10)}`);
         } else {
           // 1.两秒防抖
           setTimeout(() => {

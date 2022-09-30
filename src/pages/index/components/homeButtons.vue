@@ -20,25 +20,39 @@
         />
         <level-select />
         <view class="buttons_line_2 buttons_line">
-          <view class="button_start button_general" @click="startGeneral">开始点灯</view>
+          <view class="button_start button_general" @click="startGeneral">
+            <image class="button_general_icon" src="@/static/earth.svg"></image>
+            <image class="button_general_icon" src="@/static/lightbulb.svg"></image>
+            <image class="button_general_icon" src="@/static/ic_fly.svg"></image>
+          </view>
         </view>
         <view class="buttons_line_3 buttons_line">
-          <view class="button_train button_general" @click="goToCollection">我的足迹</view>
-          <view class="button_rank button_general"
-            @click="goToRanking"
-          >排行</view>
+          <view class="button_train button_general" @click="goToCollection">
+            <image class="button_general_icon" src="@/static/city_fill.svg"></image>
+            <image class="button_general_icon" src="@/static/book-city-fill.svg"></image>
+          </view>
+          <view class="button_rank button_general" @click="goToRanking">
+            <!-- <image class="button_general_icon" src="@/static/paiming_rank.svg"></image> -->
+            <image class="button_general_icon" src="@/static/rank.svg"></image>
+          </view>
         </view>
       </view>
       <view class="btm_infos">
         <view class="btm_report btm_itm"
           @click="goToCommunity"
-        >关于</view>
+        >
+          <icon-font iconName="guanyu" iconSize="0.8rem"/>
+        </view>
         <view class="btm_report btm_itm"
           @click="goToFeedback"
-        >反馈</view>
+        >
+          <icon-font iconName="wentifankui" iconSize="0.8rem"/>
+        </view>
         <view class="btm_support btm_itm"
           @click="goToReload"
-        >刷新</view>
+        >
+          <icon-font iconName="shuaxin" iconSize="0.8rem"/>
+        </view>
         <!-- <view class="btm_support btm_itm"
           @click="goToReload"
         >设置</view> -->
@@ -52,6 +66,7 @@
    * @description 
    * @event {Function} click 
    */
+  import IconFont from '@/components/iconFont.vue';
   import { FeedBackModal, UserModel, SettingsModal } from '@/api/index.js';
   import API from '@/api/index.ts';
   import store from '@/store/index.js'
@@ -64,6 +79,7 @@
     name: 'HomeButtons',
     components: {
       UserCard,
+      IconFont,
       LevelSelect,
     },
     data() {
@@ -303,6 +319,14 @@ $globe-radius: 11rem;
     // text-shadow: 0 0 10px #ffffff;
     font-weight: bold;
     box-shadow: 0 0 25px #ffffff33 inset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .button_general_icon {
+      width: 1rem;
+      height: 1rem;
+      margin: 0 5px;
+    }
   }
 
   .button_start {
@@ -333,7 +357,7 @@ $globe-radius: 11rem;
   margin-top: 5vh;
   .btm_itm {
     font-size: .8rem;
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 1rem;
     opacity: .7;
     // background: #ffffff44;
   }
