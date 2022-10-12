@@ -272,6 +272,7 @@ import { EventBus } from '@/utils/eventBus';
         }
         store.commit('setAnmtCtrl', {
           answerCorrectAnimationStep1: true,
+          answerCorrectAnimationSwitching: true,
         });
         setTimeout(() => {
           this.anmtCtrl.answerCorrectAnimationStep1 = false;
@@ -287,6 +288,11 @@ import { EventBus } from '@/utils/eventBus';
           this.nextCity = { ...this.cityList.shift() };
           this.calcAnswer();
         }, 600);
+        setTimeout(() => {
+          store.commit('setAnmtCtrl', {
+            answerCorrectAnimationSwitching: false,
+          });
+        }, 800);
         setTimeout(() => {
           store.commit('setAnmtCtrl', {
             answerCorrectAnimationStep2: false,

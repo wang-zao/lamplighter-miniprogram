@@ -27,16 +27,30 @@
       </view>
       <view class="ranking_card_all_count">
         <view class="count_line">
-          <view class="count_span">截止</view>
-          <view class="count_span_highlight">{{ dateYear }}年{{ dateMonth }}月{{ dateDay }}日</view>
+          <view class="count_span">
+            <icon-font iconName="jiezhiriqi" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span_highlight">{{ dateYear }}-{{ dateMonth }}-{{ dateDay }}</view>
         </view>
         <view class="count_line">
-          <view class="count_span">已有</view>
+          <view class="count_span">
+            <icon-font iconName="brainpower" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="chenghao1" iconSize="1rem" iconMargin="5px"/>
+          </view>
           <view class="count_span_highlight">{{ allUserCount }}</view>
-          <view class="count_span">名点灯人在这里学习</view>
         </view>
         <view class="count_line">
-          <view class="count_span">努力点亮更远的远方</view>
+          <view class="count_span">
+            <icon-font iconName="earth2" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="compass" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="star" iconSize="1rem" iconMargin="5px"/>
+          </view>
         </view>
       </view>
     </view>
@@ -225,9 +239,14 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
       .count_line {
         display: flex;
         justify-content: center;
+        align-items: center;
         margin-top: $ranking-item-inner-padding;
         .count_span {
           opacity: 0.5;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
         }
         .count_span_highlight {
           opacity: 0.8;

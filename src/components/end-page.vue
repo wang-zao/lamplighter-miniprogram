@@ -4,11 +4,8 @@
       <view></view>
     </view>
     <view class="end_panel_score">
-      <!-- <view>avatar</view>
-      <view>王凿</view> -->
-      <view>⭐️</view>
+      <icon-font iconName="star" iconSize="1.3rem" iconMargin="0"/>
       <view class="score_number">{{rankScore}}</view>
-      <!-- <view>称号：{{rankData.text}}</view> -->
     </view>
     <view class="end_panel_details">
       <!-- <view class="detail_title">本次学习成绩</view> -->
@@ -21,26 +18,33 @@
           <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
             <icon-font iconName="plane-departure" iconSize="1rem" iconMargin="5px"/>
             <view>{{judgeCtrl.gameEndInfo.from}}</view>
-            <icon-font iconName="arrow-right" iconSize="1rem" iconMargin="5px"/>
+            <icon-font iconName="arrow-right" iconSize="1rem" iconMargin="15px"/>
             <icon-font iconName="plane-arrival" iconSize="1rem" iconMargin="5px"/>
             <view>{{judgeCtrl.gameEndInfo.to}}</view>
           </view>
           <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
-            应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}
+            <view>{{judgeCtrl.gameEndInfo.correct}}</view>
+            <icon-font iconName="zhengque-tianchong" iconSize="1rem" iconMargin="5px"/>
+            <view>{{judgeCtrl.gameEndInfo.selected}}</view>
+            <icon-font iconName="cuowu" iconSize="1rem" iconMargin="5px"/>
           </view>
           <view class="detail_item_last" v-else >
-            时间到！注意左上角倒计时哦
+            <icon-font iconName="B-05" iconSize="1rem" iconMargin="5px"/>
+            <icon-font iconName="yooxi" iconSize="1rem" iconMargin="5px"/>
+            <icon-font iconName="jurassic_warning" iconSize="1rem" iconMargin="5px"/>
           </view>
         </view>
         <view class="detail_item">
           <view class="detail_item_title">
             <icon-font iconName="city_fill" iconSize="1rem"/>
+            <icon-font iconName="chenghao1" iconSize="1rem" iconMargin="5px"/>
           </view>
           <view class="detail_item_value">{{judgeCtrl.correctCityList.length}}</view>
         </view>
         <view class="detail_item">
           <view class="detail_item_title">
             <icon-font iconName="book-city-fill" iconSize="1rem"/>
+            <icon-font iconName="chenghao1" iconSize="1rem" iconMargin="5px"/>
           </view>
           <view v-if="judgeCtrl.newlyUnlockedCityList.length === 0"  class="detail_item_value">0</view>
         </view>
@@ -183,9 +187,11 @@
 
 <style scoped lang="scss">
 
-$score-panel-height: 30vh;
-$detail-panel-height: 30vh;
-$operation-panel-height: 20vh;
+$score-panel-height: 25vh;
+$score-panel-top-margin: 10vh;
+$score-panel-bottom-margin: 5vh;
+$detail-panel-height: 40vh;
+$operation-panel-height: 15vh;
 $general-panel-width: 60vw;
 
 .game_end_wrapper {
@@ -209,15 +215,19 @@ $general-panel-width: 60vw;
   }
   .end_panel_score {
     text-align: center;
-    height: $score-panel-height;
-    min-height: $score-panel-height;
+    margin-top: $score-panel-top-margin;
+    margin-bottom: $score-panel-bottom-margin;
+    // height: $score-panel-height;
+    // min-height: $score-panel-height;
     display: flex;
     align-items: center;
-    flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
+    background: #ffdb5b77;
+    border-radius: 1rem;
+    padding: 0 1rem;
     .score_number {
       font-size: 4rem;
-      margin: 0.5rem 2rem;
+      margin: 0 0 0 10px;
       font-weight: bolder;
     }
   }
@@ -248,6 +258,7 @@ $general-panel-width: 60vw;
           line-height: 1rem;
           white-space: nowrap;
           opacity: .7;
+          display: flex;
         }
         .detail_item_value {
           line-height: 1rem;
@@ -312,15 +323,18 @@ $general-panel-width: 60vw;
       background: #ffffff44;
       text-align: center;
       border-radius: 1rem;
-      border: 1px #fff solid;
+      // border: 1px #fff solid;
       color: #fff;
-      padding: 0.5rem 0.5rem;
-      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      // font-size: 1rem;
       line-height: 1rem;
-      ::after {
-        padding: none;
-        border: none;
-      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // ::after {
+      //   padding: none;
+      //   border: none;
+      // }
     }
   }
   .end_panel_footer {

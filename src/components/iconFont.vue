@@ -60,7 +60,7 @@ export default Vue.extend({
   display: flex;
   justify-content: center;
   align-items: center;
-  display: inline-block;
+  // display: inline-block;
 }
 .icon_font_item {
   width: 1rem;

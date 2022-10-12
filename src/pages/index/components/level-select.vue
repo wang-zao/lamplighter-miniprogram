@@ -1,7 +1,16 @@
 <template>
   <view class="select_wrap" @click="gotoNextLevel">
-    <view class="select_item">城市难度：</view>
-    <view class="select_item select_item_button">{{gameCurrentSettings.name}}</view>
+    <view class="select_item">
+      <icon-font iconName="configuration" iconSize="1rem" iconMargin="0"/>
+    </view>
+    <view class="select_item select_item_button">
+      <icon-font
+        v-for="val in gameCurrentSettings.iconCountList"
+        :key="val"
+        iconName="plane-dark" iconSize="1rem" iconMargin="2px"
+      />
+      <!-- {{gameCurrentSettings.name}} -->
+    </view>
   </view>
 </template>
 
@@ -10,10 +19,14 @@
  * @description 
  * @event {Function} click 
  */
+import IconFont from '@/components/iconFont.vue';
 import store from '@/store/index.js';
 
 export default {
   name: 'LevelSelect',
+  components: {
+    IconFont,
+  },
   props: {
     // anyprops: {
     //   type: String,
@@ -61,6 +74,7 @@ export default {
   box-sizing: border-box;
   .select_item {
     text-align: center;
+    display: flex;
   }
   .select_item_button {
     font-weight: bold;

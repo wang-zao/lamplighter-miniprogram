@@ -7,7 +7,7 @@
       >
         <view class="box_line box_line_top_margin box_line_allblack box_line_jumpout">
           <view class="jumpout_button" @click="jumpOutGuide">
-            跳过引导
+            <icon-font iconName="tiaoguo" iconSize="1.3rem"/>
           </view>
         </view>
         <view class="box_line box_line_top">
@@ -246,6 +246,7 @@ $guide-bg-color-mask: #00000099;
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: 1rem 0;
       }
       .guide_button {
         margin: 1rem 0;

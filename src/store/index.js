@@ -21,6 +21,7 @@ const store = new Vuex.Store({
           gameGuidePageVisible: true,
           gameEndPageVisible: false,
           gameStartPageVisible: false,
+          answerCorrectAnimationSwitching: false,
           answerCorrectAnimationStep1: false,
           answerCorrectAnimationStep2: false,
           answerWrongAnimation: false,
@@ -73,7 +74,8 @@ const store = new Vuex.Store({
         constants: {
             gameCurrentSettings: {
                 id: '0',
-                name: '初中生',
+                name: '简单',
+                iconCountList: [1],
                 jumpBase: 0.5,
                 jumpWeight: 2,
                 timeLimit: 30,
@@ -81,21 +83,24 @@ const store = new Vuex.Store({
             gameHardLevel: [
                 {
                     id: '0',
-                    name: '初中生',
+                    name: '简单',
+                    iconCountList: [1],
                     jumpBase: 0.5,
                     jumpWeight: 2,
                     timeLimit: 20,
                 },
                 {
                     id: '1',
-                    name: '大学生',
+                    name: '中等',
+                    iconCountList: [1, 2],
                     jumpBase: 4,
                     jumpWeight: 4,
                     timeLimit: 15,
                 },
                 {
                     id: '2',
-                    name: '博士生导师',
+                    name: '困难',
+                    iconCountList: [1, 2, 3, 4, 5],
                     jumpBase: 9,
                     jumpWeight: 8,
                     timeLimit: 10,
@@ -124,6 +129,7 @@ const store = new Vuex.Store({
                 gameGuidePageVisible: true,
                 gameEndPageVisible: false,
                 gameStartPageVisible: false,
+                answerCorrectAnimationSwitching: false,
                 answerCorrectAnimationStep1: false,
                 answerCorrectAnimationStep2: false,
                 answerWrongAnimation: false,

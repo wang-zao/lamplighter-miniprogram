@@ -23,7 +23,7 @@
           <view class="button_start button_general" @click="startGeneral">
             <image class="button_general_icon" src="@/static/earth.svg"></image>
             <image class="button_general_icon" src="@/static/lightbulb.svg"></image>
-            <image class="button_general_icon" src="@/static/ic_fly.svg"></image>
+            <image class="button_general_icon" src="@/static/plane.svg"></image>
           </view>
         </view>
         <view class="buttons_line_3 buttons_line">
