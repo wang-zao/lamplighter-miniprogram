@@ -110,6 +110,7 @@ $card-height: 4rem;
   justify-content: space-between;
   align-items: center;
   background: #ffffff22;
+  border-radius: 2rem;
   width: 95%;
 }
 .card_left {

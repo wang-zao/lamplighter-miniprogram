@@ -18,6 +18,8 @@ export const PICTURES_URL = {
   EARTH_TOPOLOGY: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/globe-topo.png',
 }
 
+export const FONT_URL = 'https://6e6f-northenv-4gh0748xf50343cf-1304769767/chill_k_sans.ttf'
+
 export const GUIDE_SHOW_MAX_SCORE = 15;
 
 export const LIGHTBALL_COLORS = [
@@ -45,6 +47,19 @@ export const CITY_COLOR_HASHMAP = [
   '#52a8ff44',
   '#5252ff44',
   '#a852ff44',
+];
+
+export const CITY_COLOR_HASHMAP_NOOPACITY = [
+  '#ff5252',
+  '#ffa852',
+  '#ffff52',
+  '#a8ff52',
+  '#52ff52',
+  '#52ffa8',
+  '#52ffff',
+  '#52a8ff',
+  '#5252ff',
+  '#a852ff',
 ];
 
 // 注意：下面这些部分是调整上面的基础，不要轻易删除

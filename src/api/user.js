@@ -67,6 +67,13 @@ class UserModel extends Base {
     } });
   }
 
+  updateUnlockedCities(unlockedCities) {
+    const unlockedString = JSON.stringify(unlockedCities);
+    return this.model.where({ _openid: '{openid}' }).update({ data: {
+      unlockedCities: unlockedString,
+    } });
+  }
+
   // 5.上传分数
   updateScore(newScore) {
     const scoreLastUpdateDate = new Date().toString();
@@ -82,7 +89,6 @@ class UserModel extends Base {
         .skip(page * size)
         .limit(size)
         .get();
-      console.log('loadRankings', data);
       return data;
     } catch (error) {
       console.log('error!!!', error)

@@ -1,12 +1,14 @@
 <template>
   <view class="section_wraps">
     <view class="top_info">
-      <view class="info_border"></view>
+      <view class="info_img">
+        <image class="info_img_content" src="@/static/title-miniprogram-s.png" />
+      </view>
+      <!-- <view class="info_border"></view> -->
       <view class="info_content">
-        <view class="top_line top_line_1">星球</view>
-        <view class="top_line top_line_2">点灯人</view>
         <view class="top_line_notes top_line_notes_line1">{{ note1 }}</view>
         <view class="top_line_notes">{{ note2 }}</view>
+        <view class="top_line_notes">{{ note3 }}</view>
       </view>
     </view>
     <view class="bottom_info">
@@ -18,25 +20,39 @@
         />
         <level-select />
         <view class="buttons_line_2 buttons_line">
-          <view class="button_start button_general" @click="startGeneral">开始学习</view>
+          <view class="button_start button_general" @click="startGeneral">
+            <image class="button_general_icon" src="@/static/earth.svg"></image>
+            <image class="button_general_icon" src="@/static/lightbulb.svg"></image>
+            <image class="button_general_icon" src="@/static/plane.svg"></image>
+          </view>
         </view>
         <view class="buttons_line_3 buttons_line">
-          <view class="button_train button_general" @click="stillDeveloping">知识卡片</view>
-          <view class="button_rank button_general"
-            @click="goToRanking"
-          >学习排行</view>
+          <view class="button_train button_general" @click="goToCollection">
+            <image class="button_general_icon" src="@/static/city_fill.svg"></image>
+            <image class="button_general_icon" src="@/static/book-city-fill.svg"></image>
+          </view>
+          <view class="button_rank button_general" @click="goToRanking">
+            <!-- <image class="button_general_icon" src="@/static/paiming_rank.svg"></image> -->
+            <image class="button_general_icon" src="@/static/rank.svg"></image>
+          </view>
         </view>
       </view>
       <view class="btm_infos">
         <view class="btm_report btm_itm"
           @click="goToCommunity"
-        >关于</view>
+        >
+          <icon-font iconName="guanyu" iconSize="0.8rem"/>
+        </view>
         <view class="btm_report btm_itm"
           @click="goToFeedback"
-        >反馈</view>
+        >
+          <icon-font iconName="wentifankui" iconSize="0.8rem"/>
+        </view>
         <view class="btm_support btm_itm"
           @click="goToReload"
-        >刷新</view>
+        >
+          <icon-font iconName="shuaxin" iconSize="0.8rem"/>
+        </view>
         <!-- <view class="btm_support btm_itm"
           @click="goToReload"
         >设置</view> -->
@@ -50,17 +66,20 @@
    * @description 
    * @event {Function} click 
    */
+  import IconFont from '@/components/iconFont.vue';
   import { FeedBackModal, UserModel, SettingsModal } from '@/api/index.js';
   import API from '@/api/index.ts';
   import store from '@/store/index.js'
   import UserCard from './user-card.vue';
   import LevelSelect from './level-select.vue';
   import { EventBus } from '@/utils/eventBus';
+  import { FONT_URL } from '@/utils/constants';
 
   export default {
     name: 'HomeButtons',
     components: {
       UserCard,
+      IconFont,
       LevelSelect,
     },
     data() {
@@ -68,6 +87,7 @@
         isGettingUserProfile: false,
         note1: '',
         note2: '',
+        note3: '',
       }
     },
     computed: {
@@ -89,6 +109,7 @@
         const { data: [ settings ] } = await SettingsModal.getAllSettings();
         this.note1 = settings.indexText.note1;
         this.note2 = settings.indexText.note2;
+        this.note3 = settings.indexText.note3;
       },
       getSystemInfo() {
         const res = wx.getSystemInfoSync();
@@ -107,6 +128,9 @@
       },
       goToRanking() {
         this.$emit('routeChange', 'ranking');
+      },
+      goToCollection() {
+        this.$emit('routeChange', 'collection');
       },
       goToReload() {
         wx.showModal({
@@ -228,6 +252,18 @@ $globe-radius: 11rem;
   margin-top: 5vh;
   padding-left: 0.2rem;
   position: relative;
+  .info_img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    .info_img_content {
+      width: 80vw;
+      // width * 0.74
+      height: 59vw;
+    }
+
+  }
   .info_border {
     position: absolute;
     top: 0;
@@ -242,18 +278,23 @@ $globe-radius: 11rem;
   }
   .info_content {
     position: absolute;
-    top: 0;
-    left: 1rem;
+    top: 65vw;
+    width: 70vw;
+    left: 50%;
+    transform: translateX(-50%);
     .top_line {
-      padding-left: 0.8rem;
+      margin-top: 0.8rem;
+
     }
     .top_line_notes_line1 {
       margin-top: 0.5rem;
     }
     .top_line_notes {
-      padding-left: 0.8rem;
-      font-size: 1rem;
-      line-height: 1.5rem;
+      margin-top: 0.3rem;
+      font-size: 0.5rem;
+      letter-spacing: 0.1rem;
+      // padding: 0 0.8rem;
+      line-height: 0.7rem;
       color: #ffffff99;
     }
   }
@@ -268,26 +309,40 @@ $globe-radius: 11rem;
   }
 
   .button_general {
-    background: #ffffff44;
+    // background: #ffffff44;
     text-align: center;
     border-radius: 2rem;
-    border: 2px #fff solid;
+    // border: 1px #fff solid;
     color: #fff;
     padding: 0.5rem 0;
     font-size: 1rem;
+    // text-shadow: 0 0 10px #ffffff;
+    font-weight: bold;
+    box-shadow: 0 0 25px #ffffff33 inset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .button_general_icon {
+      width: 1rem;
+      height: 1rem;
+      margin: 0 5px;
+    }
   }
 
   .button_start {
     width: 100%;
     padding: 0.8rem 0;
+    background: #52a8ff44;
   }
 
   .button_train {
     width: 60%;
+    background: #52ffff44;
   }
 
   .button_rank {
     width: 30%;
+    background: #52ffa844;
   }
 }
 
@@ -302,7 +357,7 @@ $globe-radius: 11rem;
   margin-top: 5vh;
   .btm_itm {
     font-size: .8rem;
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 1rem;
     opacity: .7;
     // background: #ffffff44;
   }

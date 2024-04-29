@@ -21,6 +21,7 @@ const store = new Vuex.Store({
           gameGuidePageVisible: true,
           gameEndPageVisible: false,
           gameStartPageVisible: false,
+          answerCorrectAnimationSwitching: false,
           answerCorrectAnimationStep1: false,
           answerCorrectAnimationStep2: false,
           answerWrongAnimation: false,
@@ -43,6 +44,9 @@ const store = new Vuex.Store({
           isUserSelected: false,
           correctCityList: [],
           wrongCityList: [],
+          newlyUnlockedCityList: [],
+          unlockedCitiesParam: '',
+          isUnlockedNew: false,
           scoreList: [],
           gameEndInfo: {
             from: '',
@@ -65,33 +69,38 @@ const store = new Vuex.Store({
             scoreLastUpdateDate: '',
             notes: '',
             language: '',
+            unlockedCities: '',
         },
         constants: {
             gameCurrentSettings: {
                 id: '0',
-                name: '初中生',
+                name: '简单',
+                iconCountList: [1],
                 jumpBase: 0.5,
-                jumpWeight: 1,
+                jumpWeight: 2,
                 timeLimit: 30,
             },
             gameHardLevel: [
                 {
                     id: '0',
-                    name: '初中生',
+                    name: '简单',
+                    iconCountList: [1],
                     jumpBase: 0.5,
-                    jumpWeight: 1,
+                    jumpWeight: 2,
                     timeLimit: 20,
                 },
                 {
                     id: '1',
-                    name: '大学生',
+                    name: '中等',
+                    iconCountList: [1, 2],
                     jumpBase: 4,
                     jumpWeight: 4,
                     timeLimit: 15,
                 },
                 {
                     id: '2',
-                    name: '博士生导师',
+                    name: '困难',
+                    iconCountList: [1, 2, 3, 4, 5],
                     jumpBase: 9,
                     jumpWeight: 8,
                     timeLimit: 10,
@@ -120,6 +129,7 @@ const store = new Vuex.Store({
                 gameGuidePageVisible: true,
                 gameEndPageVisible: false,
                 gameStartPageVisible: false,
+                answerCorrectAnimationSwitching: false,
                 answerCorrectAnimationStep1: false,
                 answerCorrectAnimationStep2: false,
                 answerWrongAnimation: false,
@@ -145,6 +155,9 @@ const store = new Vuex.Store({
                 isUserSelected: false,
                 correctCityList: [],
                 wrongCityList: [],
+                newlyUnlockedCityList: [],
+                unlockedCitiesParam: '',
+                isUnlockedNew: false,
                 gameEndInfo: {
                   from: '',
                   to: '',
@@ -168,6 +181,36 @@ const store = new Vuex.Store({
             if (state.userProfile.score >= GUIDE_SHOW_MAX_SCORE) {
                 state.anmtCtrl.gameGuidePageVisible = false;
             }
+        },
+        async getUnlockedCities(state) {
+            let previousUnlockedCities = {}
+            if (state.userProfile.unlockedCities) {
+                previousUnlockedCities = JSON.parse(state.userProfile.unlockedCities);
+            }
+            let currentUnlockedCities = state.judgeCtrl.correctCityList;
+            let newlyUnlockedCityList = [];
+            let newlyUnlockedCityIdDict = {};
+            currentUnlockedCities.forEach(city => {
+                if (!(city.id in previousUnlockedCities)) {
+                    const today = new Date();
+                    newlyUnlockedCityList.push(city);
+                    newlyUnlockedCityIdDict[city.id] = {
+                        name: city.name_chn,
+                        userViewed: false,
+                        unlockDate: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
+                    };
+                }
+            });
+            console.log('newlyUnlockedCityIdDict', newlyUnlockedCityIdDict)
+            console.log('previousUnlockedCities', previousUnlockedCities)
+            store.commit('setJudgeCtrl', { 
+                newlyUnlockedCityList,
+                unlockedCitiesParam: {
+                    ...newlyUnlockedCityIdDict,
+                    ...previousUnlockedCities,
+                },
+                isUnlockedNew: newlyUnlockedCityList.length > 0,
+            });
         },
         setCurrentLevel(state, level) {
             state.constants.gameCurrentSettings = Object.assign(

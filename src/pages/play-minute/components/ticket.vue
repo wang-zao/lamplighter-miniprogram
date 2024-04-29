@@ -7,7 +7,11 @@
     }"
     @click="changeAbstractVisibility"
   >
-    <view class="ticket_reminder" @click="changeAbstractVisibility">{{reminder}}</view>
+    <view class="ticket_reminder" @click="changeAbstractVisibility">
+        <icon-font v-if="reminder === '当前在'" iconName="plane-departure" iconSize="1.3rem"/>
+        <icon-font v-else iconName="plane-arrival" iconSize="1.3rem"/>
+      
+    </view>
     <view class="ticket_placename" @click="changeAbstractVisibility">
       {{ cityInfo.name_chn || '-' }}
     </view>
@@ -24,9 +28,13 @@
    */
 import { CITY_COLOR_HASHMAP } from '@/utils/constants';
 import Vue from 'vue';
+import IconFont from '@/components/iconFont.vue';
 
 export default Vue.extend({
     name: 'Ticket',
+    components: {
+      IconFont,
+    },
     props: {
       cityInfo: {
         type: Object,

@@ -37,6 +37,7 @@ import {
   DATABASE,
   RANDOM_SWAP_P,
   RANDOM_SHIFT_P,
+  PLAYING_MAX_SCORE_PER_QUESTION,
 } from '@/utils/constants';
 import { EventBus } from '@/utils/eventBus';
 
@@ -109,6 +110,7 @@ import { EventBus } from '@/utils/eventBus';
         if (!this.anmtCtrl.gameGuidePageVisible && this.currentRoute === 'play-minute') {
           EventBus.$emit('startGameCountDown');
         }
+        EventBus.$emit('playAudio', 'atmosphere');
       },
       async getCityData() {
         try {
@@ -133,6 +135,8 @@ import { EventBus } from '@/utils/eventBus';
         }
         const { jumpBase, jumpWeight } = this.constants.gameCurrentSettings;
         const jumpNum = jumpBase + Math.round((0.5 - Math.random()) * jumpWeight);
+        console.log('jumpNum', jumpNum)
+
         for (let i = 0; i < jumpNum; i++) {
           this.cityList.shift();
         }
@@ -186,8 +190,19 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setAnmtCtrl', {
             gameEndPageVisible: true,
           });
+          // update unlocked cities
+          store.commit('getUnlockedCities');
+          let update = false;
+          if (this.judgeCtrl.isUnlockedNew) {
+            await UserModel.updateUnlockedCities(this.judgeCtrl.unlockedCitiesParam);
+            update = true;
+          }
+          // update total miles
           if (this.judgeCtrl.totalMiles > this.userProfile.score) {
             await UserModel.updateScore(this.judgeCtrl.totalMiles);
+            update = true;
+          }
+          if (update) {
             const profile = await UserModel.getExistingUserProfile();
             store.commit('updateUserProfile', profile);
           }
@@ -244,6 +259,11 @@ import { EventBus } from '@/utils/eventBus';
         await this.checkRestCityDataCapacity();
         if (withoutAnimation) {
           this.currentCity = { ...this.nextCity };
+          if (this.currentCity.id === 1) {
+            store.commit('setJudgeCtrl', {
+              correctCityList: [...this.judgeCtrl.correctCityList, this.currentCity],
+            });
+          }
           this.randomJumpSomeCities();
           this.randomSwitchFirstTwoCities();
           this.nextCity = { ...this.cityList.shift() };
@@ -252,6 +272,7 @@ import { EventBus } from '@/utils/eventBus';
         }
         store.commit('setAnmtCtrl', {
           answerCorrectAnimationStep1: true,
+          answerCorrectAnimationSwitching: true,
         });
         setTimeout(() => {
           this.anmtCtrl.answerCorrectAnimationStep1 = false;
@@ -267,6 +288,11 @@ import { EventBus } from '@/utils/eventBus';
           this.nextCity = { ...this.cityList.shift() };
           this.calcAnswer();
         }, 600);
+        setTimeout(() => {
+          store.commit('setAnmtCtrl', {
+            answerCorrectAnimationSwitching: false,
+          });
+        }, 800);
         setTimeout(() => {
           store.commit('setAnmtCtrl', {
             answerCorrectAnimationStep2: false,
@@ -305,7 +331,7 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setJudgeCtrl', {
             totalMiles: this.judgeCtrl.totalMiles + score,
             totalDistance: this.judgeCtrl.totalDistance + this.judgeCtrl.distance,
-            correctCityList: [...this.judgeCtrl.correctCityList, this.nextCity.name_chn],
+            correctCityList: [...this.judgeCtrl.correctCityList, this.nextCity],
           });
           // 4.进行飞翔
           const flyConfig = {
@@ -329,6 +355,8 @@ import { EventBus } from '@/utils/eventBus';
           store.commit('setJudgeCtrl', {
             restTime: this.judgeCtrl.countdownStartTime,
           });
+          // 7.播放音效
+          EventBus.$emit('playAudio', `audioJumpSuccess${Math.floor((score - 0.01) / PLAYING_MAX_SCORE_PER_QUESTION * 10)}`);
         } else {
           // 1.两秒防抖
           setTimeout(() => {
@@ -351,6 +379,8 @@ import { EventBus } from '@/utils/eventBus';
               selected: calc_next_direction_chn(selectedDegree),
             },
           });
+          // 4.播放音效
+          EventBus.$emit('playAudio', 'audioJumpFail');
           // this.cityQueueBrokeOne();
           this.gameEnd();
         }

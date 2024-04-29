@@ -11,6 +11,7 @@
       :currentRoute="currentRoute"
       @handleRouteChange="handleRouteChange"
     />
+    <global-audio />
   </view>
 </template>
 
@@ -18,6 +19,7 @@
 import Vue from 'vue';
 import store from '@/store/index.js';
 import EarthGlobe from '@/components/earth-globe.vue';
+import GlobalAudio from '@/components/global-audio.vue';
 import GlobalRouter from '@/pages/index/components/globalRouter.vue';
 import { EventBus } from '@/utils/eventBus';
 
@@ -25,6 +27,7 @@ export default Vue.extend({
   components: {
     EarthGlobe,
     GlobalRouter,
+    GlobalAudio,
   },
   data() {
     return {
@@ -94,4 +97,5 @@ $earth-top-margin: 50vh;
 .earth_panel_index {
   margin-top: $earth-top-margin;
 }
+
 </style>

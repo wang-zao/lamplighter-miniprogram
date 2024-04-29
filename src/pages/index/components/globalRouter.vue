@@ -13,6 +13,10 @@
       @routeChange="handleRouteChange"
       v-if="currentRoute === 'ranking'"
     />
+    <collections
+      @routeChange="handleRouteChange"
+      v-if="currentRoute === 'collection'"
+    />
   </view>
 </template>
 
@@ -24,6 +28,8 @@
 import PlayMinute from '@/pages/play-minute/play-minute.vue';
 import HomeButtons from './homeButtons.vue';
 import Ranking from '@/pages/ranking/index.vue';
+import Collections from '@/pages/collections/index.vue';
+import { EventBus } from '@/utils/eventBus';
 
 export default {
   name: 'globalRouter',
@@ -31,6 +37,7 @@ export default {
     HomeButtons,
     PlayMinute,
     Ranking,
+    Collections,
   },
   props: {
     currentRoute: {
@@ -49,6 +56,7 @@ export default {
     },
     handleRouteChange(route) {
       this.$emit('handleRouteChange', route);
+      EventBus.$emit('playAudio', 'buttonPress');
     },
   }
 }

@@ -3,17 +3,24 @@
     class="info_panel_wrapper"
   >
     <view class="info_1_scores">
-      <view class="info_grade">⭐️ {{judgeCtrl.totalMiles.toFixed(0)}}</view>
-      <view class="info_resttime" :class="{
+      <view class="info_grade info_item">
+        <icon-font iconName="star" iconSize="1.3rem" iconMargin="10px"/>
+        <view>{{judgeCtrl.totalMiles.toFixed(0)}}</view>
+      </view>
+      <view class="info_resttime info_item" :class="{
         'info_resttime_redlight': judgeCtrl.restTime <= 3,
         'info_resttime_yellowlight': judgeCtrl.restTime <= 6 && judgeCtrl.restTime > 3,
-      }">⏰ {{judgeCtrl.restTime}}</view>
+      }">
+        <icon-font iconName="B-05" iconSize="1.3rem" iconMargin="10px"/>
+        <view>{{judgeCtrl.restTime}}</view>
+      </view>
     </view>
     <view class="info_2_cities">
       <view class="canvas_cover_cityname" v-show="!anmtCtrl.gameStartPageVisible">
         <ticket
           class="cover_ticket cover_ticke_left"
           :class="{
+            'cover_ticket_hiding': anmtCtrl.answerCorrectAnimationSwitching,
             fadeOutLeft: anmtCtrl.answerCorrectAnimationStep1,
             fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
           }"
@@ -28,6 +35,7 @@
           class="cover_ticket cover_ticke_right"
           :showAbstract="true"
           :class="{
+            'cover_ticket_hiding': anmtCtrl.answerCorrectAnimationSwitching,
             moveLeftTemperorally: anmtCtrl.answerCorrectAnimationStep1,
             fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
           }"
@@ -53,6 +61,7 @@
    * @event {Function} click 点击触发事件
    */
 
+import IconFont from '@/components/iconFont.vue';
 import store from '@/store/index.js';
 import Ticket from './ticket.vue';
 import PopUpAbstracts from './pop-up-abstracts.vue';
@@ -60,6 +69,7 @@ import PopUpAbstracts from './pop-up-abstracts.vue';
   export default {
     name: 'InfoPanel',
     components: {
+      IconFont,
       Ticket,
       PopUpAbstracts,
     },
@@ -125,12 +135,20 @@ import PopUpAbstracts from './pop-up-abstracts.vue';
     align-items: flex-end;
     padding: 3vh 0;
     height: 10vh;
+    .info_item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 1rem;
+      padding: 0 10px 0 0;
+    }
     .info_grade {
       margin-left: 5vw;
-
+      background: #ffdb5b77;
     }
     .info_resttime {
       margin-left: 2rem;
+      background: #ff5b5b77;
     }
     .info_resttime_redlight {
       animation: flashingRedFontColor .5s infinite;
@@ -148,8 +166,11 @@ import PopUpAbstracts from './pop-up-abstracts.vue';
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      .cover_ticket_hiding {
+        opacity: 0;
+      }
       .cover_ticket {
-        animation-duration: .61s;
+        animation-duration: .35s;
         animation-timing-function: linear;
         background: $general-bright-button-blue;
         border-radius: 1rem;

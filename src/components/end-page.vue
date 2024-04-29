@@ -4,40 +4,69 @@
       <view></view>
     </view>
     <view class="end_panel_score">
-      <!-- <view>avatar</view>
-      <view>王凿</view> -->
-      <view>⭐️</view>
+      <icon-font iconName="star" iconSize="1.3rem" iconMargin="0"/>
       <view class="score_number">{{rankScore}}</view>
-      <view>称号：{{rankData.text}}</view>
     </view>
     <view class="end_panel_details">
-      <view class="detail_title">本次学习成绩</view>
+      <!-- <view class="detail_title">本次学习成绩</view> -->
       <view class="details_flex">
-        <view class="detail_item">
+        <!-- <view class="detail_item">
           <view class="detail_item_title">飞行距离</view>
           <view class="detail_item_value">{{judgeCtrl.totalDistance.toFixed(0)}}km</view>
+        </view> -->
+        <view class="detail_item_last_wrap">
+          <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+            <icon-font iconName="plane-departure" iconSize="1rem" iconMargin="5px"/>
+            <view>{{judgeCtrl.gameEndInfo.from}}</view>
+            <icon-font iconName="arrow-right" iconSize="1rem" iconMargin="15px"/>
+            <icon-font iconName="plane-arrival" iconSize="1rem" iconMargin="5px"/>
+            <view>{{judgeCtrl.gameEndInfo.to}}</view>
+          </view>
+          <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
+            <view>{{judgeCtrl.gameEndInfo.correct}}</view>
+            <icon-font iconName="zhengque-tianchong" iconSize="1rem" iconMargin="5px"/>
+            <view>{{judgeCtrl.gameEndInfo.selected}}</view>
+            <icon-font iconName="cuowu" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="detail_item_last" v-else >
+            <icon-font iconName="B-05" iconSize="1rem" iconMargin="5px"/>
+            <icon-font iconName="yooxi" iconSize="1rem" iconMargin="5px"/>
+            <icon-font iconName="jurassic_warning" iconSize="1rem" iconMargin="5px"/>
+          </view>
         </view>
         <view class="detail_item">
-          <view class="detail_item_title">点亮城市个数</view>
+          <view class="detail_item_title">
+            <icon-font iconName="city_fill" iconSize="1rem"/>
+            <icon-font iconName="chenghao1" iconSize="1rem" iconMargin="5px"/>
+          </view>
           <view class="detail_item_value">{{judgeCtrl.correctCityList.length}}</view>
         </view>
         <view class="detail_item">
+          <view class="detail_item_title">
+            <icon-font iconName="book-city-fill" iconSize="1rem"/>
+            <icon-font iconName="chenghao1" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view v-if="judgeCtrl.newlyUnlockedCityList.length === 0"  class="detail_item_value">0</view>
+        </view>
+        <view v-if="judgeCtrl.newlyUnlockedCityList.length > 0" class="detail_item_tag_wrap">
+          <view class="detail_item_value_tag_item"
+            v-for="(i, key) in judgeCtrl.newlyUnlockedCityList"
+            :key="key"
+            :style="{
+              background: CITY_COLOR_HASHMAP[ i.id % 10],
+            }"
+          >
+            {{i.name_chn}}
+          </view>
+        </view>
+        <!-- <view class="detail_item">
           <view class="detail_item_title">平均方向误差</view>
           <view class="detail_item_value">{{averageBias}}</view>
         </view>
         <view class="detail_item">
           <view class="detail_item_title">平均单程得分</view>
           <view class="detail_item_value">{{averageScore}}</view>
-        </view>
-        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
-          从{{judgeCtrl.gameEndInfo.from}}飞往{{judgeCtrl.gameEndInfo.to}}
-        </view>
-        <view class="detail_item_last" v-if="judgeCtrl.restTime > 0">
-          应该向{{judgeCtrl.gameEndInfo.correct}}，而不是向{{judgeCtrl.gameEndInfo.selected}}
-        </view>
-        <view class="detail_item_last" v-else >
-          时间到！注意左上角倒计时哦
-        </view>
+        </view> -->
         <view class="detail_item_abs" >
           {{judgeCtrl.gameEndInfo.toAbs}}
         </view>
@@ -70,13 +99,19 @@
     </view>
     <view class="end_panel_operations">
       <view>
-        <button class="share_button" @click="playAgain">再学一次</button>
+        <button class="share_button" @click="playAgain">
+          <icon-font iconName="redo" iconSize="1.3rem"/>
+        </button>
       </view>
       <view>
-        <button class="share_button" open-type="share" aria-role="button"> 分享 </button>
+        <button class="share_button" open-type="share" aria-role="button">
+          <icon-font iconName="share" iconSize="1.3rem"/>
+        </button>
       </view>
       <view>
-        <button class="share_button" @click="backToHome">首页</button>
+        <button class="share_button" @click="backToHome">
+          <icon-font iconName="home" iconSize="1.3rem"/>
+        </button>
       </view>
     </view>
   </view>
@@ -88,13 +123,18 @@
    * @event {Function} click 
    */
   import store from '@/store/index.js'    
+  import IconFont from '@/components/iconFont.vue';
   import { EventBus } from '@/utils/eventBus';
   import {
     calc_fly_rank,
     getAverageBiasFromAverageScore,
   } from '@/utils/common';
+  import { CITY_COLOR_HASHMAP } from '@/utils/constants';
   export default {
     name: 'EndPage',
+    components: {
+      IconFont,
+    },
     props: {
       anmtCtrl: {
         type: Object,
@@ -109,6 +149,7 @@
       return {
         countDownTime: 3,
         showingNumbers: true,
+        CITY_COLOR_HASHMAP: CITY_COLOR_HASHMAP,
       }
     },
     computed: {
@@ -146,9 +187,11 @@
 
 <style scoped lang="scss">
 
-$score-panel-height: 30vh;
-$detail-panel-height: 30vh;
-$operation-panel-height: 20vh;
+$score-panel-height: 25vh;
+$score-panel-top-margin: 10vh;
+$score-panel-bottom-margin: 5vh;
+$detail-panel-height: 40vh;
+$operation-panel-height: 15vh;
 $general-panel-width: 60vw;
 
 .game_end_wrapper {
@@ -172,15 +215,19 @@ $general-panel-width: 60vw;
   }
   .end_panel_score {
     text-align: center;
-    height: $score-panel-height;
-    min-height: $score-panel-height;
+    margin-top: $score-panel-top-margin;
+    margin-bottom: $score-panel-bottom-margin;
+    // height: $score-panel-height;
+    // min-height: $score-panel-height;
     display: flex;
     align-items: center;
-    flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
+    background: #ffdb5b77;
+    border-radius: 1rem;
+    padding: 0 1rem;
     .score_number {
       font-size: 4rem;
-      margin: 0.5rem 2rem;
+      margin: 0 0 0 10px;
       font-weight: bolder;
     }
   }
@@ -200,16 +247,18 @@ $general-panel-width: 60vw;
       height: 100%;
       width: 100%;
       background: $uni-bg-color-mask;
+      border-radius: 1rem;
       .detail_item {
         display: flex;
         width: 100%;
         justify-content: space-between;
         align-items: top;
-        margin-bottom: 1rem;
+        margin-bottom: 10px;
         .detail_item_title {
           line-height: 1rem;
           white-space: nowrap;
           opacity: .7;
+          display: flex;
         }
         .detail_item_value {
           line-height: 1rem;
@@ -218,8 +267,29 @@ $general-panel-width: 60vw;
           white-space: pre-wrap;
         }
       }
-      .detail_item_last {
+      .detail_item_tag_wrap {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        margin-bottom: 1.5rem;
+        .detail_item_value_tag_item {
+          border-radius: 5px;
+          margin: 5px 0 0 5px;
+          padding: 0 5px;
+        }
+      }
+      .detail_item_last_wrap {
+        width: 95%;
         background: #ffffff22;
+        border-radius: 1rem;
+        padding: 0.5rem 0.2rem;
+        margin: 0 0 0.5rem;
+        .detail_item_last {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
       }
       .detail_item_abs {
         margin-top: 1rem;
@@ -253,15 +323,18 @@ $general-panel-width: 60vw;
       background: #ffffff44;
       text-align: center;
       border-radius: 1rem;
-      border: 1px #fff solid;
+      // border: 1px #fff solid;
       color: #fff;
-      padding: 0.5rem 0.5rem;
-      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      // font-size: 1rem;
       line-height: 1rem;
-      ::after {
-        padding: none;
-        border: none;
-      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // ::after {
+      //   padding: none;
+      //   border: none;
+      // }
     }
   }
   .end_panel_footer {

@@ -3,7 +3,8 @@
     <view class="ranking_body">
       <view class="ranking_title">
         <view class="ranking_title_text">
-          世界排行
+          <icon-font iconName="rank" iconSize="2rem" iconMargin="5px"/>
+          <icon-font iconName="paiming_rank" iconSize="2rem" iconMargin="5px"/>
         </view>
       </view>
       <view class="ranking_box">
@@ -26,16 +27,30 @@
       </view>
       <view class="ranking_card_all_count">
         <view class="count_line">
-          <view class="count_span">截止</view>
-          <view class="count_span_highlight">{{ dateYear }}年{{ dateMonth }}月{{ dateDay }}日</view>
+          <view class="count_span">
+            <icon-font iconName="jiezhiriqi" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span_highlight">{{ dateYear }}-{{ dateMonth }}-{{ dateDay }}</view>
         </view>
         <view class="count_line">
-          <view class="count_span">已有</view>
+          <view class="count_span">
+            <icon-font iconName="brainpower" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="chenghao1" iconSize="1rem" iconMargin="5px"/>
+          </view>
           <view class="count_span_highlight">{{ allUserCount }}</view>
-          <view class="count_span">名点灯人在这里学习</view>
         </view>
         <view class="count_line">
-          <view class="count_span">努力点亮更远的远方</view>
+          <view class="count_span">
+            <icon-font iconName="earth2" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="compass" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="star" iconSize="1rem" iconMargin="5px"/>
+          </view>
         </view>
       </view>
     </view>
@@ -44,7 +59,7 @@
         class="ranking_bottom_button"
         @click="emitRouteChange('home')"
       >
-        返回
+        <icon-font iconName="return" iconSize="1.3rem"/>
       </view>
       <view 
         class="center_group"
@@ -53,18 +68,18 @@
           class="ranking_bottom_button"
           @click="changeRankingPage(-1)"
         >
-          上一页
+          <icon-font iconName="jiantou_shangyiye" iconSize="1.3rem"/>
         </view>
         <view 
           class="ranking_bottom_button"
           @click="changeRankingPage(1)"
         >
-          下一页
+          <icon-font iconName="jiantou_xiayiye" iconSize="1.3rem"/>
         </view>
       </view>
       <view class="ranking_bottom_button ranking_bottom_button_share">
         <button class="ranking_bottom_button_inner" open-type="share">
-        分享
+          <icon-font iconName="share" iconSize="1.3rem"/>
         </button>
       </view>
     </view>
@@ -74,6 +89,7 @@
 <script>
   import { UserModel } from '@/api/index.js';
   import RankingCard from './components/ranking-card.vue';
+  import IconFont from '@/components/iconFont.vue';
   import store from '@/store/index.js';
   /**
    * @description 
@@ -85,6 +101,7 @@
     },
     components: {
       RankingCard,
+      IconFont,
     },
     data() {
       return {
@@ -189,10 +206,14 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
     .ranking_title_text {
       font-size: 1.5rem;
       padding: 1rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .ranking_box {
       height: $ranking-box-height;
       background: #ffffff11;
+      border-radius: 2rem;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -205,6 +226,7 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
     .your_box {
       margin-top: 5%;
       height: $ranking-item-height;
+      border-radius: 2rem;
       background: #ffffff11;
       display: flex;
       .ranking_card_yours {
@@ -217,9 +239,14 @@ $ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
       .count_line {
         display: flex;
         justify-content: center;
+        align-items: center;
         margin-top: $ranking-item-inner-padding;
         .count_span {
           opacity: 0.5;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
         }
         .count_span_highlight {
           opacity: 0.8;

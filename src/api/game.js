@@ -33,8 +33,18 @@ class GameModal {
       data.forEach((i) => {
         i.separated_abs_chn = i.abs_chn.split('。')
       })
-      console.log('getGameQuestions getGameQuestions', data)
+      // console.log('getGameQuestions getGameQuestions', data)
       return data
+    } catch (error) {
+      console.log('error!!!', error)
+      throw error
+    }
+  }
+
+  async getAllQuestionCount() {
+    try {
+      const { total } = await this.model.count();
+      return total;
     } catch (error) {
       console.log('error!!!', error)
       throw error
