@@ -97,7 +97,7 @@ import { EventBus } from '@/utils/eventBus';
           currentPage: 0,
           pageSize: 20,
         };
-        EventBus.$emit('initEarthAnimation', {
+        EventBus.$emit('startPlayEarthAnimation', {
           lat: 40,
           lon: 116,
         });
@@ -339,8 +339,9 @@ import { EventBus } from '@/utils/eventBus';
             fromLon: this.currentCity.lon,
             toLat: this.nextCity.lat,
             toLon: this.nextCity.lon,
-            isDrawOrbit: true,
+            isDrawOrbit: false,
             score,
+            cameraHeight: 600,
           };
           EventBus.$emit(
             'flyFromOneToAnother',
@@ -384,7 +385,6 @@ import { EventBus } from '@/utils/eventBus';
           // this.cityQueueBrokeOne();
           this.gameEnd();
         }
-        
       },
       watchChooseDirection() {
         EventBus.$on('onChooseDirection', (deg) => {

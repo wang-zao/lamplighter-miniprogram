@@ -5,11 +5,11 @@
         <image class="info_img_content" src="@/static/title-miniprogram-s.png" />
       </view>
       <!-- <view class="info_border"></view> -->
-      <view class="info_content">
+      <!-- <view class="info_content">
         <view class="top_line_notes top_line_notes_line1">{{ note1 }}</view>
         <view class="top_line_notes">{{ note2 }}</view>
         <view class="top_line_notes">{{ note3 }}</view>
-      </view>
+      </view> -->
     </view>
     <view class="bottom_info">
       <view class="mid_buttons">

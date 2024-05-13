@@ -94,8 +94,8 @@ $earth-top-margin: 50vh;
   font-size: 1rem;
 }
 
-.earth_panel_index {
-  margin-top: $earth-top-margin;
-}
+// .earth_panel_index {
+//  margin-top: $earth-top-margin;
+// }
 
 </style>

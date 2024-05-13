@@ -29,7 +29,9 @@ yarn install
 ```
 这样我们这个项目的依赖就都被下载到了node_modules这个文件夹里，现在就可以运行项目了。（这个文件夹的东西在gitignore里面，意味着每次git更新不会管这个文件夹里的任何东西，需要开发者首次clone时自己yarn install）
 接下来我们就可以跑这个项目。运行下面这个命令是普通web版本：
+
 ```
+export NODE_OPTIONS=--openssl-legacy-provider
 yarn serve
 ```
 我们不运行这个命令，因为我们开发的是微信小程序。我们首先要运行这个命令：

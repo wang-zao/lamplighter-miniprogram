@@ -14,8 +14,10 @@ export const PICTURES_URL = {
   AIRPLANE: 'cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/airplane_new.png',
   COMPASS: 'cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/compass_new.png',
   COMPASS_NEEDLE: 'cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/needle_new.png',
-  EARTH: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/globe-green-tiny.png',
+  EARTH: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/globe-green-jewlry.jpeg',
   EARTH_TOPOLOGY: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/globe-topo.png',
+  STAR_MAP: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/starmap_2020_blue_4.jpeg',
+  CLOUDS: 'https://6e6f-northenv-4gh0748xf50343cf-1304769767.tcb.qcloud.la/clouds_whiter.png',
 }
 
 export const FONT_URL = 'https://6e6f-northenv-4gh0748xf50343cf-1304769767/chill_k_sans.ttf'
