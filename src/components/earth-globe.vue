@@ -72,7 +72,7 @@ export default Vue.extend({
       camera: null,
       earthRadius: 400,
       // earthRoateDelta: 0.0003, // prod value
-      earthRoateDelta: 0.0007, // testing
+      earthRoateDelta: 0.0015, // testing
       cameraHeight: 2000,
       cameraInitialHeight: 2000,
       globalTHREE: null,
@@ -124,7 +124,8 @@ export default Vue.extend({
       threeObjects: {
         lightBalls: [],
         directionalLight: null,
-        atmosphereMaterial: null,
+        innerAtmosphereMaterial: null,
+        outerAtmosphereMaterial: null,
       }
     }
   },
@@ -230,7 +231,8 @@ export default Vue.extend({
       await this.drawEarthSurface(THREE, scene);
       await this.drawEarthClouds(THREE, scene);
       await this.drawRenderSky(THREE, scene);
-      await this.drawEarthAtmosphere(THREE, scene);
+      await this.drawEarthInnerFresnelAtmosphere(THREE, scene);
+      await this.drawEarthOuterAtmosphere(THREE, scene);
 
       //Render the image
       renderer.setPixelRatio(2)
@@ -277,7 +279,7 @@ export default Vue.extend({
       const sky = new THREE.Mesh(skyGeometry, skyMaterial);
       scene.add(sky);
     },
-    async drawEarthAtmosphere(THREE, scene) {
+    async drawEarthInnerFresnelAtmosphere(THREE, scene) {
       const vertexShader = `
         varying vec3 vNormal;
         varying vec3 vPositionNormal;
@@ -297,7 +299,7 @@ export default Vue.extend({
           float lightDot = dot(vNormal, normalizedLightDirection);
           if (lightDot > 0.0) {
             float viewDot = dot(vNormal, normalize(vPositionNormal));
-            float fresnelCoefficient = pow(1.1 - viewDot, 3.5);
+            float fresnelCoefficient = pow(1.0 - viewDot, 1.1);
             vec3 atmosphereColor = vec4(0.68, 0.85, 0.98, 1.0).rgb * fresnelCoefficient * lightDot;
             gl_FragColor = vec4(atmosphereColor, 1.0);
           } else {
@@ -307,7 +309,7 @@ export default Vue.extend({
       `;
 
 
-      const atmosphereMaterial = new THREE.ShaderMaterial({
+      const innerAtmosphereMaterial = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader,
         uniforms: {
@@ -319,14 +321,63 @@ export default Vue.extend({
         depthWrite: false,
         depthTest: false
       });
-      this.threeObjects.atmosphereMaterial = atmosphereMaterial;
+      this.threeObjects.innerAtmosphereMaterial = innerAtmosphereMaterial;
 
-      const atmosphereGeometry = new THREE.SphereGeometry(this.earthRadius * 1.05, 50, 50);
+      const atmosphereGeometry = new THREE.SphereGeometry(this.earthRadius * 1.05, 32, 32);
+      const atmosphere = new THREE.Mesh(atmosphereGeometry, innerAtmosphereMaterial);
+      scene.add(atmosphere);
+    },
+    async drawEarthOuterAtmosphere(THREE, scene) {
+      const atmosphereRadius = this.earthRadius + 50;
+      const atmosphereGeometry = new THREE.SphereGeometry(atmosphereRadius, 32, 32);
+
+      const vertexShader = `
+        varying vec3 vNormal;
+        varying vec3 vPositionNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal); // Transform normals to world space
+          vPositionNormal = normalize((modelViewMatrix * vec4(position, 1.0)).xyz);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `;
+
+      const fragmentShader = `
+        uniform vec3 uLightDirection; // Uniform for dynamic light direction
+        varying vec3 vNormal;
+        varying vec3 vPositionNormal;
+        void main() {
+          vec3 normalizedLightDirection = normalize(uLightDirection);
+          float lightDot = dot(vNormal, normalizedLightDirection);
+          float viewDot = dot(vNormal, normalize(vPositionNormal));
+          float fresnelCoefficient = pow(3.0 * viewDot, 5.0); // Gradient effect
+          vec3 atmosphereColor = vec4(0.68, 0.85, 0.98, fresnelCoefficient).rgb; // Adjust color to include alpha
+          if (lightDot > 0.0) {
+            gl_FragColor = vec4(atmosphereColor * lightDot, fresnelCoefficient);
+          } else {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); // Make it fully transparent if not facing the light
+          }
+        }
+      `;
+
+      const atmosphereMaterial = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: {
+          uLightDirection: { value: this.directionalLight.position.clone().normalize() }
+        },
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthWrite: false,
+        depthTest: true, // this will make the outer atmosphere not visible when the camera is inside the earth.
+      });
+
+      this.threeObjects.outerAtmosphereMaterial = atmosphereMaterial;
+
       const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
       scene.add(atmosphere);
-
-      return atmosphereMaterial; // Return the material for external updates
     },
+
     async drawEarthSurface(THREE, scene ) {
       const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32 );
       let texture = new THREE.TextureLoader().load(
@@ -650,16 +701,20 @@ export default Vue.extend({
             Math.sin(this.globalScene.rotation.y * 3) * 1,
           );
           // directionalLit actually only rotated 2 times of the earth because of the rotation of the earth.
-          const lightRelativePosition = new this.globalTHREE.Vector3(
-            Math.cos(this.globalScene.rotation.y * 2) * 1,
+          const clockwiseReversedLightRelativePosition = new this.globalTHREE.Vector3(
+            Math.cos((-this.globalScene.rotation.y-60) * 2) * 1,
             0.5,
-            Math.sin(this.globalScene.rotation.y * 2) * 1,
+            Math.sin((-this.globalScene.rotation.y-60) * 2) * 1,
           );
-          // set threeObjects.atmosphereMaterial's uLightDirection to the opposite direction of the rotation.
-          this.threeObjects.atmosphereMaterial.uniforms.uLightDirection.value = lightRelativePosition;
-          // set needUpdate to true to update the uniform value.
-          this.threeObjects.atmosphereMaterial.needsUpdate = true;
-          // rerender the scene
+          if (this.threeObjects.innerAtmosphereMaterial) {
+            this.threeObjects.innerAtmosphereMaterial.uniforms.uLightDirection.value = clockwiseReversedLightRelativePosition;
+            this.threeObjects.innerAtmosphereMaterial.needsUpdate = true;
+          }
+
+          if (this.threeObjects.outerAtmosphereMaterial) {
+            this.threeObjects.outerAtmosphereMaterial.uniforms.uLightDirection.value = clockwiseReversedLightRelativePosition;
+            this.threeObjects.outerAtmosphereMaterial.needsUpdate = true;
+          }
           this.canvas.requestAnimationFrame(animate);
         };
         animate();
