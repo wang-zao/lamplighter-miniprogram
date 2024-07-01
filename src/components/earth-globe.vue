@@ -437,15 +437,15 @@ export default Vue.extend({
     },
     flyFromOneToAnother(lat1, lng1, lat2, lng2, isDrawOrbit, score, cameraHeight = this.cameraInitialHeight) {
       if (!this.canvas || this.canvas === undefined || this.canvas === null) {
-        console.error('canvas is not ready');
-        return;
+          console.error('canvas is not ready');
+          return;
       }
       const t = this.flyTimeSpan;
       const f = this.flyAnimationFreq;
       const steps = t / f;
-      const delta_lat = (lat2 - lat1) / steps;
-      const delta_lng = (lng2 - lng1) / steps;
-      const delta_camera_height = (cameraHeight - this.cameraHeight) / steps;
+      const delta_lat = lat2 - lat1;
+      const delta_lng = lng2 - lng1;
+      const delta_camera_height = cameraHeight - this.cameraHeight;
       let currentGroundLat = lat1;
       let currentGroundLng = lng1;
       let currentHeight = 10;
@@ -455,6 +455,10 @@ export default Vue.extend({
       let prevHeight = currentHeight;
       let count = 0;
 
+      const easeInOutCubic = (t) => {
+          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      };
+
       const update = () => {
           if (count >= steps) {
               this.anmtCtrl.isPlanePausing = true;
@@ -463,20 +467,28 @@ export default Vue.extend({
               return;
           }
 
+          // Calculate the eased progress
+          const progress = easeInOutCubic(count / steps);
+
+          // Interpolate current positions with easing
+          currentGroundLat = lat1 + delta_lat * progress;
+          currentGroundLng = lng1 + delta_lng * progress;
+          currentCameraHeight = this.cameraHeight + delta_camera_height * progress;
+
           // Your update logic here (same as in setInterval)
           let currentCameraLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, this.earthCameraHeadOffset);
           let currentLookAtLatLng = this.getOffsetLatLonByGroundPoint(currentGroundLat, currentGroundLng, 0);
           let currentCameraXYZ = this.convertLatLngToXyz(
-            currentCameraLatLng.lat,
-            currentCameraLatLng.lng,
-            this.earthRadius + currentCameraHeight,
-            this.globalTHREE,
+              currentCameraLatLng.lat,
+              currentCameraLatLng.lng,
+              this.earthRadius + currentCameraHeight,
+              this.globalTHREE,
           );
           let currentLookAtXYZ = this.convertLatLngToXyz(
-            currentLookAtLatLng.lat,
-            currentLookAtLatLng.lng,
-            this.earthRadius * 0.3 ,
-            this.globalTHREE,
+              currentLookAtLatLng.lat,
+              currentLookAtLatLng.lng,
+              this.earthRadius * 0.3 ,
+              this.globalTHREE,
           )
           // make centerposition's y up 60 deg
           currentLookAtXYZ.y += this.flyZoomInCameraYOffset * this.earthRadius;
@@ -485,23 +497,20 @@ export default Vue.extend({
           this.camera.lookAt(currentLookAtXYZ);
 
           if (isDrawOrbit) {
-            this.drawFlyRouteLine(
-              prevGroundLat, prevGroundLng, prevHeight,
-              currentGroundLat, currentGroundLng, currentHeight
-            );
-            prevHeight = currentHeight;
-            currentHeight = get_flight_orbit_height(
-              lat1, lng1, lat2, lng2, 
-              currentGroundLat, currentGroundLng,
-          );
+              this.drawFlyRouteLine(
+                  prevGroundLat, prevGroundLng, prevHeight,
+                  currentGroundLat, currentGroundLng, currentHeight
+              );
+              prevHeight = currentHeight;
+              currentHeight = get_flight_orbit_height(
+                  lat1, lng1, lat2, lng2, 
+                  currentGroundLat, currentGroundLng,
+              );
           }
 
           prevGroundLat = currentGroundLat;
           prevGroundLng = currentGroundLng;
 
-          currentGroundLat += delta_lat;
-          currentGroundLng += delta_lng;
-          currentCameraHeight += delta_camera_height;
           count += 1;
 
           this.canvas.requestAnimationFrame(update); // Loop the animation

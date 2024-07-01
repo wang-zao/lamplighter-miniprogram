@@ -4,6 +4,7 @@ import ThemeModal from './theme';
 import GameModal from './game';
 import FeedBackModal from './feedback';
 import SettingsModal from './settings';
+import FootprintModal from './footprint';
 
 export {
   TestModal,
@@ -12,4 +13,5 @@ export {
   GameModal,
   FeedBackModal,
   SettingsModal,
+  FootprintModal,
 }

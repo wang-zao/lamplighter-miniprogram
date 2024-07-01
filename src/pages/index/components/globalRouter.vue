@@ -17,6 +17,10 @@
       @routeChange="handleRouteChange"
       v-if="currentRoute === 'collection'"
     />
+    <light-up
+      @routeChange="handleRouteChange"
+      v-if="currentRoute === 'light-up'"
+    />
   </view>
 </template>
 
@@ -29,6 +33,7 @@ import PlayMinute from '@/pages/play-minute/play-minute.vue';
 import HomeButtons from './homeButtons.vue';
 import Ranking from '@/pages/ranking/index.vue';
 import Collections from '@/pages/collections/index.vue';
+import LightUp from '@/pages/light-up/index.vue'
 import { EventBus } from '@/utils/eventBus';
 
 export default {
@@ -38,6 +43,7 @@ export default {
     PlayMinute,
     Ranking,
     Collections,
+    LightUp,
   },
   props: {
     currentRoute: {

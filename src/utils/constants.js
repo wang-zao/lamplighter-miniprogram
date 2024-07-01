@@ -77,3 +77,36 @@ export const CITY_COLOR_HASHMAP_NOOPACITY = [
 // $color: hsl(40, 100%, 80%);
 // $color: hsl(40, 100%, 85%);
 // $color: hsl(40, 100%, 90%);
+
+export const timeSpanOptions = [
+  {
+    time_span_id: 1,
+    name_chn: '短短几天',
+    code: 'days',
+  },
+  {
+    time_span_id: 2,
+    name_chn: '一周左右',
+    code: 'oneweek',
+  },
+  {
+    time_span_id: 3,
+    name_chn: '几个星期',
+    code: 'weeks',
+  },
+  {
+    time_span_id: 4,
+    name_chn: '几个月',
+    code: 'months',
+  },
+  {
+    time_span_id: 5,
+    name_chn: '一两年',
+    code: 'oneyear',
+  },
+  {
+    time_span_id: 6,
+    name_chn: '三年以上',
+    code: 'years',
+  },
+];

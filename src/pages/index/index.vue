@@ -3,6 +3,7 @@
     <earth-globe
       class="earth_panel_index"
       ref="flyingEarth"
+      v-if="!hideEarthGlobeForTesting"
       :anmtCtrl="anmtCtrl"
       :judgeCtrl="judgeCtrl"
       :currentRoute="currentRoute"
@@ -32,6 +33,7 @@ export default Vue.extend({
   data() {
     return {
       currentRoute: 'home',
+      hideEarthGlobeForTesting: true,
     }
   },
   computed: {
@@ -43,9 +45,10 @@ export default Vue.extend({
     },
   },
   onLoad() {
-    this.showLoading();
+    if (!this.hideEarthGlobeForTesting) {
+      this.showLoading();
+    }
     this.watchRouteChangeFromEventBus();
-
   },
   onShareAppMessage(res){
     return {
@@ -64,6 +67,9 @@ export default Vue.extend({
       if (route === 'home') {
         EventBus.$emit('enableEarthRotation');
       } else if (route === 'play-minute') {
+        EventBus.$emit('disableEarthRotation');
+        EventBus.$emit('playAgain');
+      } else if (route === 'light-up') {
         EventBus.$emit('disableEarthRotation');
         EventBus.$emit('playAgain');
       }
