@@ -14,10 +14,16 @@
     <view class="light_up_add_city_dialog" v-if="showingAddCityWindow">
       <adding-city
         @closeWindow="toggleAddCityWindow(false)"
+        @showResultScreen="toggleResultScreenWindow(true)"
         @changeCurrentPoint="changeCurrentPoint"
         :structuredCityData="structuredCityData"
         :currentPoint="currentPoint"
       ></adding-city>
+    </view>
+    <view class="result_screen_dialog" v-if="showingResultScreenWindow">
+      <result-screen
+        @closeWindow="toggleResultScreenWindow(false)"
+      ></result-screen>
     </view>
   </view>
 </template>
@@ -29,11 +35,13 @@
  */
 import Vue from 'vue';
 import AddingCity from './components/addingCity.vue';
+import ResultScreen from './components/resultScreen.vue';
 import { parsedCityData } from '@/static/data/city500';
 export default Vue.extend({
   name: 'LightUp',
   components: {
     AddingCity,
+    ResultScreen,
   },
   props: {
     // anyprops: {
@@ -44,6 +52,7 @@ export default Vue.extend({
   data() {
     return {
       showingAddCityWindow: false,
+      showingResultScreenWindow: false,
       // further data structure:
       // structuredCityData: {
       //   domestic: {
@@ -83,7 +92,12 @@ export default Vue.extend({
       this.$emit('routeChange', 'home');
     },
     toggleAddCityWindow(target) {
+      console.log('toggleAddCityWindow', target)
       this.showingAddCityWindow = target;
+    },
+    toggleResultScreenWindow(target) {
+      console.log('toggleResultScreenWindow', target)
+      this.showingResultScreenWindow = target;
     },
     changeCurrentPoint(point) {
       this.currentPoint.lat = point.lat || point.latitude;

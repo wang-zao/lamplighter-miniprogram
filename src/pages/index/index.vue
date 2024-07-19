@@ -33,7 +33,7 @@ export default Vue.extend({
   data() {
     return {
       currentRoute: 'home',
-      hideEarthGlobeForTesting: true,
+      hideEarthGlobeForTesting: false,
     }
   },
   computed: {
@@ -70,6 +70,9 @@ export default Vue.extend({
         EventBus.$emit('disableEarthRotation');
         EventBus.$emit('playAgain');
       } else if (route === 'light-up') {
+        EventBus.$emit('disableEarthRotation');
+        EventBus.$emit('playAgain');
+      } else if (route === 'random-city') {
         EventBus.$emit('disableEarthRotation');
         EventBus.$emit('playAgain');
       }

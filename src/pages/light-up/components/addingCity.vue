@@ -148,28 +148,22 @@ export default Vue.extend({
         return;
       }
       // 进行飞翔
-      this.flyAllCity();
-      // const flyConfig = {
-      //   fromLat: this.currentPoint.lat,
-      //   fromLon: this.currentPoint.lng,
-      //   toLat: this.point_to_ignite.lat,
-      //   toLon: this.point_to_ignite.lng,
-      //   isDrawOrbit: false,
-      //   score: this.point_to_ignite.time_id * 3,
-      //   cameraHeight: 600,
-      // };
-      // EventBus.$emit(
-      //   'flyFromOneToAnother',
-      //   flyConfig,
-      // );
-      // // update the current point
-      // this.changeCurrentPoint(this.point_to_ignite);
+      // this.flyAllCity();
+      // 并不进行飞翔，我们这次直接生成一个列表
+      this.showResultScreen();
       this.closeWindow();
     },
     async getCityFootprint(id) {
       const res = await FootprintModal.getFootprintCityById(id);
       console.log('getCityFootprint', res);
       return res;
+    },
+    showResultScreen() {
+      this.$emit('showResultScreen');
+      setTimeout(() => {
+        console.log('event fired calculateResultsOfVisitedCities', this.selectedCities)
+        EventBus.$emit('calculateResultsOfVisitedCities', this.selectedCities);
+      }, 1000);
     },
     flyAllCity() {
       // fly to all city one by one, sorting by longtitude, start from 180E to 180W
@@ -200,7 +194,7 @@ export default Vue.extend({
             latitude: city.latitude,
             longitude: city.longitude,
           }
-        }, index * 3000);
+        }, index * 1000);
       });
     },
     changeCurrentPoint(point) {

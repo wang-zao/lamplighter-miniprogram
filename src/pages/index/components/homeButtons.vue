@@ -14,6 +14,11 @@
         <view class="top_line_notes">{{ note3 }}</view>
       </view> -->
     </view>
+    <view class="mid_draggable_area">
+      <draggable-area
+        height="55vh"
+      />
+    </view>
     <view class="bottom_info">
       <view class="mid_buttons">
         <!-- TODO: 用户信息部分等用户登录功能修好后放出 -->
@@ -28,19 +33,19 @@
               <view class="button_new_icon button_compass_new">
                 <image class="button_new_icon_img" src="@/static/plane.svg"></image>
               </view>
-              <view class="button_new_text">晕头转向</view>
+              <view class="button_new_text">方向感训练器</view>
             </view>
             <view class="button_new_item" @click="goToLightUp">
               <view class="button_new_icon button_footprint_new">
                 <image class="button_new_icon_img" src="@/static/earth.svg"></image>
               </view>
-              <view class="button_new_text">闻所未闻</view>
+              <view class="button_new_text">流浪史生成器</view> 
             </view>
-            <view class="button_new_item">
+            <view class="button_new_item" @click="goToRandomCity">
               <view class="button_new_icon button_travel_new">
                 <image class="button_new_icon_img" src="@/static/city_fill.svg"></image>
               </view>
-              <view class="button_new_text">困于一隅</view>
+              <view class="button_new_text">目的地抽取器</view>
             </view>
           </view>
           <!-- 方向训练tab -->
@@ -130,6 +135,7 @@
   import store from '@/store/index.js'
   import UserCard from './user-card.vue';
   import LevelSelect from './level-select.vue';
+  import DraggableArea from './draggableArea.vue';
   import { EventBus } from '@/utils/eventBus';
   import { FONT_URL } from '@/utils/constants';
 
@@ -139,6 +145,7 @@
       UserCard,
       IconFont,
       LevelSelect,
+      DraggableArea,
     },
     data() {
       return {
@@ -193,6 +200,9 @@
       },
       goToCollection() {
         this.$emit('routeChange', 'collection');
+      },
+      goToRandomCity() {
+        this.$emit('routeChange', 'random-city');
       },
       switchButtonTab(tab) {
         this.buttonTab = tab;

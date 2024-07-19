@@ -14,8 +14,8 @@
       <!-- province or country selector -->
       <view class="choosing_content" v-if="selectionStep.domeOrFore" :class="{'choosing_content_display': selectionStep.domeOrFore && !selectionStep.countryOrProvince}">
         <view class="choosing_option_item_group" v-for="(letter_group) in countryOrProvinceOptions" :key="letter_group.letter" >
-          <view class="choosing_option_item_group_title">{{ letter_group.letter }}</view>
           <view class="choosing_option_item_wrap">
+            <view class="choosing_option_item_group_title">{{ letter_group.letter }}</view>
             <view class="choosing_option_item" v-for="(option) in letter_group.options" :key="option.name_chn" @click="handleItemSelected(option)" :class="{
               'choosing_option_item_selected': isCurrentCountryOrProvinceHasSelectedCity(option.name_chn),
               'choosing_option_item_major': isCurrentCityMajor(option)
@@ -27,16 +27,28 @@
         </view>
       </view>
       <!-- city selector -->
+      <!-- <view class="choosing_content choosing_content_display"  v-if="selectionStep.domeOrFore && selectionStep.countryOrProvince">
+        <view class="choosing_option_item_group_mixed" v-for="(letterOrOption, key) in cityOptionsMixedWithLetterGroup" :key="`${key}-letter-or-option`" >
+          <view class="choosing_option_item" v-if="letterOrOption.type === 'option'" @click="(letterOrOption) => {handleItemSelected(letterOrOption.option)}" :class="{
+            'choosing_option_item_selected': isCurrentCitySelected(letterOrOption.option),
+            'choosing_option_item_major': isCurrentCityMajor(letterOrOption.option)
+          }">
+            <view class="choosing_option_item_chn">{{ isCurrentCityMajor(letterOrOption.option) ? '★ ': ''}}{{ letterOrOption.option.name_chn }}</view>
+            <view class="choosing_option_confirm" v-show="isCurrentCitySelected(letterOrOption.option)">へ</view>
+          </view>
+          <view class="choosing_option_item" v-else>{{ letterOrOption.letter }}</view>
+        </view>
+      </view> -->
       <view class="choosing_content choosing_content_display"  v-if="selectionStep.domeOrFore && selectionStep.countryOrProvince">
         <view class="choosing_option_item_group" v-for="(letter_group) in cityOptions" :key="letter_group.letter" >
-          <view class="choosing_option_item_group_title">{{ letter_group.letter }}</view>
           <view class="choosing_option_item_wrap">
+            <view class="choosing_option_item_group_title">{{ letter_group.letter }}</view>
+            <!-- <view class="choosing_option_item_group_title">{{ letter_group.letter }}</view> -->
             <view class="choosing_option_item" v-for="(option) in letter_group.options" :key="option.name_chn" @click="handleItemSelected(option)" :class="{
               'choosing_option_item_selected': isCurrentCitySelected(option),
               'choosing_option_item_major': isCurrentCityMajor(option)
             }">
               <view class="choosing_option_item_chn">{{ isCurrentCityMajor(option) ? '★ ': ''}}{{ option.name_chn }}</view>
-              <!-- <view class="choosing_option_item_eng" v-show="selectionStep.domeOrFore === 'foreign' && selectionStep.countryOrProvince.length > 0">{{option.name_eng}}</view> -->
               <view class="choosing_option_confirm" v-show="isCurrentCitySelected(option)">へ</view>
             </view>
           </view>
@@ -116,6 +128,19 @@ export default Vue.extend({
       });
       return this.washedGroupedOptions(deepClonedOptionsByLetter);
     },
+    cityOptionsMixedWithLetterGroup() {
+      const res = this.cityOptions.reduce((acc, letter) => {
+        if (letter.options.length > 0) {
+          acc.push({ type: 'letter', letter: letter.letter });
+          acc.push(...letter.options.map(option => ({ type: 'option', option })));
+        }
+        return acc;
+      }, []);
+
+      console.log('res', res)
+
+      return res;
+    }
   },
   methods: {
     init() {
@@ -181,6 +206,7 @@ export default Vue.extend({
       return;
     },
     handleItemSelected(option) {
+      console.log('option new', option)
       if (!this.selectionStep.domeOrFore) {
         this.selectionStep.domeOrFore = option.key_of_data;
         return;
@@ -306,10 +332,10 @@ $modal-window-left-distance: calc(50vw - #{$modal-window-width} / 2);
     overflow-y: scroll;
     .choosing_option_item {
       width: fit-content;
-      max-width: 90%;
-      white-space: pre-wrap;
+      // max-width: 90%;
+      white-space: nowrap;
       padding: 2px 5px;
-      margin-bottom: 5px;
+      margin: 3px 0;
       background: #ffffff33;
       border-radius: 0.5rem;
       text-align: left;
@@ -349,19 +375,30 @@ $modal-window-left-distance: calc(50vw - #{$modal-window-width} / 2);
   flex-direction: column;
   align-items: center;
   width: 100%;
+  margin-bottom: 16px;
   .choosing_option_item_group_title {
-    width: 100%;
-    text-align: left;
-    margin-top: 5px;
-    margin-bottom: 2px;
+    text-align: center;
+    color: #ffffff88;
+    margin-right: 10px;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    box-sizing: border-box;
+    width: 1.5rem;
+    border: 1px solid #ffffff88;
+    border-radius: 0.5rem;
   }
   .choosing_option_item_wrap {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+    align-items: center;
     .choosing_option_item {
       margin-right: 10px;
     }
   }
+}
+
+.choosing_option_item_group_mixed {
+  display: flex;
 }
 </style>

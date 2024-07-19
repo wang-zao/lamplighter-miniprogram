@@ -21,6 +21,10 @@
       @routeChange="handleRouteChange"
       v-if="currentRoute === 'light-up'"
     />
+    <random-city
+      @routeChange="handleRouteChange"
+      v-if="currentRoute === 'random-city'"
+    />
   </view>
 </template>
 
@@ -34,6 +38,7 @@ import HomeButtons from './homeButtons.vue';
 import Ranking from '@/pages/ranking/index.vue';
 import Collections from '@/pages/collections/index.vue';
 import LightUp from '@/pages/light-up/index.vue'
+import RandomCity from '@/pages/random-city/index.vue';
 import { EventBus } from '@/utils/eventBus';
 
 export default {
@@ -44,6 +49,7 @@ export default {
     Ranking,
     Collections,
     LightUp,
+    RandomCity,
   },
   props: {
     currentRoute: {

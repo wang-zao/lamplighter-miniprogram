@@ -41,13 +41,15 @@ import {
   LIGHTBALL_COLORS,
   PLAYING_MAX_SCORE_PER_QUESTION,
 } from '@/utils/constants';
-import { createScopedThreejs } from 'threejs-miniprogram';
+import { createScopedThreejs } from '@/utils/createScopedThreejs.js';
+// import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
 import GuidePage from '@/components/guide-page.vue';
 import EndPage from '@/components/end-page.vue';
 import Compass from '@/components/compass.vue';
 import EventAgent from '@/components/event-agent.vue';
 import { EventBus } from '@/utils/eventBus';
+import { LightGlowingBallManager } from './earth-components/light-ball';
 
 export default Vue.extend({
 // export default {
@@ -72,9 +74,10 @@ export default Vue.extend({
       camera: null,
       earthRadius: 400,
       // earthRoateDelta: 0.0003, // prod value
-      earthRoateDelta: 0.0015, // testing
+      earthRoateDelta: 0.15, // testing
       cameraHeight: 2000,
       cameraInitialHeight: 2000,
+      directionalLightInitialPosition: [0, 0, 1],
       globalTHREE: null,
       globalScene: null,
       earthSurfaceOffset: 20,
@@ -83,7 +86,9 @@ export default Vue.extend({
       earthColorDarker: '#6683bd',
       earthColorBackground: '#041536',
       earthGlobalLightIntencityMin: 0.3,
-      earthGlobalLightIntencityMax: 1,
+      earthGlobalLightIntencityMax: 0.5,
+      earthAmbientLightIntencity: 0.3,
+      LightGlowingBallManager: null,
       flyTimeSpan: 2000,
       flyAnimationFreq: 50,
       flyZoomInCameraYOffset: 0.7,
@@ -123,6 +128,7 @@ export default Vue.extend({
       },
       threeObjects: {
         lightBalls: [],
+        instancedLightBallsPositions: [],
         directionalLight: null,
         innerAtmosphereMaterial: null,
         outerAtmosphereMaterial: null,
@@ -175,6 +181,7 @@ export default Vue.extend({
           this.canvas = canvas;
           const ctx = canvas.getContext('webgl');
           const THREE = createScopedThreejs(canvas);
+          console.log('this is THREE', THREE);
           this.globalTHREE = THREE;
           this.renderEarth(THREE, canvas);
 
@@ -211,16 +218,22 @@ export default Vue.extend({
       renderer.setSize(this.canvasWidth, this.canvasHeight);
       // AmbientLight
       // const light = new THREE.HemisphereLight(this.earthColorLighter, this.earthColorDarker, this.earthGlobalLightIntencity);
-      // const light = new THREE.AmbientLight(this.earthColorLighter,this.earthGlobalLightIntencity);
       const directionalLight = new THREE.DirectionalLight( 0xd4e9ff, this.earthGlobalLightIntencityMax );
       this.directionalLight = directionalLight;
 
       // set it to the right side of the earth and casting from the right to the left
-      directionalLight.position.set( 1, 0.5, 0 );
+      console.log('directionalLightInitialPosition', this.directionalLightInitialPosition);
+      directionalLight.position.set( this.directionalLightInitialPosition[0], this.directionalLightInitialPosition[1], this.directionalLightInitialPosition[2] );
+      console.log('directionalLightdirectionalLight', directionalLight.position);
       scene.add(directionalLight);
 
+      // add ambient light
+      const ambientLight = new THREE.AmbientLight(this.earthColorLighter,this.earthAmbientLightIntencity);
+      scene.add(ambientLight);
+
+
       // Create a sphere to make visualization easier.
-      const geometry = new THREE.SphereGeometry(this.earthRadius, 32, 32 );
+      const geometry = new THREE.SphereGeometry(this.earthRadius, 64, 64 );
       const material = new THREE.MeshPhongMaterial({
           transparent: true,
           opacity: 1,
@@ -231,8 +244,9 @@ export default Vue.extend({
       await this.drawEarthSurface(THREE, scene);
       await this.drawEarthClouds(THREE, scene);
       await this.drawRenderSky(THREE, scene);
-      await this.drawEarthInnerFresnelAtmosphere(THREE, scene);
+      // await this.drawEarthInnerFresnelAtmosphere(THREE, scene);
       await this.drawEarthOuterAtmosphere(THREE, scene);
+      this.LightGlowingBallManager = new LightGlowingBallManager(THREE, scene, this.earthRadius);
 
       //Render the image
       renderer.setPixelRatio(2)
@@ -243,18 +257,18 @@ export default Vue.extend({
       }
       render();
 
-      // enable auto rotate
-      if (this.currentRoute === 'home') {
-        this.flyFromOneToAnother(
-          40, 179, 40, 116, false, 0
-        );
-        setTimeout(() => {
-          EventBus.$emit('enableEarthRotation');
-        }, this.flyTimeSpan + 10);
-      }
+      // // enable auto rotate
+      // if (this.currentRoute === 'home') {
+      //   this.flyFromOneToAnother(
+      //     40, 179, 40, 116, false, 0
+      //   );
+      //   setTimeout(() => {
+      EventBus.$emit('enableEarthRotation');
+      //   }, this.flyTimeSpan + 10);
+      // }
     },
     async drawEarthClouds(THREE, scene) {
-      const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset + 3, 32, 32 );
+      const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset + 1, 64, 64 );
       const texture = new THREE.TextureLoader().load(PICTURES_URL.CLOUDS);
       const material = new THREE.MeshPhongMaterial({
         map: texture,
@@ -267,10 +281,16 @@ export default Vue.extend({
       // cloudsMesh.receiveShadow = true;
       cloudsMesh.castShadow = false;
       scene.add(cloudsMesh);
+      // make it rotate slowly
+      const animate = () => {
+        cloudsMesh.rotation.y += 0.00005;
+        this.canvas.requestAnimationFrame(animate);
+      };
+      animate();
     },
     async drawRenderSky(THREE, scene) {
       // render a sky star map.
-      const skyGeometry = new THREE.SphereGeometry(3000, 32, 32);
+      const skyGeometry = new THREE.SphereGeometry(3000, 64, 64);
       const skyMaterial = new THREE.MeshBasicMaterial({
         map: new THREE.TextureLoader().load(PICTURES_URL.STAR_MAP),
         side: THREE.BackSide,
@@ -313,7 +333,7 @@ export default Vue.extend({
         vertexShader,
         fragmentShader,
         uniforms: {
-          uLightDirection: { value: this.directionalLight.position ? this.directionalLight.position : new THREE.Vector3(1, 0.5, 0) },
+          uLightDirection: { value: this.directionalLight.position ? this.directionalLight.position : new THREE.Vector3(this.directionalLightInitialPosition[0], this.directionalLightInitialPosition[1], this.directionalLightInitialPosition[2]) }
         },
         side: THREE.BackSide,
         blending: THREE.AdditiveBlending,
@@ -323,13 +343,13 @@ export default Vue.extend({
       });
       this.threeObjects.innerAtmosphereMaterial = innerAtmosphereMaterial;
 
-      const atmosphereGeometry = new THREE.SphereGeometry(this.earthRadius * 1.05, 32, 32);
+      const atmosphereGeometry = new THREE.SphereGeometry(this.earthRadius * 1.05, 64, 64);
       const atmosphere = new THREE.Mesh(atmosphereGeometry, innerAtmosphereMaterial);
       scene.add(atmosphere);
     },
     async drawEarthOuterAtmosphere(THREE, scene) {
       const atmosphereRadius = this.earthRadius + 50;
-      const atmosphereGeometry = new THREE.SphereGeometry(atmosphereRadius, 32, 32);
+      const atmosphereGeometry = new THREE.SphereGeometry(atmosphereRadius, 64, 64);
 
       const vertexShader = `
         varying vec3 vNormal;
@@ -341,23 +361,40 @@ export default Vue.extend({
         }
       `;
 
+      // const fragmentShaderConsiderLight = `
+      //   uniform vec3 uLightDirection; // Uniform for dynamic light direction
+      //   varying vec3 vNormal;
+      //   varying vec3 vPositionNormal;
+      //   void main() {
+      //     vec3 normalizedLightDirection = normalize(uLightDirection);
+      //     float lightDot = dot(vNormal, normalizedLightDirection);
+      //     float viewDot = dot(vNormal, normalize(vPositionNormal));
+      //     float fresnelCoefficient = pow(3.0 * viewDot, 5.0); // Gradient effect
+      //     vec3 atmosphereColor = vec4(0.68, 0.85, 0.98, fresnelCoefficient).rgb; // Adjust color to include alpha
+      //     if (lightDot > 0.0) {
+      //       gl_FragColor = vec4(atmosphereColor * lightDot, fresnelCoefficient);
+      //     } else {
+      //       gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); // Make it fully transparent if not facing the light
+      //     }
+      //   }
+      // `;
+
       const fragmentShader = `
         uniform vec3 uLightDirection; // Uniform for dynamic light direction
         varying vec3 vNormal;
         varying vec3 vPositionNormal;
         void main() {
-          vec3 normalizedLightDirection = normalize(uLightDirection);
-          float lightDot = dot(vNormal, normalizedLightDirection);
+          // vec3 normalizedLightDirection = normalize(uLightDirection); // Not needed
+          // float lightDot = dot(vNormal, normalizedLightDirection); // Not needed
           float viewDot = dot(vNormal, normalize(vPositionNormal));
-          float fresnelCoefficient = pow(3.0 * viewDot, 5.0); // Gradient effect
+          float fresnelCoefficient = pow(2.0 * viewDot, 3.0); // Gradient effect
           vec3 atmosphereColor = vec4(0.68, 0.85, 0.98, fresnelCoefficient).rgb; // Adjust color to include alpha
-          if (lightDot > 0.0) {
-            gl_FragColor = vec4(atmosphereColor * lightDot, fresnelCoefficient);
-          } else {
-            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); // Make it fully transparent if not facing the light
-          }
+          
+          // Remove the condition on lightDot and use fresnelCoefficient directly for the alpha
+          gl_FragColor = vec4(atmosphereColor, fresnelCoefficient);
         }
       `;
+
 
       const atmosphereMaterial = new THREE.ShaderMaterial({
         vertexShader,
@@ -379,7 +416,7 @@ export default Vue.extend({
     },
 
     async drawEarthSurface(THREE, scene ) {
-      const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 32, 32 );
+      const geometry = new THREE.SphereGeometry(this.earthRadius + this.earthSurfaceOffset, 64, 64 );
       let texture = new THREE.TextureLoader().load(
         PICTURES_URL.EARTH, () => wx.hideLoading(),
       );
@@ -520,7 +557,8 @@ export default Vue.extend({
       this.anmtCtrl.isPlaneShaking = true;
       this.canvas.requestAnimationFrame(update); // Start the animation
       this.removeFlyRouteLines();
-      this.drawLightBall(lat2, lng2, this.lightBallConfig(score));
+      // this.drawLightBall(lat2, lng2, this.lightBallConfig(score));
+      this.drawLightBallInstanced(lat2, lng2);
     },
     allowDrawOrbit() {
       this.allowingDrawOrbit = true;
@@ -549,6 +587,9 @@ export default Vue.extend({
           this.globalTHREE, this.globalScene,
         );
       }
+    },
+    drawLightBallInstanced(lat, lng) {
+      this.LightGlowingBallManager?.addNewInstancedLightBall(lat, lng);
     },
     drawLightBall(lat, lng, cfg) {
       // remove the oldest light ball and decrease its intensity by 0.1
@@ -690,70 +731,109 @@ export default Vue.extend({
 
       // this.setCameraHeight(this.cameraInitialHeight, false);
     },
+    reInitSceneRotation() {
+      if (!this.globalScene) return;
+      this.globalScene.rotation.y = 0;
+      this.globalScene.rotation.x = 0;
+      this.globalScene.rotation.z = 0;
+    },
     watchEarthRotation() {
-      EventBus.$on('enableEarthRotation', () => {
-        // reset camera before rotate
-        this.reInitCamera();
+      EventBus.$on('EarthDraggedRotation', (baseX, baseY) => {
         if (!this.globalScene) return;
-        // set directionalLight intensity to max
-        this.directionalLight.intensity = this.earthGlobalLightIntencityMax;
-        this.rotationClockId = 'running';
-        const animate = () => {
-          if (this.rotationClockId === -1) return;
-          if (this.globalScene) {
-            this.globalScene.rotation.y += this.earthRoateDelta;
-          }
-          // rotate directional light towards the opposite direction and same speed.
-          this.directionalLight.position.set(
-            Math.cos(this.globalScene.rotation.y * 3) * 1,
-            0.5,
-            Math.sin(this.globalScene.rotation.y * 3) * 1,
-          );
-          // directionalLit actually only rotated 2 times of the earth because of the rotation of the earth.
-          const clockwiseReversedLightRelativePosition = new this.globalTHREE.Vector3(
-            Math.cos((-this.globalScene.rotation.y-60) * 2) * 1,
-            0.5,
-            Math.sin((-this.globalScene.rotation.y-60) * 2) * 1,
-          );
-          if (this.threeObjects.innerAtmosphereMaterial) {
-            this.threeObjects.innerAtmosphereMaterial.uniforms.uLightDirection.value = clockwiseReversedLightRelativePosition;
-            this.threeObjects.innerAtmosphereMaterial.needsUpdate = true;
-          }
+        this.globalScene.rotation.y = baseX / 100;
+        this.globalScene.rotation.x = baseY / 100;
 
-          if (this.threeObjects.outerAtmosphereMaterial) {
-            this.threeObjects.outerAtmosphereMaterial.uniforms.uLightDirection.value = clockwiseReversedLightRelativePosition;
-            this.threeObjects.outerAtmosphereMaterial.needsUpdate = true;
-          }
-          this.canvas.requestAnimationFrame(animate);
-        };
-        animate();
-        // set camera height to initial height
-        // this.setCameraHeight(this.cameraInitialHeight, false);
+        // SUB TASK 1:  Align the directional light with the rotation of the earth
+        // Calculate the inverse rotation matrix
+        const inverseRotation = new this.globalTHREE.Matrix4().makeRotationY(-this.globalScene.rotation.y);
+        const inverseRotation2 = new this.globalTHREE.Matrix4().makeRotationX(-this.globalScene.rotation.x);
+        // Calculate the new light direction
+        const lightDirection = new this.globalTHREE.Vector3(this.directionalLightInitialPosition[0], this.directionalLightInitialPosition[1], this.directionalLightInitialPosition[2]).applyMatrix4(inverseRotation).applyMatrix4(inverseRotation2);
+        // Update the light direction
+        this.directionalLight.position.set(lightDirection.x, lightDirection.y, lightDirection.z);
+
+
+        // SUB TASK 2:  Align the atmosphere with the rotation of the earth
+        // requestAnimationFrame
+        // this.canvas.requestAnimationFrame(() => {
+        //   // Calculate the inverse rotation matrix
+        //   // Update the atmosphere material
+        //   if (this.threeObjects.innerAtmosphereMaterial && this.threeObjects.outerAtmosphereMaterial) {
+        //     this.threeObjects.innerAtmosphereMaterial.uniforms.uLightDirection.value.copy(lightDirection);
+        //     this.threeObjects.outerAtmosphereMaterial.uniforms.uLightDirection.value.copy(lightDirection);
+        //     this.threeObjects.innerAtmosphereMaterial.needsUpdate = true;
+        //     this.threeObjects.outerAtmosphereMaterial.needsUpdate = true;
+
+
+        //     console.log('Updating atmosphere materials', lightDirection)
+        //     console.log('\tinner:', this.threeObjects.innerAtmosphereMaterial.uniforms.uLightDirection.value.x, this.threeObjects.innerAtmosphereMaterial);
+        //     console.log('\touter:', this.threeObjects.outerAtmosphereMaterial.uniforms.uLightDirection.value.x, this.threeObjects.outerAtmosphereMaterial);
+        //   }
+        // });
+      });
+      EventBus.$on('enableEarthRotation', () => {
+        // // reset camera before rotate
+        this.reInitCamera();
+        this.reInitSceneRotation();
+
+        // console.log('enabled==========')
+
+        // if (!this.globalScene) return;
+        // // set directionalLight intensity to max
+        // this.directionalLight.intensity = this.earthGlobalLightIntencityMax;
+        // this.rotationClockId = 'running';
+        // let currentRotation = 0;
+        // const animate = () => {
+        //   if (this.rotationClockId === -1) return;
+        //   currentRotation += this.earthRoateDelta;
+        //   const clockwiseReversedLightRelativePosition = new this.globalTHREE.Vector3(
+        //     Math.cos(-currentRotation-120),
+        //     0.5,
+        //     Math.sin(-currentRotation-120),
+        //   );
+        //   if (this.threeObjects.innerAtmosphereMaterial) {
+        //     this.threeObjects.innerAtmosphereMaterial.uniforms.uLightDirection.value = clockwiseReversedLightRelativePosition;
+        //     this.threeObjects.innerAtmosphereMaterial.needsUpdate = true;
+        //     console.log('updated inner at')
+        //   }
+
+        //   if (this.threeObjects.outerAtmosphereMaterial) {
+        //     this.threeObjects.outerAtmosphereMaterial.uniforms.uLightDirection.value = clockwiseReversedLightRelativePosition;
+        //     this.threeObjects.outerAtmosphereMaterial.needsUpdate = true;
+        //   }
+          
+        //   this.canvas.requestAnimationFrame(animate);
+        // };
+        // animate();
       });
       EventBus.$on('disableEarthRotation', () => {
+        this.reInitSceneRotation();
         // clearInterval(this.rotationClockId);
         // set directionalLight intensity to min. animate by adding 0.05 each frame.
-        const animate = () => {
-          if (this.directionalLight && this.directionalLight.intensity > this.earthGlobalLightIntencityMin) {
-            this.directionalLight.intensity -= 0.01;
-            this.canvas.requestAnimationFrame(animate);
-          }
-        };
-        animate();
-        this.rotationClockId = -1;
-        this.globalScene.rotation.y = 0;
+        // const animate = () => {
+        //   if (this.directionalLight && this.directionalLight.intensity > this.earthGlobalLightIntencityMin) {
+        //     this.directionalLight.intensity -= 0.01;
+        //     this.canvas.requestAnimationFrame(animate);
+        //   }
+        // };
+        // animate();
+        // this.rotationClockId = -1;
+        // this.globalScene.rotation.y = 0;
       });
     },
     watchShowFailedCityEvent() {
       EventBus.$on('showFailedCityPoint', (cityConfig) => {
         const { toLat, toLon } = cityConfig;
-        this.drawLightBall(toLat, toLon,
-          this.failedLightBallConfig);
+        // this.drawLightBall(toLat, toLon,
+        //   this.failedLightBallConfig);
+        this.drawLightBallInstanced(toLat, toLon);
       });
     },
     watchInitEarthAnimation() {
       EventBus.$on('startPlayEarthAnimation', (cfg) => {
         // 1. 清除地球上现存的所有光点
+        this.LightGlowingBallManager?.clearAllInstancedLightBalls();
+
         while (this.threeObjects.lightBalls.length > 0) {
           const { ball, light } = this.threeObjects.lightBalls.shift();
           ball.geometry.dispose();

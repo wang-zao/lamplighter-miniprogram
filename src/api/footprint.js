@@ -19,6 +19,15 @@ class FootprintModal extends Base {
       return null;
     }
   }
+
+  async getFootprintTotalCount() {
+    try {
+      const { total } = await this.model.count();
+      return total;
+    } catch (error) {
+      return 0;
+    }
+  }
 }
 
 export default new FootprintModal();
