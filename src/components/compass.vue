@@ -218,7 +218,7 @@ $needle-radius: 4vw;
    }
   to {
     opacity: 0;
-    transform: translateY(-200%);
+    transform: translateY(-4rem);
   }
 }
 

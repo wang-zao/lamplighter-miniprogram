@@ -30,33 +30,45 @@ export class LightGlowingBallOuterGlow {
   private material: any;
   public mesh: any;
 
-  constructor(globalTHREE: any, radius: number, widthSegments: number, heightSegments: number, instanceCount: number) {
+  constructor(globalTHREE: any, radius: number, widthSegments: number, heightSegments: number) {
     // Define the geometry
     this.geometry = new globalTHREE.SphereGeometry(radius, widthSegments, heightSegments);
 
     // make a glowing shader material
-    this.material = new globalTHREE.ShaderMaterial( {
+    this.material = new globalTHREE.ShaderMaterial({
       vertexShader: `
         varying vec3 vNormal;
+        varying vec3 vPositionNormal;
         void main() {
-          vNormal = normal;
+          vNormal = normalize(normalMatrix * normal); // Transform normals to world space
+          vPositionNormal = normalize((modelViewMatrix * vec4(position, 1.0)).xyz);
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: `
         varying vec3 vNormal;
+        varying vec3 vPositionNormal;
         void main() {
-          float intensity = pow(0.5 - dot(vNormal, vec3(0, 0, 1)), 2.0);
-          gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0) * intensity;
+          float viewDot = dot(vNormal, normalize(vPositionNormal));
+          float fresnelCoefficient = pow(1.0 * viewDot, 5.0); // Gradient effect
+          vec3 atmosphereColor = vec4(0.68, 0.68, 0.68, fresnelCoefficient).rgb; // Adjust color to include alpha
+          
+          // Remove the condition on lightDot and use fresnelCoefficient directly for the alpha
+          gl_FragColor = vec4(atmosphereColor, fresnelCoefficient);
         }
       `,
+      side: globalTHREE.BackSide,
+      blending: globalTHREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true, // this will make the outer atmosphere not visible when the camera is inside the earth.
       uniforms: {
         lightIntensity: { value: 1.0 },
       },
     });
 
     // Create the instanced mesh
-    this.mesh = new globalTHREE.InstancedMesh(this.geometry, this.material, instanceCount);
+    this.mesh = new globalTHREE.Mesh(this.geometry, this.material);
   }
 
   // Optionally, you can add methods to update ball properties
@@ -77,6 +89,8 @@ export class LightGlowingBallManager {
   private currentMesh: any = null;
   private earthGlobeRadius: number = 1;
   private instancedLightBallsPositions: {lat: number, lon: number}[] = [];
+  private lightBallElevationFromEarthSurface: number = 25;
+  private managedMeshesArray: LightGlowingBallOuterGlow[] = [];
 
   constructor(
     globalTHREE: any,
@@ -111,25 +125,21 @@ export class LightGlowingBallManager {
 
     // Create the new light glowing balls
     const lightGlowingBall = new LightGlowingBall(this.globalTHREE, 2, 32, 32, instancedLightBallsPositions.length);
-    // const lightGlowingBallOuterGlow = new LightGlowingBallOuterGlow(this.globalTHREE, 450, 32, 32, instancedLightBallsPositions.length);
 
     // Update the position of each instance
     const matrix = new this.globalTHREE.Matrix4();
     for (let i = 0; i < instancedLightBallsPositions.length; i++) {
       const { lat, lon } = instancedLightBallsPositions[i];
-      const position = this.convertLatLngToXyz(lat, lon, this.earthGlobeRadius + 20, this.globalTHREE);
+      const position = this.convertLatLngToXyz(lat, lon, this.earthGlobeRadius + this.lightBallElevationFromEarthSurface, this.globalTHREE);
       matrix.makeTranslation(position.x, position.y, position.z);
       lightGlowingBall.mesh.setMatrixAt(i, matrix);
-      // lightGlowingBallOuterGlow.mesh.setMatrixAt(i, matrix);
     }
 
     // Update the instanced mesh
     lightGlowingBall.mesh.instanceMatrix.needsUpdate = true;
-    // lightGlowingBallOuterGlow.mesh.instanceMatrix.needsUpdate = true;
 
     // Add the mesh to the scene
     this.globalScene.add(lightGlowingBall.mesh);
-    // this.globalScene.add(lightGlowingBallOuterGlow.mesh);
 
     this.currentMesh = lightGlowingBall.mesh;
   }
@@ -141,6 +151,11 @@ export class LightGlowingBallManager {
       this.currentMesh.dispose();
       this.globalScene.remove(this.currentMesh);
     }
+    // clear the managed meshes array
+    this.managedMeshesArray.forEach((mesh) => {
+      mesh.dispose();
+      this.globalScene.remove(mesh.mesh);
+    });
   }
 
   public addNewInstancedLightBall(lat: number, lon: number): void {
@@ -149,5 +164,16 @@ export class LightGlowingBallManager {
 
     // Recreate the instanced mesh
     this.recreateInstancedMeshBasedOnData(this.instancedLightBallsPositions);
+
+    // add glowing post processing effect
+    const lightGlowingBallOuterGlow = new LightGlowingBallOuterGlow(this.globalTHREE, 5, 32, 32);
+    const position = this.convertLatLngToXyz(lat, lon, this.earthGlobeRadius + this.lightBallElevationFromEarthSurface, this.globalTHREE);
+    lightGlowingBallOuterGlow.mesh.position.set(position.x, position.y, position.z);
+    // lightGlowingBallOuterGlow.mesh.instanceMatrix.needsUpdate = true;
+    this.globalScene.add(lightGlowingBallOuterGlow.mesh);
+
+    // push it into a managed array
+    this.managedMeshesArray.push(lightGlowingBallOuterGlow);
+    
   }
 }

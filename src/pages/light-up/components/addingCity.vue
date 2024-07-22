@@ -181,7 +181,7 @@ export default Vue.extend({
             fromLon: currentPoint.longitude,
             toLat: city.latitude,
             toLon: city.longitude,
-            isDrawOrbit: false,
+            isDrawOrbit: true,
             score: city.time_id * 3,
             cameraHeight: 600,
           };

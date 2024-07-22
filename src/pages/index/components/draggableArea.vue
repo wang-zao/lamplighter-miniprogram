@@ -5,9 +5,9 @@
     @touchmove="dragMove"
     @touchend="dragEnd"
   >
-    draggable
+    <!-- draggable
     <p >{{ currentGlobeBasedX }}</p>
-    <p >{{ currentGlobeBasedY }}</p>
+    <p >{{ currentGlobeBasedY }}</p> -->
   </view>
 </template>
 
@@ -61,6 +61,8 @@ export default Vue.extend({
       // rotate the globe based on the delta
       this.currentGlobeBasedX = this.initialGlobeBasedX + this.deltaX;
       this.currentGlobeBasedY = this.initialGlobeBasedY + this.deltaY;
+      // make currentGlobeBasedY within the range of -50 to 50
+      this.currentGlobeBasedY = Math.min(50, Math.max(-50, this.currentGlobeBasedY));
       // execute the rotation
       this.executeRotationWithThrottle();
     },

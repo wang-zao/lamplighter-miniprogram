@@ -41,12 +41,12 @@ export default Vue.extend({
         f_or_d: "f",
         id: 829,
         is_major: 0,
-        latitude: 40.74,
-        longitude: 44.85,
-        name_chn: "迪利然",
-        name_eng: "Dilijan",
-        upper_admin_name: "亚美尼亚",
-        wiki_keywords: "亚美尼亚的瑞士|人口 17712|沙兰贝扬街|图芬基安遗产",
+        latitude: 40,
+        longitude: 116,
+        name_chn: "-",
+        name_eng: "-",
+        upper_admin_name: "-",
+        wiki_keywords: "",
       }
     }
   },
@@ -80,7 +80,7 @@ export default Vue.extend({
         fromLon: previousLon,
         toLat: latitude,
         toLon: longitude,
-        isDrawOrbit: false,
+        isDrawOrbit: true,
         score: 0,
         cameraHeight: 600,
       });

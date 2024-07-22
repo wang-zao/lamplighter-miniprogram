@@ -46,11 +46,11 @@ export default Vue.extend({
   },
   data() {
     return {
-      name_chn: '迪利然',
-      name_eng: 'Dilijan',
-      upper_admin_name: '亚美尼亚',
-      latitude: 40.74,
-      longitude: 44.85,
+      name_chn: '-',
+      name_eng: '-',
+      upper_admin_name: '-',
+      latitude: 40,
+      longitude: 116,
       animateData: {
         showDisappearing: false,
         showAppearing: false,

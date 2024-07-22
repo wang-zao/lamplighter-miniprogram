@@ -2,7 +2,7 @@
   <view class="section_wraps">
     <view class="top_info">
       <view class="info_title">
-        <span :key="key" v-for="(letter, key) in '奇怪地球仪'">{{ letter }}</span>
+        <span :key="key" v-for="(letter, key) in '星球点灯人'">{{ letter }}</span>
       </view>
       <view class="info_img">
         <!-- <image class="info_img_content" src="@/static/title-miniprogram-s.png" /> -->
@@ -31,48 +31,48 @@
           <view v-if="buttonTab === 'home'" class="buttons_new_wrapper_inner">
             <view class="button_new_item" @click="switchButtonTab('compass')">
               <view class="button_new_icon button_compass_new">
-                <image class="button_new_icon_img" src="@/static/plane.svg"></image>
+                <image class="button_new_icon_img" src="@/static/compass.svg"></image>
               </view>
               <view class="button_new_text">方向感训练器</view>
             </view>
-            <view class="button_new_item" @click="goToLightUp">
-              <view class="button_new_icon button_footprint_new">
-                <image class="button_new_icon_img" src="@/static/earth.svg"></image>
-              </view>
-              <view class="button_new_text">流浪史生成器</view> 
-            </view>
             <view class="button_new_item" @click="goToRandomCity">
               <view class="button_new_icon button_travel_new">
-                <image class="button_new_icon_img" src="@/static/city_fill.svg"></image>
+                <image class="button_new_icon_img" src="@/static/dice.svg"></image>
               </view>
               <view class="button_new_text">目的地抽取器</view>
+            </view>
+            <view class="button_new_item" @click="goToLightUp">
+              <view class="button_new_icon button_footprint_new">
+                <image class="button_new_icon_img" src="@/static/footprint.svg"></image>
+              </view>
+              <view class="button_new_text">流浪史生成器</view> 
             </view>
           </view>
           <!-- 方向训练tab -->
           <view v-if="buttonTab === 'compass'" class="buttons_new_wrapper_inner">
+            <view class="button_new_item" @click="switchButtonTab('home')">
+              <view class="button_new_icon button_compass_new button_minor">
+                <image class="button_new_icon_img" src="@/static/return.svg"></image>
+              </view>
+              <view class="button_new_text">返回</view>
+            </view>
             <view class="button_new_item" @click="startGeneral">
               <view class="button_new_icon button_compass_new">
-                <image class="button_new_icon_img" src="@/static/earth.svg"></image>
+                <image class="button_new_icon_img" src="@/static/compass.svg"></image>
               </view>
               <view class="button_new_text">开始</view>
             </view>
             <view class="button_new_item" @click="goToCollection">
-              <view class="button_new_icon button_compass_new">
+              <view class="button_new_icon button_compass_new button_minor">
                 <image class="button_new_icon_img" src="@/static/book-city-fill.svg"></image>
               </view>
               <view class="button_new_text">图鉴</view>
             </view>
             <view class="button_new_item" @click="goToRanking">
-              <view class="button_new_icon button_compass_new">
+              <view class="button_new_icon button_compass_new button_minor">
                 <image class="button_new_icon_img" src="@/static/rank.svg"></image>
               </view>
               <view class="button_new_text">排行</view>
-            </view>
-            <view class="button_new_item" @click="switchButtonTab('home')">
-              <view class="button_new_icon button_compass_new">
-                <image class="button_new_icon_img" src="@/static/return.svg"></image>
-              </view>
-              <view class="button_new_text">返回</view>
             </view>
           </view>
         </view>
@@ -218,7 +218,7 @@
       goToCommunity() {
         wx.showModal({
           title: '用户社区',
-          content: '感谢体验这款还在完善中的小程序！欢迎通过微信公众号”星球点灯人campsite”或微博”星球点灯人“关注我们哦！',
+          content: '感谢体验这款还在完善中的小程序！欢迎通过微信公众号”王凿”或关注或留言哦！',
           cancelText: '返回',
           confirmText: '好嘞',
         });
@@ -336,9 +336,17 @@ $globe-radius: 11rem;
     text-align: center;
     border-radius: 1rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 10px 20px;
     span {
-      margin: 0 3vw;
+      background: #ffffff11;
+      padding: 2px;
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      text-align: center;
+      border-radius: 50%;
+      background: #52a8ff44;
     }
     // width: fit-content
   }
@@ -421,35 +429,40 @@ $globe-radius: 11rem;
       flex-direction: column;
       align-items: center;
       .button_new_icon {
-        width: 16vw;
-        height: 16vw;
+        width: 4rem;
+        height: 4rem;
         border-radius: 50%;
         overflow: hidden;
         margin-bottom: 0.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
+        background: #52a8ff44;
         .button_new_icon_img {
           width: 55%;
           height: 55%;
           opacity: .8;
         }
       }
-      .button_compass_new {
-        background: #52a8ff44;
-      }
-      .button_footprint_new {
-        background: #52ff4444;
-      }
-      .button_travel_new {
-        background: #ffa85244;
-      }
+      // .button_compass_new {
+      //   background: #52a8ff44;
+      // }
+      // .button_footprint_new {
+      //   background: #52ff4444;
+      // }
+      // .button_travel_new {
+      //   background: #ffa85244;
+      // }
       .button_new_text {
         font-size: 0.8rem;
         color: #ffffff;
         max-width: 16vw;
         text-align: center;
         white-space: nowrap;
+        display: none; // remove if ui is decided
+      }
+      .button_minor {
+        transform: scale(0.8);
       }
     }
   }
@@ -475,17 +488,17 @@ $globe-radius: 11rem;
   .button_start {
     width: 100%;
     padding: 0.8rem 0;
-    background: #52a8ff44;
+    // background: #52a8ff44;
   }
 
   .button_train {
     width: 60%;
-    background: #52ffff44;
+    // background: #52ffff44;
   }
 
   .button_rank {
     width: 30%;
-    background: #52ffa844;
+    // background: #52ffa844;
   }
 }
 

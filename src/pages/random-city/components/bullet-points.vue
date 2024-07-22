@@ -44,9 +44,9 @@ export default Vue.extend({
   },
   data() {
     return {
-      bulletPointOne: ['点', '点', '点', '点', '点'],
-      bulletPointTwo: ['点啊', '点点啊', '点', '点点啊', '点'],
-      bulletPointThree: ['点', '点啊啊啊', '点asdsal', '点as', '点'],
+      bulletPointOne: [],
+      bulletPointTwo: [],
+      bulletPointThree: [],
       animateData: {
         showDisappearing: false,
         showAppearing: false,

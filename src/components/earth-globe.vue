@@ -35,7 +35,6 @@
 import Vue from 'vue';
 import store from '@/store/index.js';
 // import { contry_json, ocean } from '@/utils/data';
-import { get_flight_orbit_height, draw_line } from '@/utils/common';
 import {
   PICTURES_URL,
   LIGHTBALL_COLORS,
@@ -50,6 +49,7 @@ import Compass from '@/components/compass.vue';
 import EventAgent from '@/components/event-agent.vue';
 import { EventBus } from '@/utils/eventBus';
 import { LightGlowingBallManager } from './earth-components/light-ball';
+import { InstancedOrbitArcsManager } from './earth-components/orbit-arc';
 
 export default Vue.extend({
 // export default {
@@ -77,6 +77,7 @@ export default Vue.extend({
       earthRoateDelta: 0.15, // testing
       cameraHeight: 2000,
       cameraInitialHeight: 2000,
+      playingModeCameraHeight: 800,
       directionalLightInitialPosition: [0, 0, 1],
       globalTHREE: null,
       globalScene: null,
@@ -88,7 +89,9 @@ export default Vue.extend({
       earthGlobalLightIntencityMin: 0.3,
       earthGlobalLightIntencityMax: 0.5,
       earthAmbientLightIntencity: 0.3,
+      orbitArcHeight: 100,
       LightGlowingBallManager: null,
+      InstancedOrbitArcsManager: null,
       flyTimeSpan: 2000,
       flyAnimationFreq: 50,
       flyZoomInCameraYOffset: 0.7,
@@ -247,6 +250,7 @@ export default Vue.extend({
       // await this.drawEarthInnerFresnelAtmosphere(THREE, scene);
       await this.drawEarthOuterAtmosphere(THREE, scene);
       this.LightGlowingBallManager = new LightGlowingBallManager(THREE, scene, this.earthRadius);
+      this.InstancedOrbitArcsManager = new InstancedOrbitArcsManager(THREE, scene, this.earthRadius);
 
       //Render the image
       renderer.setPixelRatio(2)
@@ -422,7 +426,6 @@ export default Vue.extend({
       );
       let bumpTexture = new THREE.TextureLoader().load(PICTURES_URL.EARTH_TOPOLOGY);
 
-
       texture.minFilter = THREE.LinearFilter;
       bumpTexture.minFilter = THREE.LinearFilter;
       // const material  = new THREE.MeshBasicMaterial({
@@ -476,6 +479,10 @@ export default Vue.extend({
       if (!this.canvas || this.canvas === undefined || this.canvas === null) {
           console.error('canvas is not ready');
           return;
+      }
+      if (cameraHeight === 600) {
+        // hard code here, this means the camera is in the playing mode
+        cameraHeight = this.playingModeCameraHeight;
       }
       const t = this.flyTimeSpan;
       const f = this.flyAnimationFreq;
@@ -533,18 +540,6 @@ export default Vue.extend({
           this.camera.position = { ...currentCameraXYZ };
           this.camera.lookAt(currentLookAtXYZ);
 
-          if (isDrawOrbit) {
-              this.drawFlyRouteLine(
-                  prevGroundLat, prevGroundLng, prevHeight,
-                  currentGroundLat, currentGroundLng, currentHeight
-              );
-              prevHeight = currentHeight;
-              currentHeight = get_flight_orbit_height(
-                  lat1, lng1, lat2, lng2, 
-                  currentGroundLat, currentGroundLng,
-              );
-          }
-
           prevGroundLat = currentGroundLat;
           prevGroundLng = currentGroundLng;
 
@@ -556,7 +551,13 @@ export default Vue.extend({
       this.anmtCtrl.isPlanePausing = false;
       this.anmtCtrl.isPlaneShaking = true;
       this.canvas.requestAnimationFrame(update); // Start the animation
-      this.removeFlyRouteLines();
+
+      // draw orbit arc if needed
+      if (isDrawOrbit) {
+        this.InstancedOrbitArcsManager?.addOrbitArc({ lat: lat1, lon: lng1 }, { lat: lat2, lon: lng2 });
+      }
+      
+      // this.removeFlyRouteLines();
       // this.drawLightBall(lat2, lng2, this.lightBallConfig(score));
       this.drawLightBallInstanced(lat2, lng2);
     },
@@ -569,23 +570,6 @@ export default Vue.extend({
         this.globalScene.remove(obj);
         obj.geometry.dispose();
         obj.material.dispose();
-      }
-    },
-    drawFlyRouteLine(lat1, lon1, height1, lat2, lon2, height2) {
-      if (this.allowingDrawOrbit) {
-        const p1 = this.convertLatLngToXyz(
-          lat1, lon1, this.earthRadius + height1 + this.earthSurfaceOffset,
-          this.globalTHREE,
-        );
-        const p2 = this.convertLatLngToXyz(
-          lat2, lon2, this.earthRadius + height2 + this.earthSurfaceOffset,
-          this.globalTHREE,
-        );
-        draw_line(
-          [p1.x, p2.x], [p1.y, p2.y], [p1.z, p2.z],
-          this.orbitArcConfig,
-          this.globalTHREE, this.globalScene,
-        );
       }
     },
     drawLightBallInstanced(lat, lng) {
@@ -740,8 +724,10 @@ export default Vue.extend({
     watchEarthRotation() {
       EventBus.$on('EarthDraggedRotation', (baseX, baseY) => {
         if (!this.globalScene) return;
-        this.globalScene.rotation.y = baseX / 100;
-        this.globalScene.rotation.x = baseY / 100;
+        const rotationY = baseX / 100;
+        // const rotationX = baseY / 100;
+        this.globalScene.rotation.y = rotationY;
+        // this.globalScene.rotation.x = rotationX;
 
         // SUB TASK 1:  Align the directional light with the rotation of the earth
         // Calculate the inverse rotation matrix
@@ -806,8 +792,16 @@ export default Vue.extend({
         // };
         // animate();
       });
+      EventBus.$on('playAgain', () => {
+        // dispose all the light balls and arcs
+        this.LightGlowingBallManager?.clearAllInstancedLightBalls();
+        this.InstancedOrbitArcsManager?.clearAllOrbitArcs();
+      });
       EventBus.$on('disableEarthRotation', () => {
         this.reInitSceneRotation();
+        // dispose all the light balls and arcs
+        this.LightGlowingBallManager?.clearAllInstancedLightBalls();
+        this.InstancedOrbitArcsManager?.clearAllOrbitArcs();
         // clearInterval(this.rotationClockId);
         // set directionalLight intensity to min. animate by adding 0.05 each frame.
         // const animate = () => {
@@ -850,7 +844,7 @@ export default Vue.extend({
         // 2. 飞向开始的点
         if (this.globalScene) {
           const { lat, lon } = cfg;
-          this.flyFromOneToAnother(40, 116, lat, lon, false, 0, 600);
+          this.flyFromOneToAnother(40, 116, lat, lon, false, 0, this.playingModeCameraHeight);
         }
       });
     },

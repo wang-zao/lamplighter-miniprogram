@@ -1,10 +1,11 @@
 <template>
   <view class="city_wrapper"
     @click="gotoDetail()"
+    :class="{ 'opacity_not_new': !isNotViewed }"
   >
     <view v-if="city.is_placeholder"></view>
     <view class="city_unlocked" v-else-if="unlocked">
-      <view class="city_unlocked_unread" v-if="isNotViewed">new</view>
+      <view class="city_unlocked_unread" v-if="isNotViewed"></view>
       <view class="city_unlocked_image_wrapper">
         <!-- <image
           :src="`cloud://northenv-4gh0748xf50343cf.6e6f-northenv-4gh0748xf50343cf-1304769767/city_images/recast_300/pic_${city.id}_resize_300.jpg`"
@@ -15,12 +16,14 @@
         </view> -->
       </view>
       <view class="city_unlocked_mask_wrapper">
-        <view class="city_unlocked_image_mask" :style="maskStyle">
+        <view class="city_unlocked_image_mask" :style="maskStyle" 
+        :class="{ 'opacity_not_new': !isNotViewed }">
         </view>
       </view>
       <view class="city_unlocked_title">
         <view class="city_unlocked_title_text" :class="{
-          'city_unlocked_title_text_smaller': city.name_chn.length >= 4,
+          'city_unlocked_title_text_smaller': city.name_chn.length >= 3,
+          'city_unlocked_title_text_tiny': city.name_chn.length >= 4,
         }">
           {{ city.name_chn }}
         </view>
@@ -128,12 +131,17 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 
+.opacity_not_new {
+  opacity: 0.6;
+  backdrop-filter: blur(5px);
+}
 .city_wrapper {
   // background: #ffffff44;
   height: 100%;
   width: 100%;
   border-radius: 2rem;
   box-sizing: border-box;
+  backdrop-filter: blur(5px);
   .city_unlocked {
     height: 100%;
     width: 100%;
@@ -141,17 +149,18 @@ export default Vue.extend({
     position: relative;
     // border: 2px solid #e5e5e5;
     border-radius: 2rem;
-    box-shadow: 0.3rem 0.4rem 1rem #fff inset;
+    box-shadow: 0.3rem 0.4rem 1rem #ffffffaa inset;
     box-sizing: border-box;
     .city_unlocked_unread {
       position: absolute;
       top: -0.1rem;
       right: 0rem;
-      font-size: 8px;
       color: #fff;
+      width: 0.7rem;
+      height: 0.7rem;
       background: #fd7878;
-      border-radius: 6px;
-      padding: 0 3px;
+      border-radius: 50%;
+      // padding: 0 3px;
       transform: rotate(20deg);
       z-index: 6;
     }
@@ -205,17 +214,20 @@ export default Vue.extend({
       justify-content: center;
       z-index: 5;
       text-shadow: 0 0 15px #ffffff;
-      width: 100%;
-      height: 100%;
+      width: 80%;
+      height: 80%;
       overflow: hidden;
       .city_unlocked_title_text {
-        font-size: 1rem;
+        font-size: 0.7rem;
         white-space: nowrap;
         width: 100%;
         opacity: .7;
       }
       .city_unlocked_title_text_smaller {
-        font-size: .7rem;
+        font-size: 0.5rem;
+      }
+      .city_unlocked_title_text_tiny {
+        font-size: 0.3rem;
       }
       .city_unlocked_title_text_sub {
         font-size: 10px;
@@ -239,7 +251,7 @@ export default Vue.extend({
       transform: translate(-50%, -50%);
       text-align: center;
       width: 80%;
-      font-size: 1.2rem;
+      font-size: 0.7rem;
       line-height: 1.5rem;
       opacity: .2;
     }

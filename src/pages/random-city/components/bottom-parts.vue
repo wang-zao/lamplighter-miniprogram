@@ -1,10 +1,11 @@
 <template>
   <view class="bottom_parts_buttons">
     <view class="button_general" @click="goToHome">
-      返回
+      <image class="button_new_icon_img" src="@/static/return.svg"></image>
+
     </view>
     <view class="button_general button_main" @click="getRandomCity">
-      随机
+      <image class="button_new_icon_img" src="@/static/dice.svg"></image>
     </view>
   </view>
 </template>
@@ -51,19 +52,23 @@ export default Vue.extend({
 }
 
 .button_general {
-  width: 150px;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-  background-color: #f0f0f0;
-  border-radius: 10px;
-  color: #333;
-  font-size: 16px;
-}
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #52a8ff44;
+  margin: 0 5vw 10vh;
 
-.button_main {
-  background-color: #ff4d4f;
-  color: #fff;
+  .button_new_icon_img {
+    width: 55%;
+    height: 55%;
+    opacity: .8;
+  }
 }
+.button_main {
+      transform: scale(1.25);
+    }
   
 </style>

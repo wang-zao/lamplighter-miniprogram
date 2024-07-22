@@ -110,7 +110,7 @@ import { EventBus } from '@/utils/eventBus';
         if (!this.anmtCtrl.gameGuidePageVisible && this.currentRoute === 'play-minute') {
           EventBus.$emit('startGameCountDown');
         }
-        EventBus.$emit('playAudio', 'atmosphere');
+        // EventBus.$emit('playAudio', 'atmosphere');
       },
       async getCityData() {
         try {
@@ -339,7 +339,7 @@ import { EventBus } from '@/utils/eventBus';
             fromLon: this.currentCity.lon,
             toLat: this.nextCity.lat,
             toLon: this.nextCity.lon,
-            isDrawOrbit: false,
+            isDrawOrbit: true,
             score,
             cameraHeight: 600,
           };

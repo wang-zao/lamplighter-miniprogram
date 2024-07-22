@@ -2,14 +2,14 @@
   <view class="light_up_wrap">
     <view class="light_up_buttons">
       <view class="button_general" @click="goToHome">
-        返回
+        <image class="button_new_icon_img" src="@/static/return.svg"></image>
       </view>
       <view class="button_general button_main" @click="toggleAddCityWindow(true)">
-        +
+        <image class="button_new_icon_img" src="@/static/footprint.svg"></image>
       </view>
-      <view class="button_general">
+      <!-- <view class="button_general">
         完成
-      </view>
+      </view> -->
     </view>
     <view class="light_up_add_city_dialog" v-if="showingAddCityWindow">
       <adding-city
@@ -148,21 +148,24 @@ export default Vue.extend({
     align-items: bottom;
 
     .button_general {
-      text-align: center;
-      border-radius: 2rem;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      font-weight: bold;
-      box-shadow: 0 0 25px #ffffff33 inset;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       background: #52a8ff44;
+      margin: 0 5vw 3rem;
+
+      .button_new_icon_img {
+        width: 55%;
+        height: 55%;
+        opacity: .8;
+      }
     }
 
     .button_main {
-      transform: scale(1.5);
+      transform: scale(1.25);
     }
   }
 }

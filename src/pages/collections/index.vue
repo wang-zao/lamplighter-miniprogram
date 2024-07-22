@@ -172,7 +172,7 @@ export default Vue.extend({
     async init() {
       await this.getAllQuestionCount();
       await this.loadCollectionList();
-      await this.changePageMultipleTimes(1, 2);
+      await this.changePageMultipleTimes(1, this.maxiumPageIndex);
     },
     async loadCollectionList() {
       if (this.loadingList) {
@@ -246,8 +246,8 @@ export default Vue.extend({
       this.pageLoading = true;
       for (let i = 0; i < times; i++) {
         await this.changeCollectionPage(direction);
+        this.collectionListFinal = [...this.collectionList];
       }
-      this.collectionListFinal = [...this.collectionList];
       this.pageLoading = false;
     },
     gotoDetail(city) {
@@ -433,6 +433,7 @@ $collection-box-inner-padding: 0.5rem;
         height: 2rem;
         display: flex;
         justify-content: center;
+        // height: 80vh;
         .collection_box_spinner {
           width: 1.5rem;
           height: 1.5rem;
@@ -443,15 +444,18 @@ $collection-box-inner-padding: 0.5rem;
         padding-top: 5vw;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        // justify-content: space-between;
         flex-wrap: wrap;
         align-items: center;
       }
       .collection_card_item {
         position: relative;
-        width: 13vw;
-        height: 13vw;
-        margin-bottom: 5vw;
+        width: 2rem;
+        height: 2rem;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        backdrop-filter: blur(5px);
+        border-radius: 50%;
       }
     }
     .overview_wrapper {
