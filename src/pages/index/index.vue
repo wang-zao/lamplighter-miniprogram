@@ -52,7 +52,7 @@ export default Vue.extend({
   },
   onShareAppMessage(res){
     return {
-      title:'来和我一起点亮星球吗？'
+      title:'这个地球仪有点奇怪？'
     }
   },
   methods: {

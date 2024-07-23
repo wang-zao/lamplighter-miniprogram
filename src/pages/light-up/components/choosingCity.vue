@@ -5,7 +5,7 @@
       <view class="close_window_icon" @click="closeWindow">X</view>
       <view class="choosing_title">
         <view class="choosing_title_text">选择城市</view>
-        <view class="choosing_title_redo" @click="moveBack">👈🏻</view>
+        <view class="choosing_title_redo" @click="moveBack">上一级</view>
       </view>
       <!-- dome or foreign selector -->
       <view class="choosing_content_original" :class="{'choosing_content_display': !selectionStep.domeOrFore}">
@@ -287,6 +287,9 @@ $modal-window-left-distance: calc(50vw - #{$modal-window-width} / 2);
     align-items: center;
     .choosing_title_redo {
       margin-left: 10px;
+      position: absolute;
+      left: 10px;
+      top: 10px;
     }
   }
   .choosing_content_original {

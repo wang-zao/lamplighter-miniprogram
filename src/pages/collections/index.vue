@@ -454,7 +454,8 @@ $collection-box-inner-padding: 0.5rem;
         height: 2rem;
         margin-bottom: 10px;
         margin-right: 10px;
-        backdrop-filter: blur(5px);
+        // backdrop-filter: blur(5px);
+        background: #000;
         border-radius: 50%;
       }
     }

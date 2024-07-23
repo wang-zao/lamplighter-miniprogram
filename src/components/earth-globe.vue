@@ -41,6 +41,8 @@ import {
   PLAYING_MAX_SCORE_PER_QUESTION,
 } from '@/utils/constants';
 import { createScopedThreejs } from '@/utils/createScopedThreejs.js';
+// import { createScopedThreejs } from '@/utils/createScopedThreejs/index';
+// import { createScopedThreejs } from '@/utils/createScopedThreejsES5/index';
 // import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
 import GuidePage from '@/components/guide-page.vue';
@@ -183,6 +185,7 @@ export default Vue.extend({
           const canvas = res[0].node;
           this.canvas = canvas;
           const ctx = canvas.getContext('webgl');
+          console.log('createScopedThreejs', createScopedThreejs);
           const THREE = createScopedThreejs(canvas);
           console.log('this is THREE', THREE);
           this.globalTHREE = THREE;

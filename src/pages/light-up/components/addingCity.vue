@@ -5,7 +5,7 @@
       <view class="close_window_icon" @click="closeWindow">X</view>
       <view class="adding_city_title">
         <view class="adding_city_title_text">
-          点亮地点
+          选择你去过的城市
         </view>
       </view>
       <view class="adding_city_form_content">
@@ -13,14 +13,14 @@
           <view class="item_key">地点</view>
           <view class="item_value"  @click="toggleSelectCityWindow(true)">
             <view class="select_city select_value">{{ selectedCities.length > 0 ? `已选${selectedCities.length}个城市` : '请选择' }}</view>
-            <view class="edit_icon">//</view>
+            <!-- <view class="edit_icon">//</view> -->
           </view>
         </view>
         <view class="adding_city_form_item">
           <view class="item_key">时长</view>
           <view class="item_value" @click="handleWantToSelectTime">
             <view class="select_time select_value">{{ selected_time ? selected_time : '请选择' }}</view>
-            <view class="edit_icon">//</view>
+            <!-- <view class="edit_icon">//</view> -->
           </view>
         </view>
         <!-- <view class="adding_city_form_item">

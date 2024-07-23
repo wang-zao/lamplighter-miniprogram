@@ -141,7 +141,7 @@ export default Vue.extend({
   width: 100%;
   border-radius: 2rem;
   box-sizing: border-box;
-  backdrop-filter: blur(5px);
+  // backdrop-filter: blur(5px);
   .city_unlocked {
     height: 100%;
     width: 100%;

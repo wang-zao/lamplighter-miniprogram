@@ -2,7 +2,7 @@
   <view class="section_wraps">
     <view class="top_info">
       <view class="info_title">
-        <span :key="key" v-for="(letter, key) in '星球点灯人'">{{ letter }}</span>
+        <span :key="key" v-for="(letter, key) in '奇怪地球仪'">{{ letter }}</span>
       </view>
       <view class="info_img">
         <!-- <image class="info_img_content" src="@/static/title-miniprogram-s.png" /> -->
@@ -41,12 +41,13 @@
               </view>
               <view class="button_new_text">目的地抽取器</view>
             </view>
-            <view class="button_new_item" @click="goToLightUp">
+            <!-- TODO: local file to large -->
+            <!-- <view class="button_new_item" @click="goToLightUp">
               <view class="button_new_icon button_footprint_new">
                 <image class="button_new_icon_img" src="@/static/footprint.svg"></image>
               </view>
               <view class="button_new_text">流浪史生成器</view> 
-            </view>
+            </view> -->
           </view>
           <!-- 方向训练tab -->
           <view v-if="buttonTab === 'compass'" class="buttons_new_wrapper_inner">
