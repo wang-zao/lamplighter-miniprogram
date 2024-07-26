@@ -41,9 +41,6 @@ import {
   PLAYING_MAX_SCORE_PER_QUESTION,
 } from '@/utils/constants';
 import { createScopedThreejs } from '@/utils/createScopedThreejs.js';
-// import { createScopedThreejs } from '@/utils/createScopedThreejs/index';
-// import { createScopedThreejs } from '@/utils/createScopedThreejsES5/index';
-// import { createScopedThreejs } from 'threejs-miniprogram';
 import StartPage from '@/components/start-page.vue';
 import GuidePage from '@/components/guide-page.vue';
 import EndPage from '@/components/end-page.vue';
