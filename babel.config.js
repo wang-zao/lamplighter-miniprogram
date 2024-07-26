@@ -57,7 +57,16 @@ module.exports = {
         modules: 'commonjs',
         useBuiltIns: process.env.UNI_PLATFORM === 'h5' ? 'usage' : 'entry'
       }
+    ],
+    [
+      "@babel/preset-env",
+      {
+        "modules": "commonjs"
+      }
     ]
   ],
-  plugins
+  plugins: [
+    '@babel/plugin-transform-modules-commonjs',
+    ...plugins
+  ]
 }

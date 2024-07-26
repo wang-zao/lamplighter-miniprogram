@@ -1,0 +1,298 @@
+<template>
+  <view class="ranking_wrapper">
+    <view class="ranking_body">
+      <view class="ranking_title">
+        <view class="ranking_title_text">
+          <icon-font iconName="rank" iconSize="2rem" iconMargin="5px"/>
+          <icon-font iconName="paiming_rank" iconSize="2rem" iconMargin="5px"/>
+        </view>
+      </view>
+      <view class="ranking_box">
+        <ranking-card
+          v-for="(user, index) in rankingList"
+          :key="index"
+          :userProfile="user"
+          :rankingNumber="user.rankingNumber"
+          :isMyCard="false"
+          class="ranking_card_list"
+        />
+      </view>
+      <view class="your_box">
+        <ranking-card
+          class="ranking_card_yours"
+          :userProfile="userProfile"
+          :rankingNumber="userRankingNumber"
+          :isMyCard="true"
+        />
+      </view>
+      <view class="ranking_card_all_count">
+        <view class="count_line">
+          <view class="count_span">
+            <icon-font iconName="jiezhiriqi" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span_highlight">{{ dateYear }}-{{ dateMonth }}-{{ dateDay }}</view>
+        </view>
+        <view class="count_line">
+          <view class="count_span">
+            <icon-font iconName="brainpower" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="chenghao1" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span_highlight">{{ allUserCount }}</view>
+        </view>
+        <view class="count_line">
+          <view class="count_span">
+            <icon-font iconName="earth2" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="compass" iconSize="1rem" iconMargin="5px"/>
+          </view>
+          <view class="count_span">
+            <icon-font iconName="star" iconSize="1rem" iconMargin="5px"/>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="ranking_bottom">
+      <view 
+        class="ranking_bottom_button"
+        @click="emitRouteChange('home')"
+      >
+        <icon-font iconName="return" iconSize="1.3rem"/>
+      </view>
+      <view 
+        class="center_group"
+      >
+        <view 
+          class="ranking_bottom_button"
+          @click="changeRankingPage(-1)"
+        >
+          <icon-font iconName="jiantou_shangyiye" iconSize="1.3rem"/>
+        </view>
+        <view 
+          class="ranking_bottom_button"
+          @click="changeRankingPage(1)"
+        >
+          <icon-font iconName="jiantou_xiayiye" iconSize="1.3rem"/>
+        </view>
+      </view>
+      <view class="ranking_bottom_button ranking_bottom_button_share">
+        <button class="ranking_bottom_button_inner" open-type="share">
+          <icon-font iconName="share" iconSize="1.3rem"/>
+        </button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { UserModel } from '@/api/index.js';
+  import RankingCard from './components/ranking-card.vue';
+  import IconFont from '@/components/iconFont.vue';
+  import store from '@/store/index.js';
+  /**
+   * @description 
+   * @event {Function} click 
+   */
+  export default {
+    name: 'Ranking',
+    props: {
+    },
+    components: {
+      RankingCard,
+      IconFont,
+    },
+    data() {
+      return {
+        currentPage: 0,
+        currentSize: 5,
+        maxiumPageIndex: 0,
+        rankingList: [],
+        userRankingNumber: '-',
+        allUserCount: '-',
+      }
+    },
+    computed: {
+      userProfile() {
+        return store.state.userProfile;
+      },
+      dateYear() {
+        return new Date().getFullYear();
+      },
+      dateMonth() {
+        return new Date().getMonth() + 1;
+      },
+      dateDay() {
+        return new Date().getDate();
+      },
+    },
+    created() {
+      this.init();
+    },
+    methods: {
+      init() {
+        this.loadRankings();
+        this.getAllUserCount();
+        this.getUserRankingNumber();
+      },
+      getRankingNumber(index) {
+        return this.currentPage * this.currentSize + index + 1;
+      },
+      async loadRankings() {
+        // TODO: The ranking list can be cached for better performance.
+        const rankingList = await UserModel.loadRankings(
+          this.currentPage, this.currentSize,
+        );
+        rankingList.forEach((user, index) => {
+          user.rankingNumber = this.getRankingNumber(index);
+        });
+        this.rankingList = rankingList;
+      },
+      async getAllUserCount() {
+        const allUserCount = await UserModel.getAllUserCount();
+        this.allUserCount = allUserCount;
+        this.maxiumPageIndex = Math.ceil(this.allUserCount / this.currentSize) - 1;
+      },
+      async getUserRankingNumber() {
+        this.userRankingNumber = await UserModel.getUserRankingNumber(this.userProfile.score);
+      },
+      changeRankingPage(direction) {
+        if (direction === -1 && this.currentPage === 0) {
+          return;
+        } else if (direction === 1 && this.currentPage === this.maxiumPageIndex) {
+          return;
+        }
+        this.currentPage += direction;
+        this.loadRankings();
+      },
+      emitRouteChange(route) {
+        this.$emit('routeChange', route);
+      },
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+
+$ranking-body-height: 80vh;
+$ranking-bottom-height: 20vh;
+$ranking-margin-top: 0.5rem;
+
+$ranking-item-inner-height: 4rem;
+$ranking-item-inner-padding: 0.5rem;
+$ranking-item-height: $ranking-item-inner-height + $ranking-item-inner-padding * 2;
+
+$ranking-box-inner-height: $ranking-item-inner-height * 5 + $ranking-item-inner-padding * 4;
+$ranking-box-inner-padding: 0.5rem;
+$ranking-box-height: $ranking-box-inner-height + $ranking-box-inner-padding * 2;
+
+
+.ranking_wrapper {
+  width: 90vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  .ranking_body {
+    width: 100%;
+    height: $ranking-body-height;
+    margin-top: $ranking-margin-top;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .ranking_title_text {
+      font-size: 1.5rem;
+      padding: 1rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .ranking_box {
+      height: $ranking-box-height;
+      background: #ffffff11;
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      .ranking_card_list {
+        width: 100%;
+        margin-top: $ranking-item-inner-padding;
+      }
+    }
+    .your_box {
+      margin-top: 5%;
+      height: $ranking-item-height;
+      border-radius: 2rem;
+      background: #ffffff11;
+      display: flex;
+      .ranking_card_yours {
+        width: 100%;
+        margin-top: $ranking-item-inner-padding;
+      }
+    }
+    .ranking_card_all_count {
+      margin-top: $ranking-item-inner-padding;
+      .count_line {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: $ranking-item-inner-padding;
+        .count_span {
+          opacity: 0.5;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+        }
+        .count_span_highlight {
+          opacity: 0.8;
+          font-weight: bold;
+          margin: 0 0.3rem;
+        }
+      }
+    }
+  }
+  .ranking_bottom {
+    width: 100%;
+    height: $ranking-bottom-height;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    .center_group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .ranking_bottom_button {
+      background: #ffffff44;
+      text-align: center;
+      border-radius: 2rem;
+      color: #fff;
+      padding: 0.5rem 0.7rem;
+      margin: 0 0.3rem;
+      font-size: 1rem;
+      line-height: 1.2rem;
+      .ranking_bottom_button_inner {
+        background: none;
+        border: none;
+        font-size: 1rem;
+        line-height: 1.2rem;
+        color: #fff;
+        ::after {
+          border: none;
+        }
+      }
+    }
+    .ranking_bottom_button_share {
+      border: 2px #fff solid;
+    }
+  }
+}
+
+</style>

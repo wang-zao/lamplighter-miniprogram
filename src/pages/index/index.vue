@@ -1,50 +1,110 @@
 <template>
-	<view class="content">
-        <image class="logo" src="../../static/logo.png"></image>
-		<view>
-            <text class="title">{{title}}</text>
-        </view>
-	</view>
+  <view class="content" >
+    <earth-globe
+      class="earth_panel_index"
+      ref="flyingEarth"
+      v-if="!hideEarthGlobeForTesting"
+      :anmtCtrl="anmtCtrl"
+      :judgeCtrl="judgeCtrl"
+      :currentRoute="currentRoute"
+    />
+    <global-router
+      :currentRoute="currentRoute"
+      @handleRouteChange="handleRouteChange"
+    />
+    <global-audio />
+  </view>
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-	export default Vue.extend({
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
+import Vue from 'vue';
+import store from '@/store/index.js';
+import EarthGlobe from '@/components/earth-globe.vue';
+import GlobalAudio from '@/components/global-audio.vue';
+import GlobalRouter from '@/pages/index/components/globalRouter.vue';
+import { EventBus } from '@/utils/eventBus';
 
-		},
-		methods: {
-
-		}
-	});
+export default Vue.extend({
+  components: {
+    EarthGlobe,
+    GlobalRouter,
+    GlobalAudio,
+  },
+  data() {
+    return {
+      currentRoute: 'home',
+      hideEarthGlobeForTesting: false,
+    }
+  },
+  computed: {
+    anmtCtrl() {
+      return store.state.anmtCtrl;
+    },
+    judgeCtrl() {
+      return store.state.judgeCtrl;
+    },
+  },
+  onLoad() {
+    if (!this.hideEarthGlobeForTesting) {
+      this.showLoading();
+    }
+    this.watchRouteChangeFromEventBus();
+  },
+  onShareAppMessage(res){
+    return {
+      title:'这个地球仪有点奇怪？'
+    }
+  },
+  methods: {
+    showLoading() {
+      wx.showLoading({
+        title: '加载中',
+        mask: true,
+      })
+    },
+    handleRouteChange(route: string) {
+      this.currentRoute = route;
+      if (route === 'home') {
+        EventBus.$emit('enableEarthRotation');
+      } else if (route === 'play-minute') {
+        EventBus.$emit('disableEarthRotation');
+        EventBus.$emit('playAgain');
+      } else if (route === 'light-up') {
+        EventBus.$emit('disableEarthRotation');
+        EventBus.$emit('playAgain');
+      } else if (route === 'random-city') {
+        EventBus.$emit('disableEarthRotation');
+        EventBus.$emit('playAgain');
+      }
+    },
+    watchRouteChangeFromEventBus() {
+      EventBus.$on('handleRouteChange', (route: string) => {
+        this.handleRouteChange(route);
+        store.commit('initAnmtCtrl');
+        store.commit('initJudgeCtrl');
+      });
+    },
+  },
+});
 </script>
 
-<style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
+<style scoped lang="scss">
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin: 200rpx auto 50rpx auto;
-	}
+$earth-top-margin: 50vh;
 
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $dark-mode-bg;
+  color: #fff;
+  height: 100vh;
+  font-size: 1rem;
+}
 
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+// .earth_panel_index {
+//  margin-top: $earth-top-margin;
+// }
+
 </style>

@@ -1,0 +1,189 @@
+<template>
+  <view
+    class="info_panel_wrapper"
+  >
+    <view class="info_1_scores">
+      <view class="info_grade info_item">
+        <icon-font iconName="star" iconSize="1.3rem" iconMargin="10px"/>
+        <view>{{judgeCtrl.totalMiles.toFixed(0)}}</view>
+      </view>
+      <view class="info_resttime info_item" :class="{
+        'info_resttime_redlight': judgeCtrl.restTime <= 3,
+        'info_resttime_yellowlight': judgeCtrl.restTime <= 6 && judgeCtrl.restTime > 3,
+      }">
+        <icon-font iconName="B-05" iconSize="1.3rem" iconMargin="10px"/>
+        <view>{{judgeCtrl.restTime}}</view>
+      </view>
+    </view>
+    <view class="info_2_cities">
+      <view class="canvas_cover_cityname" v-show="!anmtCtrl.gameStartPageVisible">
+        <ticket
+          class="cover_ticket cover_ticke_left"
+          :class="{
+            'cover_ticket_hiding': anmtCtrl.answerCorrectAnimationSwitching,
+            fadeOutLeft: anmtCtrl.answerCorrectAnimationStep1,
+            fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
+          }"
+          :showAbstract="false"
+          :cityInfo="currentCity"
+          :anmtCtrl="anmtCtrl"
+          reminder="当前在"
+          @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
+        />
+        <ticket
+          v-show="!anmtCtrl.gameStartPageVisible && !anmtCtrl.showingAbstractModal"
+          class="cover_ticket cover_ticke_right"
+          :showAbstract="true"
+          :class="{
+            'cover_ticket_hiding': anmtCtrl.answerCorrectAnimationSwitching,
+            moveLeftTemperorally: anmtCtrl.answerCorrectAnimationStep1,
+            fadeInRight: anmtCtrl.answerCorrectAnimationStep2,
+          }"
+          :cityInfo="nextCity"
+          :name_chn="nextCity.name_chn"
+          :anmtCtrl="anmtCtrl"
+          reminder="下一站"
+          @changeAbstractVisibility="(city) => changeAbstractVisibility(city, true)"
+        />
+      </view>
+    </view>
+    <pop-up-abstracts
+      class="pop_up_abstracts"
+      :cityInfo="nextCity"
+    />
+  </view>
+</template>
+
+<script>
+  /**
+   * info panel 选择世界的世界单元
+   * @description 用于展示选择世界的世界单元
+   * @event {Function} click 点击触发事件
+   */
+
+import IconFont from '@/components/iconFont.vue';
+import store from '@/store/index.js';
+import Ticket from './ticket.vue';
+import PopUpAbstracts from './pop-up-abstracts.vue';
+
+  export default {
+    name: 'InfoPanel',
+    components: {
+      IconFont,
+      Ticket,
+      PopUpAbstracts,
+    },
+    props: {
+      currentCity: {
+        type: Object,
+        default: {},
+      },
+      nextCity: {
+        type: Object,
+        default: {},
+      },
+    },
+    data() {
+      return {
+      }
+    },
+    computed: {
+      anmtCtrl() {
+        return store.state.anmtCtrl;
+      },
+      judgeCtrl() {
+        return store.state.judgeCtrl;
+      },
+    },
+    methods: {
+      onClickEmit(e) {
+        this.$emit('clicked')
+      },
+      changeAbstractVisibility(city, target) {
+        // this.abstractContent = city.abstract;
+        this.$emit('changeAbstractVisibility', target, city.abstract)
+      },
+    }
+  }
+</script>
+
+
+<style scoped lang="scss">
+@import '@/utils/customAnimate.wxss';
+
+@keyframes flashingRedFontColor {
+  0% { color: #fff; }
+  50% { color: #dd524d; }
+  100% { color: #fff; }
+}
+@keyframes flashingYellowFontColor {
+  0% { color: #fff; }
+  50% { color: #f0ad4e; }
+  100% { color: #fff; }
+}
+  
+.info_panel_wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  .info_1_scores {
+    width: 100vw;
+    display: flex;
+    align-items: flex-end;
+    padding: 3vh 0;
+    height: 10vh;
+    .info_item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 1rem;
+      padding: 0 10px 0 0;
+    }
+    .info_grade {
+      margin-left: 5vw;
+      background: #ffdb5b77;
+    }
+    .info_resttime {
+      margin-left: 2rem;
+      background: #ff5b5b77;
+    }
+    .info_resttime_redlight {
+      animation: flashingRedFontColor .5s infinite;
+    }
+    .info_resttime_yellowlight {
+      animation: flashingYellowFontColor 1s infinite;
+    }
+  }
+  .info_2_cities {
+    height: 30vh;
+    .canvas_cover_cityname {
+      color: #fff;
+      width: 90vw;
+      padding: 0 10vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      .cover_ticket_hiding {
+        opacity: 0;
+      }
+      .cover_ticket {
+        animation-duration: .35s;
+        animation-timing-function: linear;
+        background: $general-bright-button-blue;
+        border-radius: 1rem;
+      }
+    }
+  }
+  .pop_up_abstracts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 1px;
+  }
+}
+
+</style>
